@@ -1,6 +1,7 @@
 /* eslint-disable */
 import * as functions from "firebase-functions";
-const Key = "AWr7OjSG0r2bv8pN9qden-TzwtbIWY41bFiKsTF3xKw";
+const Key = "
+";
 import fetch from "node-fetch";
 
 export const getUnsplashPhoto = functions.https.onCall(
