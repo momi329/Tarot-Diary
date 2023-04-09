@@ -1,49 +1,38 @@
-import app from "../Firebaseapp";
-import db from "../Firebasedb";
 import { Link } from "react-router-dom";
-import { doc, getDoc, collection, getDocs } from "firebase/firestore";
-import { useState, useEffect } from "react";
-function Profile() {
-  const uid = localStorage.getItem("userUID");
-  const [user, setUser] = useState({});
-  const [userDesign, setUserDesign] = useState([]);
-  const [page, setPage] = useState(3);
-  async function getUserData() {
-    const docRef = doc(db, "users", uid);
-    const userData = await getDoc(docRef);
-    if (userData !== null) {
-      await setUser(userData.data());
-      getUserDesign(userData.data());
-    } else {
-      console.log("No such document!");
-    }
-  }
-  async function getUserDesign(user) {
-    const querySnapshot = await getDocs(collection(db, "spreads"));
-    let data = [];
-    querySnapshot.forEach((doc) => {
-      data.push(doc.data());
-    });
-    console.log("data", data);
-    const newData = await data.filter((i) => i.userUID === user.userUID);
-    console.log("newData", newData, user.userUID, user);
-    setUserDesign(newData);
-    console.log("here");
-  }
+import { useState, useEffect, useContext } from "react";
+import { AuthContext } from "../context/authContext";
+import { DocumentData } from "firebase/firestore";
+
+import Diary from "../components/Diary";
+import firebase from "../utils/firebase";
+function Profile(): JSX.Element {
+  const { isLogin, user, userUID } = useContext(AuthContext);
+  const [userDesign, setUserDesign] = useState<DocumentData[] | never[]>([]);
+  const [page, setPage] = useState<Number>(3);
+
   useEffect(() => {
-    getUserData();
+    async function getUserDesign(userUID: string) {
+      const newData = await firebase.getUserDesign(userUID);
+      setUserDesign(newData);
+    }
+    getUserDesign(userUID);
   }, []);
-  const switchPage = (num) => {
+  const switchPage = (num: Number) => {
     setPage(num);
     return;
   };
-  if (user.length === 0 || user === null) {
-    return;
+  if (!isLogin) {
+    alert("請先登入");
+    return <></>;
   }
   return (
     <>
       <div className='flex flex-row gap-5'>
-        <img src={user.image} alt={user.name} className='rounded-full' />
+        <img
+          src={user.image ?? undefined}
+          alt={user.name ?? undefined}
+          className='rounded-full'
+        />
         <div>
           <h5>{user.name}</h5>
           <p>{user.sign}</p>
@@ -134,6 +123,7 @@ function Profile() {
           })}
         </section>
       )}
+      {page === 2 && <Diary />}
     </>
   );
 }

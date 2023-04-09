@@ -1,13 +1,20 @@
 import { useEffect, useState } from "react";
 import cards from "../tarotcard/tarot-images";
-
-function Divine({ spreadData, setSpreadData, setEnd }) {
+import type { SpreadData } from "../pages/Spread";
+import internal from "stream";
+interface Props {
+  spreadData: SpreadData;
+  setSpreadData: React.Dispatch<React.SetStateAction<SpreadData>>;
+  end: boolean;
+  setEnd: React.Dispatch<React.SetStateAction<boolean>>;
+}
+function Divine({ spreadData, setSpreadData, setEnd }: Props) {
   const number = spreadData.spread.reduce(
-    (acc, crr) => (crr !== 0 ? acc + 1 : acc),
+    (acc: any, crr) => (crr !== 0 ? acc + 1 : acc),
     0
   );
   const tarot = cards.cards;
-  function getRandomCards(n) {
+  function getRandomCards(n: number) {
     const indexes = Array.from({ length: 78 }, (_, i) => i); // 創建包含 0 到 77 的陣列
     for (let i = indexes.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1)); // 生成 0 到 i 之間的隨機整數
@@ -15,10 +22,10 @@ function Divine({ spreadData, setSpreadData, setEnd }) {
     }
     return indexes.slice(0, n);
   }
-  function getRandom(min, max) {
+  function getRandom(min: number, max: number) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
   }
-  function getRandomBool(n) {
+  function getRandomBool(n: number) {
     const boolArray = [];
     for (let i = 0; i < number; i++) {
       boolArray.push(getRandom(1, 1000) % 2 === 0);
@@ -28,17 +35,26 @@ function Divine({ spreadData, setSpreadData, setEnd }) {
   const handleClick = async () => {
     const randomCard = await getRandomCards(number);
     const randomReverse = await getRandomBool(number);
-    const modifiedData = spreadData.spread.reduce((acc, item, i) => {
-      if (item === 0) {
-        acc.push(0);
-      } else {
-        const card = randomCard[item.order - 1];
-        const reverse = randomReverse[item.order - 1];
-        const newItem = { ...item, card, reverse };
-        acc.push(newItem);
-      }
-      return acc;
-    }, []);
+    const modifiedData = spreadData.spread.reduce(
+      (
+        acc: any,
+        item:
+          | number
+          | { name: string; order: number; card: number; reverse: boolean },
+        i: number
+      ) => {
+        if (typeof item === "number") {
+          acc.push(0);
+        } else {
+          const card = randomCard[item.order - 1];
+          const reverse = randomReverse[item.order - 1];
+          const newItem = { ...item, card, reverse };
+          acc.push(newItem);
+        }
+        return acc;
+      },
+      []
+    );
     await setSpreadData({ ...spreadData, spread: modifiedData });
     setEnd(true);
   };

@@ -12,12 +12,13 @@ const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <BrowserRouter>
     <Routes>
-      <Route path='/' element={<App />} />
-      <Route path='/signin' element={<Member />} />
-      <Route path='/design' element={<Draggable />} />
-      <Route path='/spread/:id' element={<Spread />} />
-      <Route path='/card/:id' element={<TarotCard />} />
-      <Route path='/divine' element={<Divine />} />
+      <Route path='/' element={<App />}>
+        <Route path='/signin' element={<Member />} />
+        <Route path='/design' element={<Draggable />} />
+        <Route path='/spread/:id' element={<Spread />} />
+        <Route path='/card/:id' element={<TarotCard />} />
+        <Route path='/divine' element={<Divine />} />
+      </Route>
     </Routes>
   </BrowserRouter>
 );

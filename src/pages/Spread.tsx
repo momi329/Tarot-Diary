@@ -1,30 +1,56 @@
 import { useParams } from "react-router-dom";
-import app from "../Firebaseapp";
-import db from "../Firebasedb";
-import { doc, getDoc, collection, getDocs } from "firebase/firestore";
 import { useState, useEffect } from "react";
 import Divine from "../components/Divine";
 import cards from "../tarotcard/tarot-images";
 import { Link } from "react-router-dom";
+import firebase from "../utils/firebase";
+export interface SpreadData {
+  userUID: string;
+  title: string;
+  image: string;
+  spread: (
+    | number
+    | {
+        order: number;
+        disabled?: boolean;
+        value: string;
+        name: string;
+        card: number;
+        reverse: boolean;
+      }
+  )[];
+  description: string;
+  spreadId: string;
+}
+const initialSpread: SpreadData = {
+  userUID: "",
+  title: "",
+  image: "",
+  spread: [
+    0,
+    { order: 0, disabled: true, value: "", name: "", card: 0, reverse: true },
+  ],
+  description: "",
+  spreadId: "",
+};
+
 function Spread() {
-  const [spreadData, setSpreadData] = useState([]);
+  const [spreadData, setSpreadData] = useState<SpreadData>(initialSpread);
   const { id } = useParams();
   const tarot = cards.cards;
-  const [end, setEnd] = useState(false);
-  async function getDesign() {
-    const querySnapshot = await getDocs(collection(db, "spreads"));
-    let data = [];
-    querySnapshot.forEach((doc) => {
-      data.push(doc.data());
-    });
-    const newData = data.filter((i) => i.spreadId === id);
-    setSpreadData(newData[0]);
-  }
+  const [end, setEnd] = useState<boolean>(false);
+
   useEffect(() => {
-    getDesign();
+    async function getDesign(id: string): Promise<void> {
+      const newData = await firebase.getDesign(id);
+      setSpreadData(newData[0]);
+    }
+    if (id) {
+      getDesign(id);
+    }
   }, [id]);
 
-  if (spreadData.length === 0 || spreadData === undefined) {
+  if (spreadData === undefined) {
     return;
   }
 
@@ -36,12 +62,15 @@ function Spread() {
         className='w-[1280px] h-[340px] bg-cover bg-center'
       ></div>
       <h1>{spreadData.title}</h1>
-      <p>{spreadData.discription}</p>
-      <h1>
+      <p>{spreadData.description}</p>
+      <div>
         PICK{" "}
-        {spreadData.spread.reduce((acc, crr) => (crr !== 0 ? acc + 1 : acc), 0)}{" "}
+        {spreadData.spread.reduce(
+          (acc: any, crr) => (crr !== 0 ? acc + 1 : acc),
+          0
+        )}{" "}
         CARDS
-      </h1>
+      </div>
       <Divine
         spreadData={spreadData}
         setSpreadData={setSpreadData}
@@ -49,7 +78,7 @@ function Spread() {
         setEnd={setEnd}
       />
       <div className='flex flex-wrap w-[1200px] border border-gray-50 z-1'>
-        {spreadData.spread.map((item, i) => {
+        {spreadData.spread.map((item: any, i: number) => {
           return (
             <div className='flex  justify-center w-[115px] h-[90px] ' key={i}>
               {item !== 0 && (
@@ -84,10 +113,13 @@ function Spread() {
                     </p>
                     {item.card !== undefined && (
                       <Link to={`/card/${item.card}`}>
-                        <p className='absolute bottom-14 left-2 z-10 text-xs'>
+                        <div className='absolute bottom-16 left-2 z-10 text-xs'>
                           {tarot[item.card].name}{" "}
-                          {tarot[item.card].reverse ? "正位" : "逆位"}
-                        </p>
+                        </div>
+                        {""}
+                        <div className='absolute bottom-12 left-2 z-10 text-xs'>
+                          {item.reverse ? "正位" : "逆位"}
+                        </div>
                       </Link>
                     )}
                   </div>
