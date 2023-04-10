@@ -1,9 +1,10 @@
-import { createContext, useState } from "react";
+import { createContext, useState, useEffect } from "react";
 import firebase from "../utils/firebase";
 
 import {
   Auth,
   getAuth,
+  onAuthStateChanged,
   GoogleAuthProvider,
   FacebookAuthProvider,
 } from "firebase/auth";
@@ -47,22 +48,46 @@ export const AuthContext = createContext<AuthContextType>({
   signIn: async () => {},
   signOut: async () => {},
 });
-
+const initialUserData: User = {
+  name: "",
+  image: "",
+  sign: "",
+  email: "",
+  followers: [],
+  following: [],
+  favorite: [],
+  userUID: "",
+};
 export const AuthContextProvider: React.FC = ({ children }: any) => {
   const [isLogin, setIsLogin] = useState(false);
-  const [user, setUser] = useState<User>({
-    name: "",
-    image: "",
-    sign: "",
-    email: "",
-    followers: [],
-    following: [],
-    favorite: [],
-    userUID: "",
-  });
+  const [user, setUser] = useState<User>(initialUserData);
   const [loading, setLoading] = useState<boolean>(true);
   const [userUID, setUserUID] = useState<string>("");
-
+  useEffect(() => {
+    const auth = getAuth();
+    onAuthStateChanged(auth, (user) => {
+      console.log(user);
+      if (user) {
+        // User is signed in, see docs for a list of available properties
+        setIsLogin(true);
+        const data: User = {
+          name: user.displayName || "",
+          image: user.photoURL || "",
+          sign: "",
+          email: user.email || "",
+          followers: [],
+          following: [],
+          favorite: [],
+          userUID: user.uid || "",
+        };
+        setUser(data);
+        setUserUID(data.userUID);
+      } else {
+        // User is signed out
+        setIsLogin(false);
+      }
+    });
+  }, []);
   const signIn = async (
     auth: ReturnType<typeof getAuth>,
     provider: GoogleAuthProvider | FacebookAuthProvider
@@ -85,8 +110,11 @@ export const AuthContextProvider: React.FC = ({ children }: any) => {
   };
 
   const signOut = async (auth: Auth): Promise<void> => {
-    setLoading(true);
+    setLoading(false);
     await firebase.signOut(auth);
+    setUser(initialUserData);
+    setUserUID("");
+    setIsLogin(false);
     setLoading(false);
   };
 

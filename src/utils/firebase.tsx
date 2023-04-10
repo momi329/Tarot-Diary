@@ -1,7 +1,7 @@
 import { initializeApp } from "firebase/app";
 import { DocumentData, getFirestore } from "firebase/firestore";
 import { signOut, signInWithPopup, Auth, UserCredential } from "firebase/auth";
-import { doc, getDoc } from "firebase/firestore";
+import { doc, getDoc, addDoc } from "firebase/firestore";
 import { collection, setDoc, getDocs } from "firebase/firestore";
 import { GoogleAuthProvider, FacebookAuthProvider } from "firebase/auth";
 
@@ -70,6 +70,9 @@ const firebase = {
     });
     const newData: any[] = data.filter((i) => i.spreadId === id);
     return newData;
+  },
+  async saveDesign(data: any) {
+    await addDoc(collection(db, "spreads"), data);
   },
 };
 export default firebase;

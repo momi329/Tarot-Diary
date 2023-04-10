@@ -4,7 +4,7 @@ import { AuthContext } from "../context/authContext";
 import "../Calander.css";
 import { doc, getDoc } from "firebase/firestore";
 import cards from "../tarotcard/tarot-images";
-import db from "../Firebasedb";
+import { db } from "../utils/firebase";
 
 import { collection, setDoc, Timestamp } from "firebase/firestore";
 import { updateDoc, arrayUnion, arrayRemove } from "firebase/firestore";
@@ -17,6 +17,8 @@ interface Props {
   diaryData: [] | [Day];
   isDiaryOpen: boolean;
   setIsDiaryOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  setDayDiary: React.Dispatch<React.SetStateAction<Day | {}>>;
+  dayDairy: Day | {};
 }
 interface Day {
   title: string;
@@ -32,7 +34,7 @@ function Diary() {
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
   const [diaryData, setDiaryData] = useState<[]>([]);
   const [isDiaryOpen, setIsDiaryOpen] = useState<boolean>(false);
-
+  const [dayDairy, setDayDiary] = useState({});
   // async function abc() {
   //   const diaryRef = doc(
   //     db,
@@ -118,6 +120,8 @@ function Diary() {
         prevMonth={prevMonth}
         nextMonth={nextMonth}
         isDiaryOpen={isDiaryOpen}
+        setDayDiary={setDayDiary}
+        dayDairy={dayDairy}
       />
       <CalendarWeekdays />
       <CalendarDays
@@ -128,6 +132,8 @@ function Diary() {
         prevMonth={prevMonth}
         nextMonth={nextMonth}
         isDiaryOpen={isDiaryOpen}
+        setDayDiary={setDayDiary}
+        dayDairy={dayDairy}
       />
     </div>
   );
@@ -176,6 +182,7 @@ function CalendarDays({
   diaryData,
   isDiaryOpen,
   setIsDiaryOpen,
+  setDayDiary,
 }: Props): JSX.Element {
   const startOfMonth = new Date(
     selectedDate.getFullYear(),
@@ -191,6 +198,13 @@ function CalendarDays({
   const startWeekday = startOfMonth.getDay();
   const daysInMonth = endOfMonth.getDate();
   const days = [];
+  const clickedDiary = (day: Day | {}) => {
+    console.log("click", day);
+    if (day !== undefined) {
+      setDayDiary(day);
+      setIsDiaryOpen(true);
+    }
+  };
 
   for (let i = 1; i <= startWeekday; i++) {
     days.push(
@@ -212,10 +226,7 @@ function CalendarDays({
     const handleClick = () => {
       setSelectedDate(date);
     };
-    const clickedDiary = (day: Day) => {
-      console.log("click", day);
-      setIsDiaryOpen(true);
-    };
+
     days.push(
       <>
         <div

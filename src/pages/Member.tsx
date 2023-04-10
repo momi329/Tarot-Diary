@@ -1,16 +1,18 @@
-import app from "../Firebaseapp";
 import { Auth, getAuth } from "firebase/auth";
 import { GoogleAuthProvider, FacebookAuthProvider } from "firebase/auth";
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import Profile from "./Profile";
 import { AuthContext } from "../context/authContext";
-import firebase from "../utils/firebase";
 function Member() {
   const { user, isLogin, signIn, signOut, loading } = useContext(AuthContext);
-  const auth: Auth = getAuth(app);
+  const auth: Auth = getAuth();
   const provider: GoogleAuthProvider = new GoogleAuthProvider();
   const fbProvider: FacebookAuthProvider = new FacebookAuthProvider();
+  // useEffect(()=>{
+  //   if(localStorage.getItem('userUID')){
 
+  //   }
+  // })
   return (
     <>
       {isLogin ? (

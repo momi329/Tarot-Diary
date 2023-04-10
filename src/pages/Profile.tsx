@@ -16,7 +16,7 @@ function Profile(): JSX.Element {
       setUserDesign(newData);
     }
     getUserDesign(userUID);
-  }, []);
+  }, [page, isLogin, userUID]);
   const switchPage = (num: Number) => {
     setPage(num);
     return;

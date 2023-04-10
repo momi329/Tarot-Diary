@@ -1,12 +1,14 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { v4 as uuidv4 } from "uuid";
 import { FiEdit } from "react-icons/fi";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import MyImages from "./MyImages";
-import db from "../Firebasedb";
+import firebase, { db } from "../utils/firebase";
 import { doc, updateDoc, arrayUnion, arrayRemove } from "firebase/firestore";
-import { collection, addDoc } from "firebase/firestore";
-function Draggable() {
+import { collection, addDoc, setDoc } from "firebase/firestore";
+import { AuthContext } from "../context/authContext";
+
+function Draggable({ edit, setEdit, spreadData, id }) {
   const [onSave, setOnSave] = useState({
     spreadId: "",
     title: "",
@@ -94,28 +96,10 @@ function Draggable() {
       0,
       0,
       0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
     ],
   });
+  const { isLogin, user, userUID } = useContext(AuthContext);
+
   const [cardNumber, setCardNumber] = useState(() =>
     onSave.spread.reduce((acc, curr) => {
       return curr !== 0 ? acc + 1 : acc;
@@ -130,13 +114,18 @@ function Draggable() {
 
   useEffect(() => {
     const userUID = localStorage.getItem("userUID");
-    const spreadId = uuidv4();
+    if (edit) {
+      setOnSave(spreadData);
+      return;
+    }
     if (userUID) {
+      const spreadId = uuidv4();
       setOnSave({ ...onSave, userUID: userUID, spreadId: spreadId });
     } else {
       alert("請先登入");
     }
   }, []);
+
   const onDragging = (e) => {
     const newShine = [...shine].fill(false);
     setShine(newShine);
@@ -209,13 +198,21 @@ function Draggable() {
     return;
   };
   const saveIt = async () => {
-    if (onSave.spreadId === "") {
-      const id = uuidv4();
-      setOnSave({ ...onSave, spreadId: id });
+    if (edit) {
+      const spreadRef = doc(db, "spreads", spreadData.spreadId);
+      await updateDoc(spreadRef, onSave);
+    } else {
+      let newData = { ...onSave };
+      if (onSave.spreadId === "") {
+        const id = uuidv4();
+        newData = { ...onSave, spreadId: id };
+      }
+      if (onSave.userUID === "") {
+        newData = { ...onSave, userUID: userUID };
+      }
+      await setDoc(doc(db, "spreads", newData.spreadId), newData);
     }
-    await addDoc(collection(db, "spreads"), onSave);
     alert("Success");
-    // setSaved(true);
     setOnSave({
       spreadId: "",
       title: "",
@@ -303,33 +300,13 @@ function Draggable() {
         0,
         0,
         0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
       ],
     });
+    setEdit(false);
   };
-
   return (
     <>
-      <div className='flex flex-row gap-[20px] m-auto'>
+      <div className='flex flex-row gap-[20px] mx-auto'>
         <form className='flex flex-col gap-2'>
           <h1>Design Your Spread!</h1>
           <p>設計你自己的牌陣，問自己想問的問題！</p>
@@ -362,11 +339,11 @@ function Draggable() {
         Save
       </button>
 
-      <div className='flex flex-wrap w-[1010px] border border-gray-50 z-1'>
+      <div className='flex flex-wrap w-[1010px] border border-gray-50 z-1 mx-auto'>
         {onSave.spread.map((item, i) => {
           return (
             <div
-              className={`flex justify-center  w-[100px] h-[80px] ${
+              className={`flex justify-center  w-[100px] h-[80px] border border-slate-300 ${
                 shine[i] ? "bg-gray-100" : ""
               }`}
               key={i}
