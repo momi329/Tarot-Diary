@@ -5,6 +5,7 @@ import cards from "../tarotcard/tarot-images";
 import { Link } from "react-router-dom";
 import firebase from "../utils/firebase";
 import Draggable from "../components/Draggable";
+import AskGPT from "../AksGPT";
 export interface SpreadData {
   userUID: string;
   title: string;
@@ -45,7 +46,8 @@ function Spread() {
   const { id } = useParams();
   const tarot = cards.cards;
   const [end, setEnd] = useState<boolean>(false);
-  const [edit, setEdit] = useState(false);
+  const [askAI, setAskAI] = useState<boolean>(false);
+  const [edit, setEdit] = useState<boolean>(false);
   useEffect(() => {
     async function getDesign(id: string): Promise<void> {
       const newData = await firebase.getDesign(id);
@@ -98,10 +100,16 @@ function Spread() {
       >
         Edit
       </button>
+      <AskGPT
+        spreadData={spreadData}
+        end={end}
+        askAI={askAI}
+        setAskAI={setAskAI}
+      />
       {edit && (
         <div
-          className=' w-[1200px] h-[700px] overflow-y-scroll p-16 bg-slate-400 z-20 mx-auto fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2
-        '
+          className=' w-[1200px] h-[700px] overflow-y-scroll p-16 bg-slate-400 z-20 mx-auto fixed top-1/2 left-1/2 
+          transform -translate-x-1/2 -translate-y-1/2'
         >
           <Draggable
             setEdit={setEdit}

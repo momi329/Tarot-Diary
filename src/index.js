@@ -8,6 +8,7 @@ import Draggable from "./components/Draggable";
 import Spread from "./pages/Spread";
 import TarotCard from "./pages/TarotCard";
 import Divine from "./components/Divine";
+import AskGPT from "./AksGPT";
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <BrowserRouter>
@@ -18,6 +19,7 @@ root.render(
         <Route path='/spread/:id' element={<Spread />} />
         <Route path='/card/:id' element={<TarotCard />} />
         <Route path='/divine' element={<Divine />} />
+        <Route path='/ask' element={<AskGPT />} />
       </Route>
     </Routes>
   </BrowserRouter>

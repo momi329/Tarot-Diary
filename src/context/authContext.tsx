@@ -8,6 +8,7 @@ import {
   GoogleAuthProvider,
   FacebookAuthProvider,
 } from "firebase/auth";
+import { isGeneratorFunction } from "util/types";
 export interface User {
   name: string;
   image: string;
@@ -93,6 +94,11 @@ export const AuthContextProvider: React.FC = ({ children }: any) => {
     provider: GoogleAuthProvider | FacebookAuthProvider
   ) => {
     const user = await firebase.signIn(auth, provider);
+
+    // if (num === 2) {
+    //   const user = await firebase.signInWithFB(auth, provider);
+    //   console.log(user, "user");
+    // }
     const data: User = {
       name: user.user.displayName || "",
       image: user.user.photoURL || "",

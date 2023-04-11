@@ -4,8 +4,8 @@ import { FiX } from "react-icons/fi";
 import { FiChevronLeft } from "react-icons/fi";
 import { FiImage } from "react-icons/fi";
 import { FiSearch } from "react-icons/fi";
-const Key = "AWr7OjSG0r2bv8pN9qden-TzwtbIWY41bFiKsTF3xKw";
-
+// const Key = "AWr7OjSG0r2bv8pN9qden-TzwtbIWY41bFiKsTF3xKw";
+const Key = process.env.UNSPLASH_API_KEY;
 function MyImages({ onSave, setOnSave }) {
   const [photos, setPhotos] = useState(fakeData);
   const [isOpen, setIsOpen] = useState(false);

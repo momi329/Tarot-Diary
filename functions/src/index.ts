@@ -1,11 +1,11 @@
 /* eslint-disable */
 import * as functions from "firebase-functions";
-const Key = "AWr7OjSG0r2bv8pN9qden-TzwtbIWY41bFiKsTF3xKw";
+import { Configuration, OpenAIApi } from "openai";
 import fetch from "node-fetch";
 
 export const getUnsplashPhoto = functions.https.onCall(
   async (data, context) => {
-    const accessKey = Key;
+    const accessKey = process.env.UNSPLASH_API_KEY;
     const query = data.query;
 
     // 構造 Unsplash API 的 URL

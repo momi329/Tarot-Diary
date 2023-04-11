@@ -2,6 +2,7 @@ import { Auth, getAuth } from "firebase/auth";
 import { GoogleAuthProvider, FacebookAuthProvider } from "firebase/auth";
 import { useContext, useEffect } from "react";
 import Profile from "./Profile";
+import firebase from "../utils/firebase";
 import { AuthContext } from "../context/authContext";
 function Member() {
   const { user, isLogin, signIn, signOut, loading } = useContext(AuthContext);
