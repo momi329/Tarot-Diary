@@ -9,6 +9,7 @@ import Spread from "./pages/Spread";
 import TarotCard from "./pages/TarotCard";
 import Divine from "./components/Divine";
 import AskGPT from "./AksGPT";
+import Quill from "./components/Editor/Quill";
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <BrowserRouter>
@@ -20,6 +21,7 @@ root.render(
         <Route path='/card/:id' element={<TarotCard />} />
         <Route path='/divine' element={<Divine />} />
         <Route path='/ask' element={<AskGPT />} />
+        <Route path='/write' element={<Quill />} />
       </Route>
     </Routes>
   </BrowserRouter>

@@ -1,6 +1,9 @@
 import type { SpreadData } from "./pages/Spread";
 import { useState, useContext, useEffect } from "react";
 import { AuthContext } from "./context/authContext";
+import cards from "./tarotcard/tarot-images";
+import Quill from "./components/Editor/Quill";
+import { openAiKey } from "../config";
 import firebase from "./utils/firebase";
 import { db } from "./utils/firebase";
 import {
@@ -19,9 +22,9 @@ interface Message {
   card: number;
   reverse: boolean;
 }
-import cards from "./tarotcard/tarot-images";
+
 const tarot = cards.cards;
-const AskGPT = ({ spreadData, end, askAI, setAskAI }) => {
+const AskGPT = ({ divinedData, end, setEnd, askAI, setAskAI }) => {
   const { isLogin, user, userUID } = useContext(AuthContext);
   const [messages, setMessages] = useState<Message[]>([
     {
@@ -34,16 +37,39 @@ const AskGPT = ({ spreadData, end, askAI, setAskAI }) => {
     },
   ]);
   const [res, setRes] = useState([]);
+  const [article, setArticle] = useState({
+    ...divinedData,
+    content: "",
+    askGpt: "",
+    secret: true,
+    time: "",
+  });
   useEffect(() => {
-    const divinedResult = spreadData.spread.filter((data) => data !== 0);
+    const divinedResult = divinedData.spread.filter((data) => data !== 0);
     setMessages(divinedResult);
-    console.log(divinedResult);
-  }, [end, spreadData.spread]);
-
+  }, [end, divinedData.spread]);
+  useEffect(() => {
+    setArticle({
+      ...divinedData,
+      content: "",
+      askGpt: "",
+      secret: true,
+      time: "",
+    });
+  }, [messages, divinedData]);
+  // useEffect(() => {
+  //   setArticle({ ...article, askGpt: res });
+  // }, [res]);
   const handleAsk = async () => {
-    const message = `${spreadData.title} 我抽到${tarot[messages[0].card].name}${
-      messages[0].reverse ? "正位" : "逆位"
-    }，請幫我解釋`;
+    console.log("messages", messages);
+    console.log("divinedData", divinedData);
+
+    const message = `我問塔羅牌${divinedData.question}，我在${messages.map(
+      (mes) =>
+        `${mes.value}的位置抽到${tarot[mes.card].name} ${
+          mes.reverse ? "正位" : "逆位"
+        }`
+    )}，請幫我解釋`;
     const newMessage = [
       {
         message: message,
@@ -51,7 +77,6 @@ const AskGPT = ({ spreadData, end, askAI, setAskAI }) => {
         sentTime: new Date().toLocaleString(),
       },
     ];
-
     await processMessageToChatGPT(newMessage);
   };
 
@@ -80,15 +105,16 @@ const AskGPT = ({ spreadData, end, askAI, setAskAI }) => {
       model: "gpt-3.5-turbo",
       messages: apiMessages,
     };
-    console.log("apiMessages:", apiMessages);
-    console.log("apiRequestBody:", apiRequestBody);
+    // console.log("apiMessages:", apiMessages);
+    // console.log("apiRequestBody:", apiRequestBody);
+    // const apiKey = openAiKey;
+    const apiKey = "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";
 
     await fetch("https://api.openai.com/v1/chat/completions", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization:
-          "Bearer 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",
+        Authorization: `Bearer ${apiKey}`,
       },
       body: JSON.stringify(apiRequestBody),
     })
@@ -100,6 +126,7 @@ const AskGPT = ({ spreadData, end, askAI, setAskAI }) => {
         const content = data.choices[0].message.content;
         console.log(content);
         setRes(content);
+        setArticle({ ...article, askGpt: content });
       })
       .catch((error) => {
         console.error("Error fetching API:", error);
@@ -116,17 +143,33 @@ const AskGPT = ({ spreadData, end, askAI, setAskAI }) => {
         點我問小Chat
       </button>
       {end && askAI && (
-        <div
-          className=' w-[800px] h-[600px] overflow-y-scroll p-16 bg-slate-300 z-20 mx-auto fixed top-1/2 left-1/2 
-          transform -translate-x-1/2 -translate-y-1/2'
-        >
-          <img
-            src={tarot[messages[0].card].img}
-            alt={tarot[messages[0].card].name}
-            className={`${messages[0].reverse ? "" : "rotate-180"}`}
+        <>
+          <div className=' w-[60%]  '>
+            {/* {messages.map((mes, index) => (
+              <div key={index}>
+                <img
+                  src={tarot[mes.card].img}
+                  alt={tarot[mes.card].name}
+                  className={`${mes.reverse ? "" : "rotate-180"}`}
+                />
+                <h1>{tarot[mes.card].name}</h1>
+                <p>{res}</p>
+              </div>
+            ))} */}
+            <p>{res}</p>
+          </div>
+        </>
+      )}
+      {end && (
+        <div className='w-[60%]'>
+          <Quill
+            article={article}
+            setArticle={setArticle}
+            setEnd={setEnd}
+            setAskAI={setAskAI}
+            res={res}
+            setRes={setRes}
           />
-          <h1>{tarot[messages[0].card].name}</h1>
-          <p>{res}</p>
         </div>
       )}
     </>

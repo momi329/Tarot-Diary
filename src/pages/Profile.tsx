@@ -98,12 +98,12 @@ function Profile(): JSX.Element {
       </div>
       {page === 3 && (
         <section className='flex flex-wrap gap-2'>
-          {userDesign.map((spread) => {
+          {userDesign.map((spread, index) => {
             return (
               <div
                 className='w-[200px] h-[200px] bg-cover relative'
                 style={{ backgroundImage: `url(${spread.image})` }}
-                key={spread.spreadId}
+                key={index}
               >
                 <p className='text-xs mt-1 absolute top-2 left-3 text-white tracking-wide'>
                   PICK A CARD

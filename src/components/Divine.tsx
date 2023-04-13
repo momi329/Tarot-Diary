@@ -1,14 +1,26 @@
-import { useEffect, useState } from "react";
+import { useState, useEffect, useContext } from "react";
+import { AuthContext } from "../context/authContext";
 import cards from "../tarotcard/tarot-images";
 import type { SpreadData } from "../pages/Spread";
-import internal from "stream";
+import firebase from "../utils/firebase";
+import type { DesignSpreadData } from "../pages/Spread";
 interface Props {
   spreadData: SpreadData;
-  setSpreadData: React.Dispatch<React.SetStateAction<SpreadData>>;
+  setSpreadData: React.Dispatch<React.SetStateAction<SpreadData | undefined>>;
   end: boolean;
   setEnd: React.Dispatch<React.SetStateAction<boolean>>;
+  divinedData: any;
+  setDivinedData: React.Dispatch<React.SetStateAction<DesignSpreadData>>;
 }
-function Divine({ spreadData, setSpreadData, setEnd }: Props) {
+
+function Divine({
+  spreadData,
+  setSpreadData,
+  setEnd,
+  divinedData,
+  setDivinedData,
+}: Props) {
+  const { isLogin, user, userUID } = useContext(AuthContext);
   const number = spreadData.spread.reduce(
     (acc: any, crr) => (crr !== 0 ? acc + 1 : acc),
     0
@@ -26,7 +38,7 @@ function Divine({ spreadData, setSpreadData, setEnd }: Props) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
   }
   function getRandomBool(n: number) {
-    const boolArray = [];
+    const boolArray: boolean[] = [];
     for (let i = 0; i < number; i++) {
       boolArray.push(getRandom(1, 1000) % 2 === 0);
     }
@@ -55,12 +67,26 @@ function Divine({ spreadData, setSpreadData, setEnd }: Props) {
       },
       []
     );
-    await setSpreadData({ ...spreadData, spread: modifiedData });
+    const newData = { ...spreadData, spread: modifiedData };
+    await setDivinedData(newData);
+    console.log(newData, "DivinedData占卜後的資料");
     setEnd(true);
+    async function createDivinedData(newData, userUID) {
+      const docId = await firebase.newDivinedData(newData, userUID);
+      console.log(docId, "docId");
+      if (docId) {
+        console.log({ ...divinedData, docId: docId });
+        setDivinedData({ ...newData, docId: docId });
+      } else {
+        console.log("error no docId");
+      }
+    }
+
+    createDivinedData(newData, userUID);
   };
   return (
     <>
-      <button onClick={handleClick}>Click Me</button>
+      <button onClick={handleClick}>占卜</button>
       {/* {divined && (
         <div className='flex flex-row'>
           {divined.map((i, index) => (

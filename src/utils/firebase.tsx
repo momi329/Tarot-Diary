@@ -2,7 +2,14 @@ import { initializeApp } from "firebase/app";
 import { DocumentData, getFirestore } from "firebase/firestore";
 import { signOut, signInWithPopup, Auth, UserCredential } from "firebase/auth";
 import { doc, getDoc, addDoc } from "firebase/firestore";
-import { collection, setDoc, getDocs } from "firebase/firestore";
+import {
+  collection,
+  setDoc,
+  getDocs,
+  updateDoc,
+  arrayUnion,
+  serverTimestamp,
+} from "firebase/firestore";
 import { GoogleAuthProvider, FacebookAuthProvider } from "firebase/auth";
 
 const firebaseConfig = {
@@ -75,7 +82,7 @@ const firebase = {
       data.push(doc.data());
     });
     const newData: DocumentData[] | never[] = await data.filter(
-      (i) => i.userUID === userUID
+      (i) => i.userUID === userUID || i.userUID === "all"
     );
     return newData;
   },
@@ -85,16 +92,47 @@ const firebase = {
     return docSnap;
   },
   async getDesign(id: string) {
-    const querySnapshot = await getDocs(collection(db, "spreads"));
-    let data: any[] = [];
-    querySnapshot.forEach((doc) => {
-      data.push(doc.data());
-    });
-    const newData: any[] = data.filter((i) => i.spreadId === id);
-    return newData;
+    try {
+      const querySnapshot = await getDocs(collection(db, "spreads"));
+      let data: any[] = [];
+      await querySnapshot.forEach((doc) => {
+        data.push(doc.data());
+      });
+      if (id.length < 10) {
+        const newData: any[] = data.filter((i) => i.spreadId === id);
+        return newData;
+      }
+      const newData: any[] = data.filter((i) => i.spreadId === id);
+      return newData;
+    } catch (e) {
+      console.error("error", e);
+    }
   },
   async saveDesign(data: any) {
     await addDoc(collection(db, "spreads"), data);
+  },
+  async userDiary(userUID: string, data) {
+    try {
+      const docRef = doc(db, "users", userUID, "diary", userUID);
+      await updateDoc(docRef, {
+        diary: arrayUnion(data),
+      });
+      alert("成功更新日記");
+    } catch (e) {
+      console.error("error", e);
+    }
+  },
+  async newDivinedData(docData, userUID) {
+    const docRef = await addDoc(
+      collection(db, "users", userUID, "diary"),
+      docData
+    );
+    await updateDoc(docRef, {
+      timestamp: serverTimestamp(),
+      docId: docRef.id,
+    });
+    console.log("Document written with ID: ", docRef.id);
+    return docRef.id;
   },
 };
 export default firebase;

@@ -8,7 +8,7 @@ import {
   GoogleAuthProvider,
   FacebookAuthProvider,
 } from "firebase/auth";
-import { isGeneratorFunction } from "util/types";
+
 export interface User {
   name: string;
   image: string;

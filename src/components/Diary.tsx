@@ -35,48 +35,7 @@ function Diary() {
   const [diaryData, setDiaryData] = useState<[]>([]);
   const [isDiaryOpen, setIsDiaryOpen] = useState<boolean>(false);
   const [dayDairy, setDayDiary] = useState({});
-  // async function abc() {
-  //   const diaryRef = doc(
-  //     db,
-  //     "users",
-  //     "FzR7iLM5E5MLHV6ROgDMYE8SsQ52",
-  //     "diary",
-  //     "FzR7iLM5E5MLHV6ROgDMYE8SsQ52"
-  //   );
-  //   // await updateDoc(diaryRef, {
-  //   //   diary: arrayUnion({
-  //   //     title: "Daily Tarot",
-  //   //     card: 30,
-  //   //     reverse: false,
-  //   //     secret: false,
-  //   //     time: Timestamp.fromDate(new Date("March 21, 2023")),
-  //   //     content:
-  //   //       "夜裡滿園的茉莉花香 月光灑落看不見憂傷 旋轉木馬前那個廣場 愛情開始滋長",
-  //   //   }),
-  //   // });
-  //   await updateDoc(diaryRef, {
-  //     diary: arrayUnion({
-  //       title: "Daily Tarot",
-  //       card: 10,
-  //       reverse: false,
-  //       secret: false,
-  //       time: Timestamp.fromDate(new Date("March 29, 2023")),
-  //       content:
-  //         "曖昧讓人受盡委屈 找不到相愛的證據 何時該前進 何時該放棄 連擁抱都沒有勇氣",
-  //     }),
-  //   });
-  //   // await setDoc(doc(diaryRef, "FzR7iLM5E5MLHV6ROgDMYE8SsQ52"), {
-  //   //   title: "Daily Tarot",
-  //   //   card: 10,
-  //   //   reverse: false,
-  //   //   secret: false,
-  //   //   time: Timestamp.fromDate(new Date("March 29, 2023")),
-  //   //   content:
-  //   //     "曖昧讓人受盡委屈 找不到相愛的證據 何時該前進 何時該放棄 連擁抱都沒有勇氣",
-  //   // });
-  //   console.log("succedd");
-  // }
-  //新增資料用
+
   const prevMonth = () => {
     setSelectedDate((prevDate) => {
       const prevMonth = new Date(
@@ -197,7 +156,7 @@ function CalendarDays({
   );
   const startWeekday = startOfMonth.getDay();
   const daysInMonth = endOfMonth.getDate();
-  const days = [];
+  const days: React.ReactNode[] = [];
   const clickedDiary = (day: Day | {}) => {
     console.log("click", day);
     if (day !== undefined) {
