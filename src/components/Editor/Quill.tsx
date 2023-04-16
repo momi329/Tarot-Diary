@@ -13,15 +13,6 @@ import {
 } from "firebase/firestore";
 import { db } from "../../utils/firebase";
 
-const diaryFormat = {
-  card: "",
-  content: "",
-  reverse: "",
-  askGpt: "",
-  secret: "",
-  time: "",
-  spreadID: "",
-};
 export default function Quill({
   res,
   setRes,
@@ -29,14 +20,15 @@ export default function Quill({
   article,
   setArticle,
   setAskAI,
+  divining,
+  dispatch,
 }) {
   const { isLogin, user, userUID } = useContext(AuthContext);
+  //const [editorMarkdownValue, setEditorMarkdownValue] = useState("");
   const initialMarkdownContent = res;
-  //const [editorHtmlValue, setEditorHtmlValue] = useState<string>("");
-  // const [editorMarkdownValue, setEditorMarkdownValue] = useState<string>("");
   const onEditorContentChanged = (content: EditorContentChanged) => {
     // setEditorHtmlValue(content.html);
-    // setEditorMarkdownValue(content.markdown);
+    //setEditorMarkdownValue(content.markdown);
     setArticle({ ...article, content: content.markdown });
   };
   // useEffect(() => {
@@ -44,7 +36,6 @@ export default function Quill({
   // }, [article]);
   const handleSave = () => {
     const newData = { ...article, time: Timestamp.fromDate(new Date()) };
-    console.log(userUID, newData, article.docId);
     async function userDiary(userUID, newData) {
       try {
         const docRef = doc(db, "users", userUID, "diary", article.docId);
@@ -54,6 +45,7 @@ export default function Quill({
         console.error("error", e);
       }
     }
+    dispatch({ type: "preview" });
     userDiary(userUID, newData);
     setEnd(false);
     setAskAI(false);
@@ -66,9 +58,7 @@ export default function Quill({
         value={initialMarkdownContent}
         onChange={onEditorContentChanged}
       />
-
       <input onClick={handleSave} type='button' value='Save' />
-
       {/* <div>
         <textarea
           className='w-[45%] mr-[10px]'
@@ -77,7 +67,6 @@ export default function Quill({
         />
         <textarea defaultValue={editorHtmlValue} rows={5} />
       </div> */}
-
       {/* {saveArticle === "Edit" && (
         <div className='border border-slate-400 p-1'>
           <Viewer value={editorMarkdownValue} />

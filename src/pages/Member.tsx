@@ -9,11 +9,7 @@ function Member() {
   const auth: Auth = getAuth();
   const provider: GoogleAuthProvider = new GoogleAuthProvider();
   const fbProvider: FacebookAuthProvider = new FacebookAuthProvider();
-  // useEffect(()=>{
-  //   if(localStorage.getItem('userUID')){
 
-  //   }
-  // })
   return (
     <>
       {isLogin ? (
@@ -24,7 +20,7 @@ function Member() {
           >
             Sign Out
           </button>
-          <Profile />
+          {/* <Profile /> */}
         </>
       ) : (
         <>

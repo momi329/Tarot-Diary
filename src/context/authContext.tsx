@@ -1,5 +1,6 @@
 import { createContext, useState, useEffect } from "react";
 import firebase from "../utils/firebase";
+import { useNavigate } from "react-router-dom";
 
 import {
   Auth,
@@ -8,14 +9,15 @@ import {
   GoogleAuthProvider,
   FacebookAuthProvider,
 } from "firebase/auth";
+import { getUsers } from "unsplash-js/dist/methods/search";
 
 export interface User {
   name: string;
   image: string;
   sign: string;
   email: string;
-  followers: [];
-  following: [];
+  followers: string[];
+  following: string[];
   favorite: [];
   userUID: string;
 }
@@ -64,25 +66,53 @@ export const AuthContextProvider: React.FC = ({ children }: any) => {
   const [user, setUser] = useState<User>(initialUserData);
   const [loading, setLoading] = useState<boolean>(true);
   const [userUID, setUserUID] = useState<string>("");
+  const navigate = useNavigate();
+  async function getUsers(userUID) {
+    const getUser = firebase.getUser(userUID);
+    return getUser;
+  }
+
   useEffect(() => {
     const auth = getAuth();
-    onAuthStateChanged(auth, (user) => {
-      console.log(user);
+    onAuthStateChanged(auth, async (user) => {
       if (user) {
         // User is signed in, see docs for a list of available properties
-        setIsLogin(true);
-        const data: User = {
-          name: user.displayName || "",
-          image: user.photoURL || "",
-          sign: "",
-          email: user.email || "",
-          followers: [],
-          following: [],
-          favorite: [],
-          userUID: user.uid || "",
-        };
-        setUser(data);
-        setUserUID(data.userUID);
+        const getUser = await getUsers(user.uid);
+        setUserUID(user.uid);
+        console.log("getUser", getUser);
+        if (getUser) {
+          setIsLogin(true);
+          console.log("有");
+
+          const data: User = {
+            name: getUser.name || "",
+            image: getUser.image || "",
+            sign: "",
+            email: getUser.email || "",
+            followers: getUser.followers,
+            following: getUser.following,
+            favorite: getUser.favorite,
+            userUID: getUser.userUID || "",
+          };
+          setUser(data);
+          setUserUID(user.uid);
+        } else {
+          console.log("沒有");
+
+          setIsLogin(true);
+          const data: User = {
+            name: user.displayName || "",
+            image: user.photoURL || "",
+            sign: "",
+            email: user.email || "",
+            followers: [],
+            following: [],
+            favorite: [],
+            userUID: user.uid || "",
+          };
+          setUser(data);
+        }
+        //navigate(`/profile/${data.userUID}`, { replace: true });
       } else {
         // User is signed out
         setIsLogin(false);
@@ -94,11 +124,6 @@ export const AuthContextProvider: React.FC = ({ children }: any) => {
     provider: GoogleAuthProvider | FacebookAuthProvider
   ) => {
     const user = await firebase.signIn(auth, provider);
-
-    // if (num === 2) {
-    //   const user = await firebase.signInWithFB(auth, provider);
-    //   console.log(user, "user");
-    // }
     const data: User = {
       name: user.user.displayName || "",
       image: user.user.photoURL || "",
@@ -113,6 +138,7 @@ export const AuthContextProvider: React.FC = ({ children }: any) => {
     setUser(data);
     setUserUID(data.userUID);
     setIsLogin(true);
+    navigate(`/profile/${data.userUID}`, { replace: true });
   };
 
   const signOut = async (auth: Auth): Promise<void> => {

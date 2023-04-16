@@ -9,8 +9,16 @@ import {
   updateDoc,
   arrayUnion,
   serverTimestamp,
+  query,
+  where,
 } from "firebase/firestore";
 import { GoogleAuthProvider, FacebookAuthProvider } from "firebase/auth";
+import {
+  getStorage,
+  ref,
+  uploadBytesResumable,
+  getDownloadURL,
+} from "firebase/storage";
 
 const firebaseConfig = {
   apiKey: "AIzaSyDjoZe3affRBuw-DUZ5WwCtBXVxc4oi0BI",
@@ -24,6 +32,8 @@ const firebaseConfig = {
 // Initialize Firebase
 export const app = initializeApp(firebaseConfig);
 export const db = getFirestore(app);
+const storage = getStorage();
+const storageRef = ref(storage);
 
 const firebase = {
   async signIn(
@@ -35,28 +45,6 @@ const firebase = {
     localStorage.setItem("userUID", user.uid);
     return res;
   },
-  // async signInWithFB(auth: Auth, provider: FacebookAuthProvider) {
-  //   try {
-  //     const result = await signInWithPopup(auth, provider);
-  //     // The signed-in user info.
-  //     const user = result.user;
-  //     // This gives you a Facebook Access Token. You can use it to access the Facebook API.
-  //     const credential = FacebookAuthProvider.credentialFromResult(result);
-  //     const accessToken = credential.accessToken;
-  //     // console.log(result);
-  //     return user;
-  //   } catch (error) {
-  //     // Handle Errors here.
-  //     const errorCode = error.code;
-  //     const errorMessage = error.message;
-  //     // The email of the user's account used.
-  //     const email = error.customData.email;
-  //     // The AuthCredential type that was used.
-  //     const credential = FacebookAuthProvider.credentialFromError(error);
-
-  //     // ...
-  //   }
-  // },
   async signOut(auth: Auth) {
     await signOut(auth);
     localStorage.removeItem("userUID");
@@ -75,6 +63,11 @@ const firebase = {
       await setDoc(doc(userRef, data.userUID), data);
     }
   },
+  async getUser(userUID) {
+    const docRef = doc(db, "users", userUID);
+    const docSnap = await getDoc(docRef);
+    return docSnap.data();
+  },
   async getUserDesign(userUID: string) {
     const querySnapshot = await getDocs(collection(db, "spreads"));
     let data: DocumentData[] = [];
@@ -87,10 +80,18 @@ const firebase = {
     return newData;
   },
   async getUserDiary(userUID: string) {
-    const docRef = doc(db, "users", userUID, "diary", userUID);
-    const docSnap = await getDoc(docRef);
-    return docSnap;
+    // const docRef = (db, "users", userUID, "diary");
+    // const docSnap = await getDoc(docRef);
+    // return docSnap;
+    const q = query(collection(db, "users", userUID, "diary"));
+    const querySnapshot = await getDocs(q);
+    const diaryData: {}[] = [];
+    querySnapshot.forEach((doc) => {
+      diaryData.push(doc.data());
+    });
+    return diaryData;
   },
+
   async getDesign(id: string) {
     try {
       const querySnapshot = await getDocs(collection(db, "spreads"));
@@ -128,11 +129,99 @@ const firebase = {
       docData
     );
     await updateDoc(docRef, {
-      timestamp: serverTimestamp(),
+      time: serverTimestamp(),
       docId: docRef.id,
     });
-    console.log("Document written with ID: ", docRef.id);
     return docRef.id;
+  },
+  // async uploadImage(files, userUID) {
+  //   const urls: string[] = [];
+  //   const metadata = {
+  //     contentType: "image/jpeg",
+  //   };
+  //   const promises = [];
+
+  //   for (let i = 0; i < files.length; i++) {
+  //     const file = files[i];
+  //     const storageRef = ref(storage, `images/${userUID}` + file.name);
+  //     const uploadTask = uploadBytesResumable(storageRef, file, metadata);
+  //     const promise = getDownloadURL(storageRef).then((photoURL) => {
+  //       urls.push(photoURL);
+  //     });
+  //     promises.push(promise);
+  //   }
+  //   await Promise.all(promises);
+  //   return urls;
+  // },
+  async uploadArticle(userUID, data) {
+    try {
+      const docRef = await addDoc(collection(db, "article"), data);
+      console.log("Document written with ID: ", docRef.id);
+      const newRef = doc(db, "article", docRef.id);
+      await updateDoc(newRef, {
+        docId: docRef.id,
+      });
+      alert("儲存成功");
+    } catch (e) {
+      console.error("error", e);
+    }
+  },
+  async getProfile(userUID) {
+    const docRef = doc(db, "users", `${userUID}`);
+    const docSnap = await getDoc(docRef);
+    if (docSnap.exists()) {
+      const data = docSnap.data();
+      return {
+        name: data.name,
+        image: data.image,
+        sign: data.sign,
+        favorite: data.favorite,
+        followers: data.followers,
+        following: data.following,
+      };
+    } else {
+      console.log("No such document!");
+    }
+  },
+  async getOtherUserDiary(uid) {
+    const diaryRef = collection(db, "users", uid, "diary");
+    const q = query(diaryRef, where("secret", "==", false));
+    const querySnapshot = await getDocs(q);
+    const diary: DocumentData[] = [];
+    querySnapshot.forEach((doc) => {
+      diary.push(doc.data());
+      console.log("diary", doc.data());
+    });
+    console.log("diary", diary);
+
+    return diary;
+  },
+
+  async getOtherUserSpread(uid) {
+    const querySnapshot = await getDocs(collection(db, "spreads"));
+    let data: DocumentData[] = [];
+    querySnapshot.forEach((doc) => {
+      data.push(doc.data());
+    });
+    const newData: DocumentData[] | never[] = await data.filter(
+      (i) => i.userUID === uid
+    );
+    return newData;
+  },
+  async follow(uid, userUID) {
+    //對方followers加我
+    const targetRef = doc(db, "users", uid);
+    await updateDoc(targetRef, {
+      followers: arrayUnion(userUID),
+    });
+    //我的following加他
+    const myRef = doc(db, "users", userUID);
+    await updateDoc(myRef, {
+      following: arrayUnion(userUID),
+    });
+  },
+  async unfollow() {
+    return;
   },
 };
 export default firebase;

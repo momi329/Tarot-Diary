@@ -11,6 +11,8 @@ interface Props {
   setEnd: React.Dispatch<React.SetStateAction<boolean>>;
   divinedData: any;
   setDivinedData: React.Dispatch<React.SetStateAction<DesignSpreadData>>;
+  divining: number;
+  dispatch: React.Dispatch<any>;
 }
 
 function Divine({
@@ -19,6 +21,8 @@ function Divine({
   setEnd,
   divinedData,
   setDivinedData,
+  divining,
+  dispatch,
 }: Props) {
   const { isLogin, user, userUID } = useContext(AuthContext);
   const number = spreadData.spread.reduce(
@@ -44,7 +48,10 @@ function Divine({
     }
     return boolArray;
   }
-  const handleClick = async () => {
+  const handleClickStart = async () => {
+    dispatch({ type: "start" });
+  };
+  const handleClickDivine = async () => {
     const randomCard = await getRandomCards(number);
     const randomReverse = await getRandomBool(number);
     const modifiedData = spreadData.spread.reduce(
@@ -67,26 +74,25 @@ function Divine({
       },
       []
     );
-    const newData = { ...spreadData, spread: modifiedData };
+    const newData = { ...divinedData, spread: modifiedData };
     await setDivinedData(newData);
-    console.log(newData, "DivinedData占卜後的資料");
     setEnd(true);
     async function createDivinedData(newData, userUID) {
       const docId = await firebase.newDivinedData(newData, userUID);
       console.log(docId, "docId");
       if (docId) {
-        console.log({ ...divinedData, docId: docId });
         setDivinedData({ ...newData, docId: docId });
       } else {
         console.log("error no docId");
       }
     }
-
-    createDivinedData(newData, userUID);
+    dispatch({ type: "end" });
+    createDivinedData(newData, userUID); //這邊
   };
   return (
     <>
-      <button onClick={handleClick}>占卜</button>
+      {/* <button onClick={handleClickStart}>占卜</button> */}
+      {divining === 1 && <button onClick={handleClickDivine}>占卜</button>}
       {/* {divined && (
         <div className='flex flex-row'>
           {divined.map((i, index) => (

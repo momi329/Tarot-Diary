@@ -1,11 +1,11 @@
-import type { SpreadData } from "./pages/Spread";
+import type { SpreadData } from "../pages/Spread";
 import { useState, useContext, useEffect } from "react";
-import { AuthContext } from "./context/authContext";
-import cards from "./tarotcard/tarot-images";
-import Quill from "./components/Editor/Quill";
-import { openAiKey } from "../config";
-import firebase from "./utils/firebase";
-import { db } from "./utils/firebase";
+import { AuthContext } from "../context/authContext";
+import cards from "../tarotcard/tarot-images";
+import Quill from "./Editor/Quill";
+import { openAiKey } from "../../config";
+import firebase from "../utils/firebase";
+import { db } from "../utils/firebase";
 import {
   doc,
   collection,
@@ -24,7 +24,15 @@ interface Message {
 }
 
 const tarot = cards.cards;
-const AskGPT = ({ divinedData, end, setEnd, askAI, setAskAI }) => {
+const AskGPT = ({
+  divinedData,
+  end,
+  setEnd,
+  askAI,
+  setAskAI,
+  divining,
+  dispatch,
+}) => {
   const { isLogin, user, userUID } = useContext(AuthContext);
   const [messages, setMessages] = useState<Message[]>([
     {
@@ -41,7 +49,6 @@ const AskGPT = ({ divinedData, end, setEnd, askAI, setAskAI }) => {
     ...divinedData,
     content: "",
     askGpt: "",
-    secret: true,
     time: "",
   });
   useEffect(() => {
@@ -57,9 +64,7 @@ const AskGPT = ({ divinedData, end, setEnd, askAI, setAskAI }) => {
       time: "",
     });
   }, [messages, divinedData]);
-  // useEffect(() => {
-  //   setArticle({ ...article, askGpt: res });
-  // }, [res]);
+
   const handleAsk = async () => {
     console.log("messages", messages);
     console.log("divinedData", divinedData);
@@ -145,17 +150,6 @@ const AskGPT = ({ divinedData, end, setEnd, askAI, setAskAI }) => {
       {end && askAI && (
         <>
           <div className=' w-[60%]  '>
-            {/* {messages.map((mes, index) => (
-              <div key={index}>
-                <img
-                  src={tarot[mes.card].img}
-                  alt={tarot[mes.card].name}
-                  className={`${mes.reverse ? "" : "rotate-180"}`}
-                />
-                <h1>{tarot[mes.card].name}</h1>
-                <p>{res}</p>
-              </div>
-            ))} */}
             <p>{res}</p>
           </div>
         </>
@@ -169,6 +163,8 @@ const AskGPT = ({ divinedData, end, setEnd, askAI, setAskAI }) => {
             setAskAI={setAskAI}
             res={res}
             setRes={setRes}
+            divining={divining}
+            dispatch={dispatch}
           />
         </div>
       )}

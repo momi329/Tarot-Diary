@@ -1,13 +1,8 @@
 import { useState, useEffect, useContext } from "react";
 import { AuthContext } from "../context/authContext";
-
 import "../Calander.css";
-import { doc, getDoc } from "firebase/firestore";
 import cards from "../tarotcard/tarot-images";
-import { db } from "../utils/firebase";
-
-import { collection, setDoc, Timestamp } from "firebase/firestore";
-import { updateDoc, arrayUnion, arrayRemove } from "firebase/firestore";
+import { Timestamp } from "firebase/firestore";
 import firebase from "../utils/firebase";
 interface Props {
   selectedDate: Date;
@@ -25,7 +20,7 @@ interface Day {
   card: number;
   reverse: boolean;
   secret: boolean;
-  time: Timestamp;
+  timestamp: Timestamp;
   content: string;
 }
 
@@ -60,11 +55,13 @@ function Diary() {
   useEffect(() => {
     async function getUserDiary(userUID: string) {
       const docSnap = await firebase.getUserDiary(userUID);
-      if (docSnap.exists()) {
-        setDiaryData(docSnap.data().diary);
-      } else {
-        console.log("No such document!");
-      }
+      console.log("docSnap", docSnap);
+      setDiaryData(docSnap);
+      // if (docSnap.exists()) {
+      //   setDiaryData(docSnap.data().diary);
+      // } else {
+      //   console.log("No such document!");
+      // }
     }
     getUserDiary(userUID);
   }, []);
@@ -161,7 +158,7 @@ function CalendarDays({
     console.log("click", day);
     if (day !== undefined) {
       setDayDiary(day);
-      setIsDiaryOpen(true);
+      //setIsDiaryOpen(true);
     }
   };
 
@@ -185,54 +182,34 @@ function CalendarDays({
     const handleClick = () => {
       setSelectedDate(date);
     };
-
     days.push(
       <>
         <div
           key={`day-${i}`}
           className={`calendar__day ${isToday ? "calendar__day--today" : ""} ${
-            isSelected ? "calendar__day--selected" : ""
+            isSelected ? "" : ""
           }`}
           onClick={handleClick}
           style={{ cursor: "pointer" }}
         >
           {i}
           {diaryData.map((day: Day, i: number) => {
-            const daySeconds = day.time.seconds;
+            const daySeconds = day.timestamp.seconds;
             if (
               targetSeconds <= daySeconds &&
               daySeconds < targetSeconds + 86400
             ) {
               return (
-                <>
-                  <button onClick={() => clickedDiary(day)} key={i}>
-                    <img
-                      src={cards.cards[day.card].img}
-                      alt={day.title}
-                      className={`${day.reverse ? "" : "rotate-180"}`}
-                    />
-                    {day.title}
-                  </button>
-                  {isDiaryOpen && (
-                    <div className='w-[600px]  bg-white border border-slate-500 fixed top-0 left-0 text-slate-800'>
-                      <img
-                        src={cards.cards[day.card].img}
-                        alt={cards.cards[day.card].name}
-                        className={`${day.reverse ? "" : "rotate-180"} w-10`}
-                      />
-                      <div>
-                        <h1>{day.title}</h1>
-                        <h5>{cards.cards[day.card].name}</h5>
-                        <p>{day.content}</p>
-                        <button onClick={() => setIsDiaryOpen(false)}>
-                          Close
-                        </button>
-                      </div>
-                    </div>
-                  )}
-                </>
+                <div className='flex flex-wrap'>
+                  <button
+                    onClick={() => clickedDiary(day)}
+                    key={i}
+                    className='w-4 h-4 rounded-full bg-amber-500 m-1'
+                  ></button>
+                </div>
               );
             }
+
             return null;
           })}
         </div>
