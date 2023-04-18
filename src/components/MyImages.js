@@ -4,13 +4,13 @@ import { FiX } from "react-icons/fi";
 import { FiChevronLeft } from "react-icons/fi";
 import { FiImage } from "react-icons/fi";
 import { FiSearch } from "react-icons/fi";
-// const Key = "AWr7OjSG0r2bv8pN9qden-TzwtbIWY41bFiKsTF3xKw";
-const Key = process.env.UNSPLASH_API_KEY;
+const Key = process.env.REACT_APP_UNSPLASH_API_KEY;
 function MyImages({ onSave, setOnSave }) {
   const [photos, setPhotos] = useState();
   const [isOpen, setIsOpen] = useState(false);
   const [input, setInput] = useState("");
   const fetchPhotos = async (search) => {
+    console.log("hi", Key);
     const unsplash = createApi({ accessKey: Key });
     unsplash.photos
       .getRandom({
@@ -33,7 +33,7 @@ function MyImages({ onSave, setOnSave }) {
   };
   useEffect(() => {
     fetchPhotos("spirit");
-  }, []);
+  }, [isOpen]);
   //暫時關掉
   const chooseImg = (img) => {
     setOnSave({ ...onSave, image: img });
@@ -44,6 +44,7 @@ function MyImages({ onSave, setOnSave }) {
       fetchPhotos(input);
     }
   };
+  // if (!photos) return;
   return (
     <>
       <div
@@ -89,24 +90,25 @@ function MyImages({ onSave, setOnSave }) {
             </div>
 
             <div className='h-[400px] flex flex-wrap justify-center gap-2  overflow-auto '>
-              {photos.map((photo) => (
-                <>
-                  <div
-                    key={photo.id}
-                    className='w-[140px] h-[100px] object-contain rounded-ms hover:opacity-80 bg-cover bg-center relative cursor-pointer'
-                    style={{ backgroundImage: `url(${photo.urls.regular})` }}
-                    onClick={() => {
-                      chooseImg(photo.urls.regular);
-                    }}
-                  >
-                    <div className='w-[100%] absolute bottom-0 p-[4px] pl-2 bg-slate-900 text-white  underline-offset-1 opacity-0 hover:opacity-80'>
-                      <a href={photo.links.html} className=' text-xs'>
-                        {photo.user.name}
-                      </a>
+              {photos &&
+                photos.map((photo) => (
+                  <>
+                    <div
+                      key={photo.id}
+                      className='w-[140px] h-[100px] object-contain rounded-ms hover:opacity-80 bg-cover bg-center relative cursor-pointer'
+                      style={{ backgroundImage: `url(${photo.urls.regular})` }}
+                      onClick={() => {
+                        chooseImg(photo.urls.regular);
+                      }}
+                    >
+                      <div className='w-[100%] absolute bottom-0 p-[4px] pl-2 bg-slate-900 text-white  underline-offset-1 opacity-0 hover:opacity-80'>
+                        <a href={photo.links.html} className=' text-xs'>
+                          {photo.user.name}
+                        </a>
+                      </div>
                     </div>
-                  </div>
-                </>
-              ))}
+                  </>
+                ))}
             </div>
           </div>
         )}

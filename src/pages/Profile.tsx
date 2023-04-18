@@ -2,14 +2,13 @@ import { Link } from "react-router-dom";
 import { useState, useEffect, useContext } from "react";
 import { AuthContext } from "../context/authContext";
 import { DocumentData } from "firebase/firestore";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import Diary from "../components/Diary";
 import firebase from "../utils/firebase";
 import cards from "../tarotcard/tarot-images";
-import { Auth, getAuth, GoogleAuthProvider } from "firebase/auth";
 import Viewer from "../components/Editor/Viewer";
 import Member from "./Member";
-const tarot = cards.cards;
+import Editor from "../components/Editor/Editor";
 interface VisitedUser {
   name?: string;
   image?: string;
@@ -19,14 +18,19 @@ interface VisitedUser {
   following?: string[];
   diary?: DocumentData[];
   spread?: DocumentData[];
+  userUID?: string;
 }
 function Profile(): JSX.Element {
   const { isLogin, user, userUID, signOut, signIn } = useContext(AuthContext);
   const [userDesign, setUserDesign] = useState<DocumentData[] | never[]>([]);
   const [userDiary, setUserDiary] = useState<DocumentData[] | never[]>([]);
-  const [page, setPage] = useState<Number>(3);
+  const [page, setPage] = useState<Number>(1);
   const [visitedUser, setVisitedUser] = useState<VisitedUser | []>([]);
   const { uid } = useParams();
+
+  const [friendsPosts, setFriendsPosts] = useState<DocumentData[] | never[]>(
+    []
+  );
   useEffect(() => {
     initialFollowing();
   }, [userUID]);
@@ -37,7 +41,6 @@ function Profile(): JSX.Element {
       setFollowing(false);
     }
   };
-
   const [following, setFollowing] = useState<boolean>(false);
 
   async function getUserDesignAndDiary(userUID: string) {
@@ -48,9 +51,6 @@ function Profile(): JSX.Element {
         return a.time.seconds - b.time.seconds;
       })
       .reverse();
-    // spread.sort(function (a, b) {
-    //   return a.time.seconds - b.time.seconds;
-    // });
     setUserDesign(spread);
     setUserDiary(diary);
   }
@@ -69,23 +69,37 @@ function Profile(): JSX.Element {
     if (diary && spread) {
       setVisitedUser({
         ...profile,
+        userUID: uid,
         diary: diary,
         spread: spread,
       });
     }
   }
-
+  async function getAllFollowingDiaryAndSpread(user) {
+    const allDiary = await firebase.getAllFollowingDiary(user);
+    const spread = await firebase.getAllFollowingSpread(user);
+    const allDiaryAndSpread = [...allDiary, ...spread];
+    allDiaryAndSpread &&
+      (await allDiaryAndSpread
+        .sort(function (a, b) {
+          return a.time.seconds - b.time.seconds;
+        })
+        .reverse());
+    setFriendsPosts(allDiaryAndSpread);
+  }
   useEffect(() => {
     if (uid) {
       if (uid === userUID) {
         //本人
         console.log("本人");
-        getUserDesignAndDiary(userUID);
+        getUserDesignAndDiary(userUID); //抓自己的
+        getAllFollowingDiaryAndSpread(user); //抓自己和別人的
       } else {
+        console.log("別人");
         getOtherUserDiaryAndSpread(uid);
       }
     }
-  }, [page, isLogin, userUID, uid, following]);
+  }, [isLogin, userUID, uid, following]);
 
   if (!user || !visitedUser) {
     return <></>;
@@ -105,19 +119,39 @@ function Profile(): JSX.Element {
       {userUID === uid && page === 5 ? (
         <Gallary
           visitedUser={visitedUser}
+          setVisitedUser={setVisitedUser}
           userDiary={userDiary}
           uid={uid}
           userUID={userUID}
+          friendsPosts={friendsPosts}
+          setFriendsPosts={setFriendsPosts}
+          page={page}
         />
       ) : null}
-      {/* 我追蹤的貼文todo */}
+      {/* 我追蹤的貼文 */}
+      {userUID === uid && page === 1 && (
+        <Gallary
+          visitedUser={visitedUser}
+          setVisitedUser={setVisitedUser}
+          userDiary={userDiary}
+          uid={uid}
+          userUID={userUID}
+          friendsPosts={friendsPosts}
+          setFriendsPosts={setFriendsPosts}
+          page={page}
+        />
+      )}
       {/* 此用戶公開日記&牌陣 */}
       {userUID !== uid && (
         <Gallary
           visitedUser={visitedUser}
+          setVisitedUser={setVisitedUser}
           userDiary={userDiary}
           uid={uid}
           userUID={userUID}
+          friendsPosts={friendsPosts}
+          setFriendsPosts={setFriendsPosts}
+          page={page}
         />
       )}
       {/* 設計排陣 */}
@@ -132,9 +166,8 @@ function Profile(): JSX.Element {
 export default Profile;
 
 const ProfileHeader = ({ uid, visitedUser, following, setFollowing }) => {
-  const provider: GoogleAuthProvider = new GoogleAuthProvider();
-  const { user, userUID } = useContext(AuthContext);
-
+  const { user, userUID, isLogin } = useContext(AuthContext);
+  const navigate = useNavigate();
   //if (!userUID) return null;
   async function follow(uid, userUID) {
     if (!isLogin) return;
@@ -167,7 +200,13 @@ const ProfileHeader = ({ uid, visitedUser, following, setFollowing }) => {
       >
         {following ? "Unfollow" : "Follow"}
       </button>
-
+      <button
+        onClick={() => {
+          navigate(`/design`, { replace: true });
+        }}
+      >
+        新增排陣
+      </button>
       {data.followers && (
         <div className='flex flex-row gap-5'>
           <span className='flex flex-col items-center'>
@@ -187,6 +226,7 @@ const ProfileHeader = ({ uid, visitedUser, following, setFollowing }) => {
     </div>
   );
 };
+
 const Buttons = ({ setPage }) => {
   const switchPage = (num: Number) => {
     setPage(num);
@@ -239,6 +279,7 @@ const Buttons = ({ setPage }) => {
     </div>
   );
 };
+
 const UserSpread = ({ userDesign, visitedUser }) => {
   return (
     <section className='flex flex-wrap gap-2'>
@@ -268,49 +309,215 @@ const UserSpread = ({ userDesign, visitedUser }) => {
     </section>
   );
 };
-const Gallary = ({ visitedUser, userDiary, uid, userUID }) => {
-  if (visitedUser.length === 0 && userDiary.length === 0) return <div></div>;
-
+const Gallary = ({
+  visitedUser,
+  setVisitedUser,
+  userDiary,
+  uid,
+  userUID,
+  friendsPosts,
+  setFriendsPosts,
+  page,
+}) => {
+  const postsLength = [...friendsPosts];
+  const [edit, setEdit] = useState(postsLength.fill(false));
+  const [newEdit, setNewEdit] = useState({ secret: false, content: "" });
+  const [commentChange, setCommentChange] = useState({
+    user: "",
+    userName: "",
+    userImage: "",
+    comment: "",
+  });
+  const { user } = useContext(AuthContext);
+  if (
+    visitedUser.length === 0 &&
+    userDiary.length === 0 &&
+    friendsPosts.length === 0
+  )
+    return <div></div>;
+  const tarot = cards.cards;
   let data;
-  if (uid === userUID) {
+  if (uid === userUID && page === 5) {
     data = userDiary;
+    console.log("userDiary", userDiary);
+  }
+  if (uid === userUID && page === 1) {
+    data = friendsPosts;
   } else {
     data = visitedUser.diary;
+    console.log("visitedUser", visitedUser);
   }
-  console.log("???");
+  const handleSave = async (index) => {
+    await firebase.updateDiary(userUID, data[index].docId, newEdit);
+    data[index].content = newEdit.content;
+    alert("更新成功");
+    const newData = [...edit];
+    newData[index] = false;
+    setEdit(newData);
+  };
+  const onEditorContentChanged = (content) => {
+    setNewEdit({ ...newEdit, content: content.markdown });
+  };
+  const handleEdit = (index, secret) => {
+    const newData = [...edit];
+    newData[index] = true;
+    setEdit(newData);
+    setNewEdit({ ...newEdit, secret: secret });
+    return;
+  };
+  const DeletePost = async (userUID, docID, index) => {
+    await firebase.deleteDiary(userUID, docID);
+    alert("已刪除");
+    const newData = [...friendsPosts];
+    newData.splice(index, 1);
+    setFriendsPosts(newData);
+  };
+
   return (
-    <div className='flex gap-4 flex-col w-[500px] p-4'>
-      {data.map((item, index) => (
-        <div key={index} className='bg-yellow-100'>
-          <p>{formatTimestamp(item.time)}</p>
-          <h1>{item.title}</h1>
-          <div className='flex flex-row gap-3 p-2'>
-            {item.spread.map((card, i) => (
-              <div className='w-[150px]' key={i}>
-                <img src={tarot[card.card].img} alt={tarot[card.card].name} />
-                {tarot[card.card].name}
-              </div>
-            ))}
-          </div>
-          <p>
-            AI解牌
+    <div className='flex gap-4 flex-col w-[600px] p-4'>
+      {data.map((item, index) =>
+        item.docId ? (
+          <div key={index} className='bg-yellow-100 p-3 relative'>
+            {/* 自己的貼文才能編輯 */}
+            {userUID === item.user && (
+              <>
+                <div
+                  className='absolute top-1 right-[40px] cursor-pointer'
+                  onClick={() => {
+                    edit[index]
+                      ? handleSave(index)
+                      : handleEdit(index, item.secret);
+                  }}
+                >
+                  {edit[index] ? "Save" : "Edit"}
+                </div>
+                <div
+                  className='absolute top-1 right-[70px] cursor-pointer'
+                  onClick={() => {
+                    DeletePost(userUID, item.docId, index);
+                  }}
+                >
+                  Delete
+                </div>
+
+                <select
+                  disabled={!edit[index]}
+                  onChange={(e) => {
+                    setNewEdit({
+                      ...newEdit,
+                      secret: e.target.value === "true",
+                    });
+                  }}
+                  value={item.secret ? "true" : "false"}
+                >
+                  <option value='false'>Public</option>
+                  <option value='true'>Private</option>
+                </select>
+              </>
+            )}
+            {item.user && (
+              <Link to={`/profile/${item.user}`}>
+                <div className='flex flex-row m-2 align-center'>
+                  <img
+                    src={item.userName && item.userImg}
+                    alt={item.userName}
+                    className='rounded-full w-8 h-8 m-2'
+                  />
+                  <p>{item.userName}</p>
+                  <p className='flex-end flex-grow-1 m-2'>
+                    {formatTimestamp(item.time)}
+                  </p>
+                </div>
+              </Link>
+            )}
+            <h1>{item.question}</h1>
+            <div className='flex flex-row  w-[500px] flex-wrap'>
+              {/* 多牌牌陣 */}
+              {item.spread.includes(0)
+                ? item.spread.map((q, i) => card(q, i, tarot, true))
+                : item.spread.map((q, i) => (
+                    <div className='w-[150px]' key={i}>
+                      <img
+                        src={tarot[q.card] && tarot[q.card].img}
+                        alt={tarot[q.card] && tarot[q.card].name}
+                      />
+                      {tarot[q.card] && tarot[q.card].name}
+                    </div>
+                  ))}
+              {/* 一般 */}
+            </div>
+            <p>
+              AI解牌
+              <br />
+              {item.askGpt}
+            </p>
             <br />
-            {item.askGpt}
-          </p>
-          <br />
-          心得筆記
-          <br />
-          <Viewer value={item.content} />
-        </div>
-      ))}
+            心得筆記
+            <br />
+            {edit[index] ? (
+              <Editor value={item.content} onChange={onEditorContentChanged} />
+            ) : (
+              <Viewer value={item.content} />
+            )}
+            <CommentAndLike
+              item={item}
+              index={index}
+              user={user}
+              uid={uid}
+              commentChange={commentChange}
+              userUID={userUID}
+              setCommentChange={setCommentChange}
+              friendsPosts={friendsPosts}
+              setFriendsPosts={setFriendsPosts}
+              page={page}
+              visitedUser={visitedUser}
+              setVisitedUser={setVisitedUser}
+            />
+          </div>
+        ) : (
+          <div>
+            {item.user && (
+              <Link to={`/spread/${item.spreadId}`}>
+                <div className='flex flex-row m-2 align-center'>
+                  <img
+                    src={item.userName && item.userImg}
+                    alt={item.userName}
+                    className='rounded-full w-8 h-8 m-2'
+                  />
+                  <p>{item.userName}在</p>
+                  <p className='flex-end flex-grow-1 m-2'>
+                    {formatTimestamp(item.time)}新增了一個牌陣！趕快來占卜喔！
+                  </p>
+                </div>
+              </Link>
+            )}
+            <CommentAndLike
+              item={item}
+              index={index}
+              user={user}
+              uid={uid}
+              commentChange={commentChange}
+              userUID={userUID}
+              setCommentChange={setCommentChange}
+              friendsPosts={friendsPosts}
+              setFriendsPosts={setFriendsPosts}
+              page={page}
+              visitedUser={visitedUser}
+              setVisitedUser={setVisitedUser}
+            />
+          </div>
+        )
+      )}
     </div>
   );
 };
-function formatTimestamp(timestamp) {
+export function formatTimestamp(timestamp) {
   const now = new Date();
-  const date = new Date(timestamp.seconds * 1000);
-  const diffInMs = now - date;
-
+  const date = new Date(
+    timestamp.seconds * 1000 + timestamp.nanoseconds / 1000000
+  );
+  //const diffInMs = now - date;
+  const diffInMs = now.getTime() - date.getTime();
   // 超過五天
   if (diffInMs >= 5 * 24 * 60 * 60 * 1000) {
     return date.toLocaleDateString();
@@ -337,3 +544,200 @@ function formatTimestamp(timestamp) {
   // 剛剛
   return "just now";
 }
+const card = (item, i, tarot, end) => {
+  return (
+    <div
+      className={`flex justify-center w-[50px] h-[41.5px] border border-red-100 `}
+      key={i}
+    >
+      {item !== 0 && (
+        <div
+          className={`border rounded-lg w-[50px] h-[83px] cursor-pointer relative
+      flex items-center justify-center flex-col  text-white z-1 gap-2 bg-slate-700`}
+        >
+          <Link to={`/card/${item.card}`}>
+            <img
+              src={tarot[item.card].img}
+              alt={tarot[item.card].name}
+              className={`${
+                item.reverse ? "" : "rotate-180"
+              } w-[100%] h-[100%] absolute top-0 left-0 `}
+            />
+          </Link>
+          <div
+            className={`w-[100%] h-[100%] absolute top-0 ${
+              item.card !== undefined && end
+                ? "opacity-0 hover:opacity-100"
+                : "hover:opacity-100"
+            }`}
+          >
+            <div className='bg-slate-800 opacity-60 w-[100%] h-[100%] rounded-lg'></div>
+            <p className='absolute bottom-2 left-5 text-xs z-10'>
+              {item.value}
+            </p>
+            <p className='absolute bottom-7 left-2 z-10'>{item.order}</p>
+            {item.card !== undefined && (
+              <Link to={`/card/${item.card}`}>
+                <div className='absolute bottom-16 left-2 z-10 text-xs'>
+                  {tarot[item.card].name}{" "}
+                </div>
+                {""}
+                <div className='absolute bottom-12 left-2 z-10 text-xs'>
+                  {item.reverse ? "正位" : "逆位"}
+                </div>
+              </Link>
+            )}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
+const CommentAndLike = (
+  item,
+  index,
+  user,
+  uid,
+  userUID,
+  commentChange,
+  setCommentChange,
+  friendsPosts,
+  setFriendsPosts,
+  page,
+  visitedUser,
+  setVisitedUser
+) => {
+  const handleCommentChange = (e) => {
+    setCommentChange({
+      ...commentChange,
+      userName: user.name,
+      user: user.userUID,
+      comment: e.target.value,
+      userImage: user.image,
+    });
+  };
+  const comment = async (e, index) => {
+    if (uid === userUID && page === 1) {
+      const newFriendPost = [...friendsPosts];
+      let comments = newFriendPost[index].comment;
+      comments = comments ? [...comments, commentChange] : [commentChange];
+      newFriendPost[index].comment = comments;
+      setFriendsPosts(newFriendPost);
+      await firebase.updateComment(user.userUID, newFriendPost[index]);
+      setCommentChange({
+        ...commentChange,
+        comment: "",
+      });
+    } else {
+      const newVisitedUser = [...visitedUser.diary];
+      let comments = newVisitedUser[index].comment;
+      comments = comments ? [...comments, commentChange] : [commentChange];
+      newVisitedUser[index].comment = comments;
+      console.log("newVisitedUser", newVisitedUser[index]);
+      setVisitedUser({ ...visitedUser, diary: newVisitedUser });
+      await firebase.updateComment(visitedUser.userUID, newVisitedUser[index]);
+      setCommentChange({
+        ...commentChange,
+        comment: "",
+      });
+    }
+  };
+  const likeOrUnlike = async (index) => {
+    if (uid === userUID && page === 1) {
+      const newFriendPost = [...friendsPosts];
+      let likes = newFriendPost[index].like;
+      if (likes && likes.includes(user.userUID)) {
+        //取消喜歡
+        const remove = (i) => i === user.userUID;
+        const removeIndex = likes.findIndex(remove);
+        likes.splice(removeIndex);
+      } else {
+        //喜歡
+        likes = likes ? [...likes, user.userUID] : [user.userUID];
+      }
+      newFriendPost[index].like = likes;
+      await firebase.updateLike(newFriendPost[index]);
+      setFriendsPosts(newFriendPost);
+    } else {
+    }
+  };
+  const deleteComment = async (index, q) => {
+    if (uid === userUID && page === 1) {
+      const newFriendPost = [...friendsPosts];
+      newFriendPost[index].comment.splice(q, 1);
+      setFriendsPosts(newFriendPost);
+      await firebase.updateComment(user.userUID, newFriendPost[index]);
+    } else {
+      const newVisitedUser = [...visitedUser.diary];
+      newVisitedUser[index].comment.splice(q, 1);
+      setVisitedUser({ ...visitedUser, diary: newVisitedUser });
+      await firebase.updateComment(user.userUID, newVisitedUser[index]);
+    }
+  };
+  const commentStatusChange = (item, index) => {
+    const newData = [...friendsPosts];
+    item.addComment = !item.addComment;
+    newData[index] = item;
+    setFriendsPosts(newData);
+  };
+  return (
+    (visitedUser || friendsPosts) && (
+      <>
+        {/* 按讚 */}
+        <button
+          className={`p-1 ${
+            item.like && item.like.includes(user.userUID)
+              ? "bg-red-100"
+              : "bg-blue-100"
+          }`}
+          onClick={() => {
+            likeOrUnlike(index);
+          }}
+        >
+          Like
+        </button>
+        {/* 留言 編寫 瀏覽 */}
+        <button
+          className='p-1'
+          onClick={() => {
+            commentStatusChange(item, index);
+          }}
+        >
+          Comment
+        </button>
+        {item.addComment && (
+          <>
+            {item.comment &&
+              item.comment.map((comment, q) => (
+                <div className='flex flex-row' key={q}>
+                  <img
+                    src={comment.userImage}
+                    alt={comment.user}
+                    className='w-5 h-5 rounded-full'
+                  />
+                  <p>{comment.userName}</p>
+                  <p>{comment.comment}</p>
+                  {user.userUID === uid && (
+                    <button
+                      onClick={() => {
+                        deleteComment(index, q);
+                      }}
+                    >
+                      Delete
+                    </button>
+                  )}
+                </div>
+              ))}
+            <input
+              type='text'
+              onChange={(e) => handleCommentChange(e)}
+              value={commentChange.comment}
+              // onKeyDown={(e) => comment(e, index)}
+            />
+            <button onClick={(e) => comment(e, index)}>Enter</button>
+          </>
+        )}
+      </>
+    )
+  );
+};

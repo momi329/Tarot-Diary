@@ -60,7 +60,6 @@ const AskGPT = ({
       ...divinedData,
       content: "",
       askGpt: "",
-      secret: true,
       time: "",
     });
   }, [messages, divinedData]);

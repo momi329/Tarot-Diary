@@ -1,11 +1,9 @@
 /* eslint-disable */
 import * as functions from "firebase-functions";
-import { Configuration, OpenAIApi } from "openai";
 import fetch from "node-fetch";
 
 export const getUnsplashPhoto = functions.https.onCall(
   async (data, context) => {
-    const accessKey = process.env.UNSPLASH_API_KEY;
     const query = data.query;
 
     // 構造 Unsplash API 的 URL
@@ -15,7 +13,7 @@ export const getUnsplashPhoto = functions.https.onCall(
       // 發送 HTTP request
       const response = await fetch(apiUrl, {
         headers: {
-          Authorization: `Client-ID ${accessKey}`,
+          Authorization: `Client-ID ${process.env.UNSPLASH_API_KEY}`,
           "Content-Type": "application/json",
         },
       });

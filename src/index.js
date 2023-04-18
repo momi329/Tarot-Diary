@@ -23,7 +23,6 @@ root.render(
         <Route path='/card/:id' element={<TarotCard />} />
         <Route path='/divine' element={<Divine />} />
         <Route path='/ask' element={<AskGPT />} />
-        <Route path='/write' element={<CreateArticle />} />
       </Route>
     </Routes>
   </BrowserRouter>

@@ -27,13 +27,13 @@ function CreateArticle() {
     console.log(content.html);
     setNewArticle({ ...newArticle, content: content.html });
   };
-  const uploadImage = async (e) => {
-    const files = e.target.files;
-    console.log(e.target.files);
-    const imageURL = await firebase.uploadImage(files, userUID);
-    console.log(imageURL, "imageURL");
-    //setNewArticle({ ...newArticle, image: imageURL });
-  };
+  // const uploadImage = async (e) => {
+  //   const files = e.target.files;
+  //   console.log(e.target.files);
+  //   const imageURL = await firebase.uploadImage(files, userUID);
+  //   console.log(imageURL, "imageURL");
+  //   //setNewArticle({ ...newArticle, image: imageURL });
+  // };
   const handleSave = () => {
     const newData = {
       ...newArticle,
@@ -44,7 +44,7 @@ function CreateArticle() {
       await firebase.uploadArticle(userUID, newData);
     }
     uploadArticle(userUID, newData);
-    setNewArticle({});
+    setNewArticle({ content: "", image: [] });
   };
 
   function handleInput(event) {
@@ -80,7 +80,7 @@ function CreateArticle() {
         />
       </div>
       <input
-        onChange={(e) => uploadImage(e)}
+        // onChange={(e) => uploadImage(e)}
         type='file'
         value=''
         accept='image/*'

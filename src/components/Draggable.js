@@ -4,7 +4,13 @@ import { FiEdit } from "react-icons/fi";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import MyImages from "./MyImages";
 import firebase, { db } from "../utils/firebase";
-import { doc, updateDoc, arrayUnion, arrayRemove } from "firebase/firestore";
+import {
+  doc,
+  updateDoc,
+  arrayUnion,
+  arrayRemove,
+  Timestamp,
+} from "firebase/firestore";
 import { collection, addDoc, setDoc } from "firebase/firestore";
 import { AuthContext } from "../context/authContext";
 
@@ -199,16 +205,25 @@ function Draggable({ edit, setEdit, spreadData, id }) {
   };
   const saveIt = async () => {
     if (edit) {
+      const NewSpread = { ...onSave, time: Timestamp.fromDate(new Date()) };
       const spreadRef = doc(db, "spreads", spreadData.spreadId);
-      await updateDoc(spreadRef, onSave);
+      await updateDoc(spreadRef, NewSpread);
     } else {
-      let newData = { ...onSave };
+      let newData = { ...onSave, time: Timestamp.fromDate(new Date()) };
       if (onSave.spreadId === "") {
         const id = uuidv4();
-        newData = { ...onSave, spreadId: id };
+        newData = {
+          ...onSave,
+          spreadId: id,
+          time: Timestamp.fromDate(new Date()),
+        };
       }
       if (onSave.userUID === "") {
-        newData = { ...onSave, userUID: userUID };
+        newData = {
+          ...onSave,
+          userUID: userUID,
+          time: Timestamp.fromDate(new Date()),
+        };
       }
       await setDoc(doc(db, "spreads", newData.spreadId), newData);
     }

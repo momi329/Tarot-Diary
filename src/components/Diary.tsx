@@ -1,36 +1,39 @@
 import { useState, useEffect, useContext } from "react";
+import { Link } from "react-router-dom";
 import { AuthContext } from "../context/authContext";
 import "../Calander.css";
 import cards from "../tarotcard/tarot-images";
 import { Timestamp } from "firebase/firestore";
 import firebase from "../utils/firebase";
+import { Post } from "./Post";
 interface Props {
   selectedDate: Date;
   prevMonth: () => void;
   nextMonth: () => void;
   setSelectedDate: React.Dispatch<React.SetStateAction<Date>>;
-  diaryData: [] | [Day];
+  diaryData: {}[] | Day[];
   isDiaryOpen: boolean;
   setIsDiaryOpen: React.Dispatch<React.SetStateAction<boolean>>;
   setDayDiary: React.Dispatch<React.SetStateAction<Day | {}>>;
   dayDairy: Day | {};
+  setTargetDiary?: any;
 }
 interface Day {
   title: string;
   card: number;
   reverse: boolean;
   secret: boolean;
-  timestamp: Timestamp;
+  time: Timestamp;
   content: string;
 }
 
 function Diary() {
   const { isLogin, user, userUID } = useContext(AuthContext);
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
-  const [diaryData, setDiaryData] = useState<[]>([]);
+  const [diaryData, setDiaryData] = useState<{}[] | []>([]);
   const [isDiaryOpen, setIsDiaryOpen] = useState<boolean>(false);
   const [dayDairy, setDayDiary] = useState({});
-
+  const [targetDiary, setTargetDiary] = useState(null);
   const prevMonth = () => {
     setSelectedDate((prevDate) => {
       const prevMonth = new Date(
@@ -55,13 +58,7 @@ function Diary() {
   useEffect(() => {
     async function getUserDiary(userUID: string) {
       const docSnap = await firebase.getUserDiary(userUID);
-      console.log("docSnap", docSnap);
       setDiaryData(docSnap);
-      // if (docSnap.exists()) {
-      //   setDiaryData(docSnap.data().diary);
-      // } else {
-      //   console.log("No such document!");
-      // }
     }
     getUserDiary(userUID);
   }, []);
@@ -90,7 +87,15 @@ function Diary() {
         isDiaryOpen={isDiaryOpen}
         setDayDiary={setDayDiary}
         dayDairy={dayDairy}
+        setTargetDiary={setTargetDiary}
       />
+      {targetDiary !== null && (
+        <Post
+          targetDiary={targetDiary}
+          setTargetDiary={setTargetDiary}
+          setDiaryData={setDiaryData}
+        />
+      )}
     </div>
   );
 }
@@ -139,6 +144,7 @@ function CalendarDays({
   isDiaryOpen,
   setIsDiaryOpen,
   setDayDiary,
+  setTargetDiary,
 }: Props): JSX.Element {
   const startOfMonth = new Date(
     selectedDate.getFullYear(),
@@ -154,11 +160,11 @@ function CalendarDays({
   const startWeekday = startOfMonth.getDay();
   const daysInMonth = endOfMonth.getDate();
   const days: React.ReactNode[] = [];
-  const clickedDiary = (day: Day | {}) => {
-    console.log("click", day);
+  const clickedDiary = (day: Day | {}, i) => {
+    console.log("click", diaryData[i]);
     if (day !== undefined) {
       setDayDiary(day);
-      //setIsDiaryOpen(true);
+      setTargetDiary && setTargetDiary(diaryData[i]);
     }
   };
 
@@ -193,25 +199,25 @@ function CalendarDays({
           style={{ cursor: "pointer" }}
         >
           {i}
-          {diaryData.map((day: Day, i: number) => {
-            const daySeconds = day.timestamp.seconds;
-            if (
-              targetSeconds <= daySeconds &&
-              daySeconds < targetSeconds + 86400
-            ) {
-              return (
-                <div className='flex flex-wrap'>
+          <div className='flex flex-wrap gap-[4px]'>
+            {diaryData.map((day, i) => {
+              const daySeconds = day.time.seconds;
+              if (
+                targetSeconds <= daySeconds &&
+                daySeconds < targetSeconds + 86400
+              ) {
+                return (
                   <button
-                    onClick={() => clickedDiary(day)}
+                    onClick={() => clickedDiary(day, i)}
                     key={i}
-                    className='w-4 h-4 rounded-full bg-amber-500 m-1'
+                    className='w-4 h-4 rounded-full bg-amber-500 '
                   ></button>
-                </div>
-              );
-            }
+                );
+              }
 
-            return null;
-          })}
+              return null;
+            })}
+          </div>
         </div>
       </>
     );

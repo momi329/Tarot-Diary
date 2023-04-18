@@ -1,9 +1,10 @@
-import { useState, useEffect, useContext } from "react";
+import { useState, useEffect, useContext, createRef } from "react";
 import { AuthContext } from "../context/authContext";
 import cards from "../tarotcard/tarot-images";
 import type { SpreadData } from "../pages/Spread";
 import firebase from "../utils/firebase";
 import type { DesignSpreadData } from "../pages/Spread";
+import { useScreenshot } from "use-react-screenshot";
 interface Props {
   spreadData: SpreadData;
   setSpreadData: React.Dispatch<React.SetStateAction<SpreadData | undefined>>;
@@ -13,6 +14,9 @@ interface Props {
   setDivinedData: React.Dispatch<React.SetStateAction<DesignSpreadData>>;
   divining: number;
   dispatch: React.Dispatch<any>;
+  image: any;
+  imgRef: any;
+  takeScreenshot: any;
 }
 
 function Divine({
@@ -23,6 +27,9 @@ function Divine({
   setDivinedData,
   divining,
   dispatch,
+  image,
+  imgRef,
+  takeScreenshot,
 }: Props) {
   const { isLogin, user, userUID } = useContext(AuthContext);
   const number = spreadData.spread.reduce(
@@ -48,9 +55,35 @@ function Divine({
     }
     return boolArray;
   }
-  const handleClickStart = async () => {
-    dispatch({ type: "start" });
-  };
+  async function createDivinedData(newData, userUID) {
+    const docId = await firebase.newDivinedData(newData, userUID);
+    console.log(docId, "docId");
+    if (docId) {
+      setDivinedData({ ...newData, docId: docId });
+    } else {
+      console.log("error no docId");
+    }
+  }
+  const getImage = () => takeScreenshot(imgRef.current);
+
+  useEffect(() => {
+    if (divining !== 3) return;
+    // async function screenShot() {
+    //   imgRef.current && (await getImage());
+    //   console.log(image);
+    // const url = await firebase.uploadBlob(userUID, image);
+    // const addShotData = { ...divinedData, screenShot: url };
+    // console.log(addShotData, "addShotData", url, "url");
+    // const docId = firebase.newDivinedData(addShotData, userUID);
+    // if (docId) {
+    //   setDivinedData({ ...addShotData, docId: docId });
+    // } else {
+    //   console.log("error no docId");
+    // }
+    // }
+    // setTimeout(() => screenShot(), 5000);
+  }, [divining]);
+
   const handleClickDivine = async () => {
     const randomCard = await getRandomCards(number);
     const randomReverse = await getRandomBool(number);
@@ -75,23 +108,21 @@ function Divine({
       []
     );
     const newData = { ...divinedData, spread: modifiedData };
-    await setDivinedData(newData);
+    setDivinedData(newData);
     setEnd(true);
-    async function createDivinedData(newData, userUID) {
-      const docId = await firebase.newDivinedData(newData, userUID);
-      console.log(docId, "docId");
-      if (docId) {
-        setDivinedData({ ...newData, docId: docId });
-      } else {
-        console.log("error no docId");
-      }
-    }
     dispatch({ type: "end" });
-    createDivinedData(newData, userUID); //這邊
+    createDivinedData(newData, userUID);
   };
   return (
     <>
       {/* <button onClick={handleClickStart}>占卜</button> */}
+      {/* <button
+        onClick={() => {
+          getImage();
+        }}
+      >
+        截圖
+      </button> */}
       {divining === 1 && <button onClick={handleClickDivine}>占卜</button>}
       {/* {divined && (
         <div className='flex flex-row'>

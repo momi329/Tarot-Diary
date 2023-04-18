@@ -9,7 +9,6 @@ import {
   GoogleAuthProvider,
   FacebookAuthProvider,
 } from "firebase/auth";
-import { getUsers } from "unsplash-js/dist/methods/search";
 
 export interface User {
   name: string;
@@ -82,8 +81,6 @@ export const AuthContextProvider: React.FC = ({ children }: any) => {
         console.log("getUser", getUser);
         if (getUser) {
           setIsLogin(true);
-          console.log("有");
-
           const data: User = {
             name: getUser.name || "",
             image: getUser.image || "",
@@ -98,7 +95,6 @@ export const AuthContextProvider: React.FC = ({ children }: any) => {
           setUserUID(user.uid);
         } else {
           console.log("沒有");
-
           setIsLogin(true);
           const data: User = {
             name: user.displayName || "",

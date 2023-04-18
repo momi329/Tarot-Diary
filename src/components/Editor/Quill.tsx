@@ -36,6 +36,7 @@ export default function Quill({
   // }, [article]);
   const handleSave = () => {
     const newData = { ...article, time: Timestamp.fromDate(new Date()) };
+    console.log(newData);
     async function userDiary(userUID, newData) {
       try {
         const docRef = doc(db, "users", userUID, "diary", article.docId);

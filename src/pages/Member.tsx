@@ -8,8 +8,9 @@ function Member() {
   const { user, isLogin, signIn, signOut, loading } = useContext(AuthContext);
   const auth: Auth = getAuth();
   const provider: GoogleAuthProvider = new GoogleAuthProvider();
-  const fbProvider: FacebookAuthProvider = new FacebookAuthProvider();
-
+  provider.setCustomParameters({
+    prompt: "select_account",
+  });
   return (
     <>
       {isLogin ? (
@@ -31,12 +32,6 @@ function Member() {
             }}
           >
             Sign in with Google
-          </button>
-          <button
-            className='p-2 bg-blue-800 text-white m-1 rounded-md'
-            onClick={() => signIn(auth, fbProvider)}
-          >
-            Sign in with Facebook
           </button>
         </>
       )}

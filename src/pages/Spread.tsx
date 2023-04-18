@@ -7,6 +7,8 @@ import { Link } from "react-router-dom";
 import firebase from "../utils/firebase";
 import Draggable from "../components/Draggable";
 import AskGPT from "../components/AksGPT";
+import { createRef } from "react";
+import { useScreenshot } from "use-react-screenshot";
 
 export interface SpreadData {
   userUID: string;
@@ -85,13 +87,14 @@ function reducer(state, action) {
 }
 
 function Spread() {
+  const imgRef: React.RefObject<HTMLImageElement> = createRef();
+  const [image, takeScreenshot] = useScreenshot();
   const { isLogin, user, userUID } = useContext(AuthContext);
   const [spreadData, setSpreadData] = useState<SpreadData | undefined>(
     undefined
   );
   const [divinedData, setDivinedData] =
     useState<DesignSpreadData>(initialDivinedData);
-
   const { id } = useParams();
   const tarot = cards.cards;
   const [divining, dispatch] = useReducer(reducer, 0);
@@ -189,6 +192,9 @@ function Spread() {
                 setDivinedData={setDivinedData}
                 divining={divining}
                 dispatch={dispatch}
+                image={image}
+                takeScreenshot={takeScreenshot}
+                imgRef={imgRef}
               />
             </div>
           )}
@@ -231,6 +237,7 @@ function Spread() {
         )}{" "}
         CARDS
       </div>
+      <img width='300px' src={image} alt='ScreenShot' />
       {/* 寫下問題 */}
       {divining !== 0 && (
         <input
@@ -254,18 +261,24 @@ function Spread() {
           setDivinedData={setDivinedData}
           divining={divining}
           dispatch={dispatch}
+          image={image}
+          imgRef={imgRef}
+          takeScreenshot={takeScreenshot}
         />
       )}
       {/* 編輯 */}
       {divining === 0 && (
-        <button
-          disabled={end}
-          onClick={() => {
-            setEdit(true);
-          }}
-        >
-          Edit
-        </button>
+        <>
+          <button
+            disabled={end}
+            onClick={() => {
+              setEdit(true);
+            }}
+          >
+            Edit
+          </button>
+          <button onClick={() => dispatch({ type: "start" })}>點我選牌</button>
+        </>
       )}
       {/* 詢問AI */}
       {divining === 3 && (
@@ -306,11 +319,17 @@ function Spread() {
             setDivinedData={setDivinedData}
             divining={divining}
             dispatch={dispatch}
+            image={image}
+            imgRef={imgRef}
+            takeScreenshot={takeScreenshot}
           />
         </div>
       )}
-      <div className='flex flex-wrap w-[1200px] border border-gray-50 z-1 '>
-        {/* 結果 */}
+      {/* 結果 */}
+      <div
+        ref={imgRef}
+        className='flex flex-wrap w-[1200px] border border-gray-50 z-1 '
+      >
         {divining === 3 &&
           divinedData.spread.map((item: any, i: number) => {
             return (
@@ -361,74 +380,45 @@ function Spread() {
                 )}
               </div>
             );
-          })}
-        {/* 預覽 */}
-        {divining === 0 && (
-          <>
-            <button onClick={() => dispatch({ type: "start" })}>
-              點我選牌
-            </button>
-            {spreadData.spread.map((item: any, i: number) => {
-              return (
-                <div
-                  className='flex  justify-center w-[115px] h-[90px] '
-                  key={i}
-                >
-                  {item !== 0 && (
-                    <div
-                      className={`border rounded-lg w-[108px] h-[180px] cursor-pointer relative
+          })}{" "}
+      </div>
+      {/* 預覽 */}
+      <div className='flex flex-wrap w-[1200px] border border-gray-50 z-1 '>
+        {divining === 0 &&
+          spreadData.spread.map((item: any, i: number) => {
+            return (
+              <div className='flex  justify-center w-[115px] h-[90px] ' key={i}>
+                {item !== 0 && (
+                  <div
+                    className={`border rounded-lg w-[108px] h-[180px] cursor-pointer relative
                   flex items-center justify-center flex-col  text-white z-1 gap-2 bg-slate-700`}
+                  >
+                    <div
+                      className={`w-[100%] h-[100%] absolute top-0 ${
+                        item.card !== undefined
+                          ? "opacity-0 hover:opacity-100"
+                          : "hover:opacity-100"
+                      }`}
                     >
-                      {item.card !== undefined ? (
-                        <Link to={`/card/${item.card}`}>
-                          <img
-                            src={tarot[item.card].img}
-                            alt={tarot[item.card].name}
-                            className={`${
-                              item.reverse ? "" : "rotate-180"
-                            } w-[100%] h-[100%] absolute top-0 left-0 `}
-                          />
-                        </Link>
-                      ) : null}
-                      <div
-                        className={`w-[100%] h-[100%] absolute top-0 ${
-                          item.card !== undefined && end
-                            ? "opacity-0 hover:opacity-100"
-                            : "hover:opacity-100"
-                        }`}
-                      >
-                        <div className='bg-slate-800 opacity-60 w-[100%] h-[100%] rounded-lg'></div>
-                        <p className='absolute bottom-2 left-5 text-xs z-10'>
-                          {item.value}
-                        </p>
-                        <p className='absolute bottom-7 left-2 z-10'>
-                          {item.order}
-                        </p>
-                        {item.card !== undefined && (
-                          <Link to={`/card/${item.card}`}>
-                            <div className='absolute bottom-16 left-2 z-10 text-xs'>
-                              {tarot[item.card].name}{" "}
-                            </div>
-                            {""}
-                            <div className='absolute bottom-12 left-2 z-10 text-xs'>
-                              {item.reverse ? "正位" : "逆位"}
-                            </div>
-                          </Link>
-                        )}
-                      </div>
+                      <div className='bg-slate-800 opacity-60 w-[100%] h-[100%] rounded-lg'></div>
+                      <p className='absolute bottom-2 left-5 text-xs z-10'>
+                        {item.value}
+                      </p>
+                      <p className='absolute bottom-7 left-2 z-10'>
+                        {item.order}
+                      </p>
                     </div>
-                  )}
-                </div>
-              );
-            })}
-          </>
-        )}
+                  </div>
+                )}
+              </div>
+            );
+          })}
       </div>
     </div>
   );
 }
 export default Spread;
-export const card = (item, i, tarot, end) => {
+const card = (item, i, tarot, end) => {
   return (
     <div className='flex  justify-center w-[115px] h-[180px] ' key={i}>
       {item !== 0 && (

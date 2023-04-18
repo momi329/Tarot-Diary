@@ -10,7 +10,7 @@
   "rules": {
     "camelcase": "error",
     "consistent-return": "error",
-    "dot-notation": "error",
+    "dot-notation": "warn",
     "eqeqeq": "error",
     "no-console": "error",
     "no-else-return": "error",
@@ -22,8 +22,8 @@
     "no-shadow": "error",
     "no-undef": "error",
     "no-useless-return": "error",
-    "no-var": "error",
-    "object-shorthand": "error",
+    "no-var": "warn",
+    "object-shorthand": "warn",
     "prefer-arrow-callback": "error",
     "prefer-const": "error",
     "prefer-template": "error"
