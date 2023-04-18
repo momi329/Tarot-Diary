@@ -23,7 +23,7 @@ import {
   getDownloadURL,
 } from "firebase/storage";
 const firebaseConfig = {
-  apiKey: "AIzaSyDjoZe3affRBuw-DUZ5WwCtBXVxc4oi0BI",
+  apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
   authDomain: "tarot-diary.firebaseapp.com",
   projectId: "tarot-diary",
   storageBucket: "tarot-diary.appspot.com",
@@ -68,6 +68,28 @@ const firebase = {
     const docRef = doc(db, "users", userUID);
     const docSnap = await getDoc(docRef);
     return docSnap.data();
+    //   const unsub = onSnapshot(doc(db, "cities", "SF"), (doc) => {
+    //     console.log("Current data: ", doc.data());
+    // });
+  },
+  async updateUserData(userUID, data) {
+    const userDataRef = doc(db, "users", userUID);
+    await updateDoc(userDataRef, {
+      name: data.name,
+      image: data.image,
+      sign: data.sign,
+    });
+  },
+  async uploadUserImage(userUID, file) {
+    try {
+      const storageRef = ref(storage, `image/${userUID + file.name}`);
+      await uploadBytes(storageRef, file);
+      const imageURL = await getDownloadURL(storageRef);
+      console.log(imageURL);
+      return imageURL;
+    } catch (e) {
+      console.error("error", e);
+    }
   },
   async getUserDesign(userUID: string) {
     const querySnapshot = await getDocs(collection(db, "spreads"));
@@ -135,25 +157,6 @@ const firebase = {
     });
     return docRef.id;
   },
-  // async uploadImage(files, userUID) {
-  //   const urls: string[] = [];
-  //   const metadata = {
-  //     contentType: "image/jpeg",
-  //   };
-  //   const promises = [];
-
-  //   for (let i = 0; i < files.length; i++) {
-  //     const file = files[i];
-  //     const storageRef = ref(storage, `images/${userUID}` + file.name);
-  //     const uploadTask = uploadBytesResumable(storageRef, file, metadata);
-  //     const promise = getDownloadURL(storageRef).then((photoURL) => {
-  //       urls.push(photoURL);
-  //     });
-  //     promises.push(promise);
-  //   }
-  //   await Promise.all(promises);
-  //   return urls;
-  // },
   async uploadArticle(userUID, data) {
     try {
       const docRef = await addDoc(collection(db, "article"), data);

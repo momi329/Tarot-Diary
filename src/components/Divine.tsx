@@ -37,6 +37,7 @@ function Divine({
     0
   );
   const tarot = cards.cards;
+
   function getRandomCards(n: number) {
     const indexes = Array.from({ length: 78 }, (_, i) => i); // 創建包含 0 到 77 的陣列
     for (let i = indexes.length - 1; i > 0; i--) {

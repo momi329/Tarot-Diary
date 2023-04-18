@@ -9,6 +9,7 @@ import cards from "../tarotcard/tarot-images";
 import Viewer from "../components/Editor/Viewer";
 import Member from "./Member";
 import Editor from "../components/Editor/Editor";
+import ProfileEdit from "../components/ProfileEdit";
 interface VisitedUser {
   name?: string;
   image?: string;
@@ -79,6 +80,9 @@ function Profile(): JSX.Element {
     const allDiary = await firebase.getAllFollowingDiary(user);
     const spread = await firebase.getAllFollowingSpread(user);
     const allDiaryAndSpread = [...allDiary, ...spread];
+    console.log("allDiary", allDiary);
+    console.log("spread", spread);
+
     allDiaryAndSpread &&
       (await allDiaryAndSpread
         .sort(function (a, b) {
@@ -112,6 +116,7 @@ function Profile(): JSX.Element {
         visitedUser={visitedUser}
         following={following}
         setFollowing={setFollowing}
+        setPage={setPage}
       />
 
       {/* 只有自己的頁面才有 */}
@@ -128,6 +133,7 @@ function Profile(): JSX.Element {
           page={page}
         />
       ) : null}
+      {userUID === uid && page === 6 && <ProfileEdit />}
       {/* 我追蹤的貼文 */}
       {userUID === uid && page === 1 && (
         <Gallary
@@ -165,12 +171,19 @@ function Profile(): JSX.Element {
 }
 export default Profile;
 
-const ProfileHeader = ({ uid, visitedUser, following, setFollowing }) => {
+const ProfileHeader = ({
+  uid,
+  visitedUser,
+  following,
+  setFollowing,
+  setPage,
+}) => {
   const { user, userUID, isLogin } = useContext(AuthContext);
   const navigate = useNavigate();
   //if (!userUID) return null;
   async function follow(uid, userUID) {
     if (!isLogin) return;
+    if (userUID === uid) return;
     await firebase.follow(uid, userUID);
     setFollowing(true);
     console.log("已追蹤");
@@ -178,6 +191,7 @@ const ProfileHeader = ({ uid, visitedUser, following, setFollowing }) => {
   let data;
   if (userUID === uid) {
     data = user;
+    console.log("data", data);
   } else {
     data = visitedUser;
   }
@@ -198,7 +212,14 @@ const ProfileHeader = ({ uid, visitedUser, following, setFollowing }) => {
           follow(uid, userUID);
         }}
       >
-        {following ? "Unfollow" : "Follow"}
+        {userUID !== uid ? <></> : following ? "Unfollow" : "Follow"}
+      </button>
+      <button
+        onClick={() => {
+          setPage(6);
+        }}
+      >
+        編輯個人檔案
       </button>
       <button
         onClick={() => {
@@ -343,6 +364,7 @@ const Gallary = ({
   }
   if (uid === userUID && page === 1) {
     data = friendsPosts;
+    console.log("friendsPosts", friendsPosts);
   } else {
     data = visitedUser.diary;
     console.log("visitedUser", visitedUser);
@@ -593,7 +615,7 @@ const card = (item, i, tarot, end) => {
     </div>
   );
 };
-const CommentAndLike = (
+const CommentAndLike = ({
   item,
   index,
   user,
@@ -605,8 +627,8 @@ const CommentAndLike = (
   setFriendsPosts,
   page,
   visitedUser,
-  setVisitedUser
-) => {
+  setVisitedUser,
+}) => {
   const handleCommentChange = (e) => {
     setCommentChange({
       ...commentChange,
@@ -681,63 +703,62 @@ const CommentAndLike = (
     setFriendsPosts(newData);
   };
   return (
-    (visitedUser || friendsPosts) && (
-      <>
-        {/* 按讚 */}
-        <button
-          className={`p-1 ${
-            item.like && item.like.includes(user.userUID)
-              ? "bg-red-100"
-              : "bg-blue-100"
-          }`}
-          onClick={() => {
-            likeOrUnlike(index);
-          }}
-        >
-          Like
-        </button>
-        {/* 留言 編寫 瀏覽 */}
-        <button
-          className='p-1'
-          onClick={() => {
-            commentStatusChange(item, index);
-          }}
-        >
-          Comment
-        </button>
-        {item.addComment && (
-          <>
-            {item.comment &&
-              item.comment.map((comment, q) => (
-                <div className='flex flex-row' key={q}>
-                  <img
-                    src={comment.userImage}
-                    alt={comment.user}
-                    className='w-5 h-5 rounded-full'
-                  />
-                  <p>{comment.userName}</p>
-                  <p>{comment.comment}</p>
-                  {user.userUID === uid && (
-                    <button
-                      onClick={() => {
-                        deleteComment(index, q);
-                      }}
-                    >
-                      Delete
-                    </button>
-                  )}
-                </div>
-              ))}
-            <input
-              type='text'
-              onChange={(e) => handleCommentChange(e)}
-              value={commentChange.comment}
-              // onKeyDown={(e) => comment(e, index)}
-            />
-            <button onClick={(e) => comment(e, index)}>Enter</button>
-          </>
-        )}
-      </>
-    )
+    <>
+      {/* 按讚 */}
+      <button
+        className={`p-1 ${
+          item.like && item.like.includes(user.userUID)
+            ? "bg-red-100"
+            : "bg-blue-100"
+        }`}
+        onClick={() => {
+          likeOrUnlike(index);
+        }}
+      >
+        Like
+      </button>
+      {/* 留言 編寫 瀏覽 */}
+      <button
+        className='p-1'
+        onClick={() => {
+          commentStatusChange(item, index);
+        }}
+      >
+        Comment
+      </button>
+      {item.addComment && (
+        <>
+          {item.comment &&
+            item.comment.map((comment, q) => (
+              <div className='flex flex-row' key={q}>
+                <img
+                  src={comment.userImage}
+                  alt={comment.user}
+                  className='w-5 h-5 rounded-full'
+                />
+                <p>{comment.userName}</p>
+                <p>{comment.comment}</p>
+                {user.userUID === uid && (
+                  <button
+                    onClick={() => {
+                      deleteComment(index, q);
+                    }}
+                  >
+                    Delete
+                  </button>
+                )}
+              </div>
+            ))}
+          <input
+            type='text'
+            onChange={(e) => handleCommentChange(e)}
+            value={commentChange.comment}
+            // onKeyDown={(e) => comment(e, index)}
+          />
+          <button onClick={(e) => comment(e, index)}>Enter</button>
+        </>
+      )}
+    </>
   );
+  // );
 };

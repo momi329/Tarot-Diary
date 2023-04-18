@@ -3,7 +3,7 @@ import { useState, useContext, useEffect } from "react";
 import { AuthContext } from "../context/authContext";
 import cards from "../tarotcard/tarot-images";
 import Quill from "./Editor/Quill";
-import { openAiKey } from "../../config";
+import { openAiKey } from "../config";
 import firebase from "../utils/firebase";
 import { db } from "../utils/firebase";
 import {
@@ -109,10 +109,7 @@ const AskGPT = ({
       model: "gpt-3.5-turbo",
       messages: apiMessages,
     };
-    // console.log("apiMessages:", apiMessages);
-    // console.log("apiRequestBody:", apiRequestBody);
-    // const apiKey = openAiKey;
-    const apiKey = "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";
+    const apiKey = openAiKey;
 
     await fetch("https://api.openai.com/v1/chat/completions", {
       method: "POST",

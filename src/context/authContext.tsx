@@ -26,6 +26,7 @@ interface AuthContextType {
   user: User;
   loading: boolean;
   userUID: string;
+  setUser: (user: User) => void;
   signIn: (
     auth: Auth,
     provider: GoogleAuthProvider | FacebookAuthProvider
@@ -45,6 +46,7 @@ export const AuthContext = createContext<AuthContextType>({
     favorite: [],
     userUID: "",
   },
+  setUser: (user: User) => {},
   loading: false,
   userUID: "",
   signIn: async () => {},
@@ -84,7 +86,7 @@ export const AuthContextProvider: React.FC = ({ children }: any) => {
           const data: User = {
             name: getUser.name || "",
             image: getUser.image || "",
-            sign: "",
+            sign: getUser.sign || "",
             email: getUser.email || "",
             followers: getUser.followers,
             following: getUser.following,
@@ -151,6 +153,7 @@ export const AuthContextProvider: React.FC = ({ children }: any) => {
       value={{
         isLogin,
         user,
+        setUser,
         loading,
         userUID,
         signIn,
