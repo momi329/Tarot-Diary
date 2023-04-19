@@ -1,5 +1,10 @@
 import { initializeApp } from "firebase/app";
-import { arrayRemove, DocumentData, getFirestore } from "firebase/firestore";
+import {
+  arrayRemove,
+  DocumentData,
+  getFirestore,
+  onSnapshot,
+} from "firebase/firestore";
 import { signOut, signInWithPopup, Auth, UserCredential } from "firebase/auth";
 import { doc, getDoc, addDoc } from "firebase/firestore";
 import {
@@ -218,7 +223,6 @@ const firebase = {
     let diary: DocumentData[] = [];
     await Promise.all(
       user.following.map(async (person) => {
-        console.log(person, "person");
         const docRef = doc(db, "users", person);
         const getFollowingUser = await getDoc(docRef);
         const followingUser: any = getFollowingUser.data();
@@ -294,7 +298,19 @@ const firebase = {
     });
     return spread;
   },
-
+  async snapshotFollowingDiary(user) {
+    let diary: DocumentData[] = [];
+    user.following.map(async (person) => {
+      const q = query(collection(db, "users"), where("userUID", "==", person));
+      onSnapshot(q, (querySnapshot) => {
+        querySnapshot.forEach((doc) => {
+          diary.push(doc.data());
+        });
+      });
+      return diary;
+    });
+  },
+  //async snapshotFollowingDiary
   async follow(uid, userUID) {
     //對方followers加我
     const targetRef = doc(db, "users", uid);
@@ -338,11 +354,11 @@ const firebase = {
   async deleteDiary(userUID, docID) {
     await deleteDoc(doc(db, "users", userUID, "diary", docID));
   },
-  async updateComment(user, data) {
+  async updateComment(data) {
     // 就是日記
     try {
       if (data.docId) {
-        const diaryRef = doc(db, "users", user, "diary", data.docId);
+        const diaryRef = doc(db, "users", data.user, "diary", data.docId);
         await updateDoc(diaryRef, {
           comment: data.comment,
           time: Timestamp.fromDate(new Date()),

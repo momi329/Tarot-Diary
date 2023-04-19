@@ -4,16 +4,7 @@ import { AuthContext } from "../context/authContext";
 import cards from "../tarotcard/tarot-images";
 import Quill from "./Editor/Quill";
 import { openAiKey } from "../config";
-import firebase from "../utils/firebase";
-import { db } from "../utils/firebase";
-import {
-  doc,
-  collection,
-  addDoc,
-  setDoc,
-  updateDoc,
-  Timestamp,
-} from "firebase/firestore";
+
 interface Message {
   value: string;
   name: string;
@@ -33,7 +24,6 @@ const AskGPT = ({
   divining,
   dispatch,
 }) => {
-  const { isLogin, user, userUID } = useContext(AuthContext);
   const [messages, setMessages] = useState<Message[]>([
     {
       value: "",
@@ -66,7 +56,7 @@ const AskGPT = ({
 
   const handleAsk = async () => {
     console.log("messages", messages);
-    console.log("divinedData", divinedData);
+    console.log("openAiKey", openAiKey);
 
     const message = `我問塔羅牌${divinedData.question}，我在${messages.map(
       (mes) =>

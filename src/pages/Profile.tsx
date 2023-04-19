@@ -10,6 +10,16 @@ import Viewer from "../components/Editor/Viewer";
 import Member from "./Member";
 import Editor from "../components/Editor/Editor";
 import ProfileEdit from "../components/ProfileEdit";
+import CommentAndLike from "../components/CommentAndLike";
+import {
+  collection,
+  query,
+  where,
+  onSnapshot,
+  doc,
+  getDoc,
+} from "firebase/firestore";
+import { db } from "../utils/firebase";
 interface VisitedUser {
   name?: string;
   image?: string;
@@ -28,7 +38,6 @@ function Profile(): JSX.Element {
   const [page, setPage] = useState<Number>(1);
   const [visitedUser, setVisitedUser] = useState<VisitedUser | []>([]);
   const { uid } = useParams();
-
   const [friendsPosts, setFriendsPosts] = useState<DocumentData[] | never[]>(
     []
   );
@@ -91,6 +100,67 @@ function Profile(): JSX.Element {
         .reverse());
     setFriendsPosts(allDiaryAndSpread);
   }
+  async function getAllFollowingSnapShop(user) {
+    const allPerson = [...user.following, user.userUID];
+    let allData: DocumentData[] = [];
+    allPerson.map(async (person) => {
+      const docRef = doc(db, "users", person);
+      const getFollowingUser = await getDoc(docRef);
+      const followingUser: any = getFollowingUser.data();
+      const q = query(
+        collection(db, "users", person, "diary"),
+        where("secret", "==", false)
+      );
+      onSnapshot(q, (querySnapshot) => {
+        querySnapshot.docChanges().forEach((change) => {
+          if (change.type === "modified" && change.doc.data().time) {
+            const newDocData = {
+              ...change.doc.data(),
+              user: followingUser.userUID,
+              userImg: followingUser.image,
+              userName: followingUser.name,
+            };
+            setFriendsPosts((prev) => [newDocData, ...prev]);
+
+            // allData.push(newDocData);
+          }
+        });
+      });
+    });
+    allPerson.map(async (person) => {
+      const docRef = doc(db, "users", person);
+      const getFollowingUser = await getDoc(docRef);
+      const followingUser: any = getFollowingUser.data();
+      console.log("followingUser", followingUser);
+      const q = query(
+        collection(db, "spreads"),
+        where("userUID", "==", person)
+      );
+      onSnapshot(q, (querySnapshot) => {
+        querySnapshot.docChanges().forEach((change) => {
+          if (change.type === "modified" && change.doc.data().time) {
+            const newDocData = {
+              ...change.doc.data(),
+              user: person,
+              userImg: followingUser.image,
+              userName: followingUser.name,
+            };
+            setFriendsPosts((prev) => [newDocData, ...prev]);
+            //allData.push(newDocData);
+          }
+        });
+      });
+    });
+    console.log("allData", allData);
+    // (await allData) &&
+    //   allData
+    //     .sort(function (a, b) {
+    //       return a.time.seconds - b.time.seconds;
+    //     })
+    //     .reverse();
+    //setFriendsPosts(allData);
+  }
+
   useEffect(() => {
     if (uid) {
       if (uid === userUID) {
@@ -98,6 +168,7 @@ function Profile(): JSX.Element {
         console.log("本人");
         getUserDesignAndDiary(userUID); //抓自己的
         getAllFollowingDiaryAndSpread(user); //抓自己和別人的
+        getAllFollowingSnapShop(user); //監聽別人的
       } else {
         console.log("別人");
         getOtherUserDiaryAndSpread(uid);
@@ -180,7 +251,6 @@ const ProfileHeader = ({
 }) => {
   const { user, userUID, isLogin } = useContext(AuthContext);
   const navigate = useNavigate();
-  //if (!userUID) return null;
   async function follow(uid, userUID) {
     if (!isLogin) return;
     if (userUID === uid) return;
@@ -212,7 +282,7 @@ const ProfileHeader = ({
           follow(uid, userUID);
         }}
       >
-        {userUID !== uid ? <></> : following ? "Unfollow" : "Follow"}
+        {userUID === uid ? <></> : following ? "Unfollow" : "Follow"}
       </button>
       <button
         onClick={() => {
@@ -614,151 +684,4 @@ const card = (item, i, tarot, end) => {
       )}
     </div>
   );
-};
-const CommentAndLike = ({
-  item,
-  index,
-  user,
-  uid,
-  userUID,
-  commentChange,
-  setCommentChange,
-  friendsPosts,
-  setFriendsPosts,
-  page,
-  visitedUser,
-  setVisitedUser,
-}) => {
-  const handleCommentChange = (e) => {
-    setCommentChange({
-      ...commentChange,
-      userName: user.name,
-      user: user.userUID,
-      comment: e.target.value,
-      userImage: user.image,
-    });
-  };
-  const comment = async (e, index) => {
-    if (uid === userUID && page === 1) {
-      const newFriendPost = [...friendsPosts];
-      let comments = newFriendPost[index].comment;
-      comments = comments ? [...comments, commentChange] : [commentChange];
-      newFriendPost[index].comment = comments;
-      setFriendsPosts(newFriendPost);
-      await firebase.updateComment(user.userUID, newFriendPost[index]);
-      setCommentChange({
-        ...commentChange,
-        comment: "",
-      });
-    } else {
-      const newVisitedUser = [...visitedUser.diary];
-      let comments = newVisitedUser[index].comment;
-      comments = comments ? [...comments, commentChange] : [commentChange];
-      newVisitedUser[index].comment = comments;
-      console.log("newVisitedUser", newVisitedUser[index]);
-      setVisitedUser({ ...visitedUser, diary: newVisitedUser });
-      await firebase.updateComment(visitedUser.userUID, newVisitedUser[index]);
-      setCommentChange({
-        ...commentChange,
-        comment: "",
-      });
-    }
-  };
-  const likeOrUnlike = async (index) => {
-    if (uid === userUID && page === 1) {
-      const newFriendPost = [...friendsPosts];
-      let likes = newFriendPost[index].like;
-      if (likes && likes.includes(user.userUID)) {
-        //取消喜歡
-        const remove = (i) => i === user.userUID;
-        const removeIndex = likes.findIndex(remove);
-        likes.splice(removeIndex);
-      } else {
-        //喜歡
-        likes = likes ? [...likes, user.userUID] : [user.userUID];
-      }
-      newFriendPost[index].like = likes;
-      await firebase.updateLike(newFriendPost[index]);
-      setFriendsPosts(newFriendPost);
-    } else {
-    }
-  };
-  const deleteComment = async (index, q) => {
-    if (uid === userUID && page === 1) {
-      const newFriendPost = [...friendsPosts];
-      newFriendPost[index].comment.splice(q, 1);
-      setFriendsPosts(newFriendPost);
-      await firebase.updateComment(user.userUID, newFriendPost[index]);
-    } else {
-      const newVisitedUser = [...visitedUser.diary];
-      newVisitedUser[index].comment.splice(q, 1);
-      setVisitedUser({ ...visitedUser, diary: newVisitedUser });
-      await firebase.updateComment(user.userUID, newVisitedUser[index]);
-    }
-  };
-  const commentStatusChange = (item, index) => {
-    const newData = [...friendsPosts];
-    item.addComment = !item.addComment;
-    newData[index] = item;
-    setFriendsPosts(newData);
-  };
-  return (
-    <>
-      {/* 按讚 */}
-      <button
-        className={`p-1 ${
-          item.like && item.like.includes(user.userUID)
-            ? "bg-red-100"
-            : "bg-blue-100"
-        }`}
-        onClick={() => {
-          likeOrUnlike(index);
-        }}
-      >
-        Like
-      </button>
-      {/* 留言 編寫 瀏覽 */}
-      <button
-        className='p-1'
-        onClick={() => {
-          commentStatusChange(item, index);
-        }}
-      >
-        Comment
-      </button>
-      {item.addComment && (
-        <>
-          {item.comment &&
-            item.comment.map((comment, q) => (
-              <div className='flex flex-row' key={q}>
-                <img
-                  src={comment.userImage}
-                  alt={comment.user}
-                  className='w-5 h-5 rounded-full'
-                />
-                <p>{comment.userName}</p>
-                <p>{comment.comment}</p>
-                {user.userUID === uid && (
-                  <button
-                    onClick={() => {
-                      deleteComment(index, q);
-                    }}
-                  >
-                    Delete
-                  </button>
-                )}
-              </div>
-            ))}
-          <input
-            type='text'
-            onChange={(e) => handleCommentChange(e)}
-            value={commentChange.comment}
-            // onKeyDown={(e) => comment(e, index)}
-          />
-          <button onClick={(e) => comment(e, index)}>Enter</button>
-        </>
-      )}
-    </>
-  );
-  // );
 };

@@ -80,7 +80,6 @@ export const AuthContextProvider: React.FC = ({ children }: any) => {
         // User is signed in, see docs for a list of available properties
         const getUser = await getUsers(user.uid);
         setUserUID(user.uid);
-        console.log("getUser", getUser);
         if (getUser) {
           setIsLogin(true);
           const data: User = {
@@ -122,21 +121,41 @@ export const AuthContextProvider: React.FC = ({ children }: any) => {
     provider: GoogleAuthProvider | FacebookAuthProvider
   ) => {
     const user = await firebase.signIn(auth, provider);
-    const data: User = {
-      name: user.user.displayName || "",
-      image: user.user.photoURL || "",
-      sign: "",
-      email: user.user.email || "",
-      followers: [],
-      following: [],
-      favorite: [],
-      userUID: user.user.uid || "",
-    };
-    await firebase.setUserDoc(data);
-    setUser(data);
-    setUserUID(data.userUID);
-    setIsLogin(true);
-    navigate(`/profile/${data.userUID}`, { replace: true });
+    const getUser = await getUsers(user.user.uid);
+    setUserUID(user.user.uid);
+    if (getUser) {
+      const data: User = {
+        name: getUser.name || "",
+        image: getUser.image || "",
+        sign: getUser.sign || "",
+        email: getUser.email || "",
+        followers: getUser.followers,
+        following: getUser.following,
+        favorite: getUser.favorite,
+        userUID: getUser.userUID || "",
+      };
+      await firebase.setUserDoc(data);
+      setUser(data);
+      setUserUID(data.userUID);
+      setIsLogin(true);
+      navigate(`/profile/${data.userUID}`, { replace: true });
+    } else {
+      const data: User = {
+        name: user.user.displayName || "",
+        image: user.user.photoURL || "",
+        sign: "",
+        email: user.user.email || "",
+        followers: [],
+        following: [],
+        favorite: [],
+        userUID: user.user.uid || "",
+      };
+      await firebase.setUserDoc(data);
+      setUser(data);
+      setUserUID(data.userUID);
+      setIsLogin(true);
+      navigate(`/profile/${data.userUID}`, { replace: true });
+    }
   };
 
   const signOut = async (auth: Auth): Promise<void> => {
