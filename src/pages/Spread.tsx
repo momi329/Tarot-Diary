@@ -25,7 +25,7 @@ export interface SpreadData {
         reverse: boolean;
       }
   )[];
-  description: string;
+  description?: string;
   spreadId: string;
 }
 
@@ -108,6 +108,16 @@ function Spread() {
       const newData = await firebase.getDesign(id);
       if (newData) {
         setSpreadData(newData[0]);
+        setDivinedData({
+          userUID: newData[0].userUID,
+          title: newData[0].title,
+          image: newData[0].image,
+          spread: [],
+          description: newData[0].discription,
+          spreadId: newData[0].spreadId,
+          question: "",
+          secret: false,
+        });
       }
     }
     if (id) {
@@ -208,6 +218,7 @@ function Spread() {
         {divining === 3 && (
           <AskGPT
             divinedData={divinedData}
+            setDivinedData={setDivinedData}
             end={end}
             setEnd={setEnd}
             askAI={askAI}
@@ -284,6 +295,7 @@ function Spread() {
       {divining === 3 && (
         <AskGPT
           divinedData={divinedData}
+          setDivinedData={setDivinedData}
           end={end}
           setEnd={setEnd}
           askAI={askAI}

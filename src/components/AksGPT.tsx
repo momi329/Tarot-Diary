@@ -17,6 +17,7 @@ interface Message {
 const tarot = cards.cards;
 const AskGPT = ({
   divinedData,
+  setDivinedData,
   end,
   setEnd,
   askAI,
@@ -35,24 +36,24 @@ const AskGPT = ({
     },
   ]);
   const [res, setRes] = useState([]);
-  const [article, setArticle] = useState({
-    ...divinedData,
-    content: "",
-    askGpt: "",
-    time: "",
-  });
+  // const [article, setArticle] = useState({
+  //   ...divinedData,
+  //   content: "",
+  //   askGpt: "",
+  //   time: "",
+  // });
   useEffect(() => {
     const divinedResult = divinedData.spread.filter((data) => data !== 0);
     setMessages(divinedResult);
   }, [end, divinedData.spread]);
-  useEffect(() => {
-    setArticle({
-      ...divinedData,
-      content: "",
-      askGpt: "",
-      time: "",
-    });
-  }, [messages, divinedData]);
+  // useEffect(() => {
+  //   setArticle({
+  //     ...divinedData,
+  //     content: "",
+  //     askGpt: "",
+  //     time: "",
+  //   });
+  // }, [messages, divinedData]);
 
   const handleAsk = async () => {
     console.log("messages", messages);
@@ -117,7 +118,7 @@ const AskGPT = ({
         const content = data.choices[0].message.content;
         console.log(content);
         setRes(content);
-        setArticle({ ...article, askGpt: content });
+        setDivinedData({ ...divinedData, askGpt: content ,content:''});
       })
       .catch((error) => {
         console.error("Error fetching API:", error);
@@ -143,8 +144,8 @@ const AskGPT = ({
       {end && (
         <div className='w-[60%]'>
           <Quill
-            article={article}
-            setArticle={setArticle}
+            divinedData={divinedData}
+            setDivinedData={setDivinedData}
             setEnd={setEnd}
             setAskAI={setAskAI}
             res={res}

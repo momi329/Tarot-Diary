@@ -56,16 +56,6 @@ function Divine({
     }
     return boolArray;
   }
-  async function createDivinedData(newData, userUID) {
-    const docId = await firebase.newDivinedData(newData, userUID);
-    console.log(docId, "docId");
-    if (docId) {
-      setDivinedData({ ...newData, docId: docId });
-    } else {
-      console.log("error no docId");
-    }
-  }
-  const getImage = () => takeScreenshot(imgRef.current);
 
   useEffect(() => {
     if (divining !== 3) return;
@@ -112,32 +102,9 @@ function Divine({
     setDivinedData(newData);
     setEnd(true);
     dispatch({ type: "end" });
-    createDivinedData(newData, userUID);
   };
   return (
-    <>
-      {/* <button onClick={handleClickStart}>占卜</button> */}
-      {/* <button
-        onClick={() => {
-          getImage();
-        }}
-      >
-        截圖
-      </button> */}
-      {divining === 1 && <button onClick={handleClickDivine}>占卜</button>}
-      {/* {divined && (
-        <div className='flex flex-row'>
-          {divined.map((i, index) => (
-            <img
-              src={tarot[i].img}
-              alt={tarot[i].name}
-              key={i}
-              className={`w-[250px] ${bool[index] ? "" : "rotate-180"}`}
-            />
-          ))}
-        </div>
-      )} */}
-    </>
+    <>{divining === 1 && <button onClick={handleClickDivine}>占卜</button>}</>
   );
 }
 export default Divine;

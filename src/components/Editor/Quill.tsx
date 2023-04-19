@@ -17,37 +17,41 @@ export default function Quill({
   res,
   setRes,
   setEnd,
-  article,
-  setArticle,
+  divinedData,
+  setDivinedData,
   setAskAI,
   divining,
   dispatch,
 }) {
-  const { isLogin, user, userUID } = useContext(AuthContext);
-  //const [editorMarkdownValue, setEditorMarkdownValue] = useState("");
+  const { userUID } = useContext(AuthContext);
   const initialMarkdownContent = res;
   const onEditorContentChanged = (content: EditorContentChanged) => {
-    // setEditorHtmlValue(content.html);
-    //setEditorMarkdownValue(content.markdown);
-    setArticle({ ...article, content: content.markdown });
+    setDivinedData({ ...divinedData, content: content.markdown });
   };
-  // useEffect(() => {
-  //   console.log(article, "article");
-  // }, [article]);
-  const handleSave = () => {
-    const newData = { ...article, time: Timestamp.fromDate(new Date()) };
-    console.log(newData);
-    async function userDiary(userUID, newData) {
-      try {
-        const docRef = doc(db, "users", userUID, "diary", article.docId);
-        await updateDoc(docRef, newData);
-        alert("儲存成功");
-      } catch (e) {
-        console.error("error", e);
-      }
+  async function createDivinedData(data, userUID) {
+    const docId = await firebase.newDivinedData(data, userUID);
+    console.log(docId, "docId");
+    if (docId) {
+      setDivinedData({ ...data, docId: docId });
+    } else {
+      console.log("error no docId");
     }
+  }
+  const handleSave = () => {
+    const newData = { ...divinedData, time: Timestamp.fromDate(new Date()) };
+    console.log(newData);
+    createDivinedData(newData, userUID);
+    // async function userDiary(userUID, newData) {
+    //   try {
+    //     const docRef = doc(db, "users", userUID, "diary", article.docId);
+    //     await updateDoc(docRef, newData);
+    //     alert("儲存成功");
+    //   } catch (e) {
+    //     console.error("error", e);
+    //   }
+    // }
     dispatch({ type: "preview" });
-    userDiary(userUID, newData);
+    // userDiary(userUID, newData);
     setEnd(false);
     setAskAI(false);
     setRes("");
@@ -60,19 +64,6 @@ export default function Quill({
         onChange={onEditorContentChanged}
       />
       <input onClick={handleSave} type='button' value='Save' />
-      {/* <div>
-        <textarea
-          className='w-[45%] mr-[10px]'
-          defaultValue={editorMarkdownValue}
-          rows={5}
-        />
-        <textarea defaultValue={editorHtmlValue} rows={5} />
-      </div> */}
-      {/* {saveArticle === "Edit" && (
-        <div className='border border-slate-400 p-1'>
-          <Viewer value={editorMarkdownValue} />
-        </div>
-      )} */}
     </div>
   );
 }

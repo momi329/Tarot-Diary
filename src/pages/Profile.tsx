@@ -113,7 +113,7 @@ function Profile(): JSX.Element {
       );
       onSnapshot(q, (querySnapshot) => {
         querySnapshot.docChanges().forEach((change) => {
-          if (change.type === "modified" && change.doc.data().time) {
+          if (change.type === "added" && change.doc.data().time) {
             const newDocData = {
               ...change.doc.data(),
               user: followingUser.userUID,
@@ -131,14 +131,13 @@ function Profile(): JSX.Element {
       const docRef = doc(db, "users", person);
       const getFollowingUser = await getDoc(docRef);
       const followingUser: any = getFollowingUser.data();
-      console.log("followingUser", followingUser);
       const q = query(
         collection(db, "spreads"),
         where("userUID", "==", person)
       );
       onSnapshot(q, (querySnapshot) => {
         querySnapshot.docChanges().forEach((change) => {
-          if (change.type === "modified" && change.doc.data().time) {
+          if (change.type === "added" && change.doc.data().time) {
             const newDocData = {
               ...change.doc.data(),
               user: person,
