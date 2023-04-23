@@ -48,7 +48,7 @@ function MyImages({ onSave, setOnSave }) {
   return (
     <>
       <div
-        className='w-[500px] h-[250px] border-2 relative bg-cover bg-center'
+        className='w-[100%] h-[316px] border-[1px] border-yellow relative bg-cover bg-center opacity-70'
         style={{ backgroundImage: `url(${onSave.image})` }}
       >
         <FiImage

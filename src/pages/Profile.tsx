@@ -11,6 +11,9 @@ import Member from "./Member";
 import Editor from "../components/Editor/Editor";
 import ProfileEdit from "../components/ProfileEdit";
 import CommentAndLike from "../components/CommentAndLike";
+import Button from "../components/Button";
+import Star from "../images/Star";
+
 import {
   collection,
   query,
@@ -167,10 +170,10 @@ function Profile(): JSX.Element {
         console.log("本人");
         getUserDesignAndDiary(userUID); //抓自己的
         getAllFollowingDiaryAndSpread(user); //抓自己和別人的
-        getAllFollowingSnapShop(user); //監聽別人的
+        //getAllFollowingSnapShop(user); //監聽別人的
       } else {
         console.log("別人");
-        getOtherUserDiaryAndSpread(uid);
+        //getOtherUserDiaryAndSpread(uid);
       }
     }
   }, [isLogin, userUID, uid, following]);
@@ -180,17 +183,63 @@ function Profile(): JSX.Element {
   }
   return (
     <>
-      <Member />
-      <ProfileHeader
-        uid={uid}
-        visitedUser={visitedUser}
-        following={following}
-        setFollowing={setFollowing}
-        setPage={setPage}
-      />
+      <div className='w-screen h-[110px] mx-auto' />
+      <div className='mx-auto w-screen'>
+        <div className='flex flex-row w-[1180px] z-20 h-[300px] justify-center gap-[2%] mx-auto'>
+          <div className='h-[100%] w-2/12'>
+            {userUID && <Buttons setPage={setPage} page={page} />}
+          </div>
+          <div className=' h-[100%] w-6/12'>
+            {page === 1 && (
+              <Gallary
+                visitedUser={visitedUser}
+                setVisitedUser={setVisitedUser}
+                userDiary={userDiary}
+                uid={uid}
+                userUID={userUID}
+                friendsPosts={friendsPosts}
+                setFriendsPosts={setFriendsPosts}
+                page={page}
+              />
+            )}
+            {userUID === uid && page === 6 && <ProfileEdit />}
+            {/* 日記 */}
+            {userUID === uid && page === 2 && <Diary />}
+            {/* 設計牌陣 */}
+            {userUID === uid && page === 4 && (
+              <UserSpread userDesign={userDesign} visitedUser={visitedUser} />
+            )}
+          </div>
+          <div className=' h-[100%] w-3/12'>
+            <ProfileHeader
+              uid={uid}
+              visitedUser={visitedUser}
+              following={following}
+              setFollowing={setFollowing}
+              setPage={setPage}
+            />
+          </div>
+        </div>
+      </div>
+    </>
+  );
+  return (
+    <>
+      <div className='w-screen h-[110px] mx-auto' />
+      <div className='w-2/12'>
+        <ProfileHeader
+          uid={uid}
+          visitedUser={visitedUser}
+          following={following}
+          setFollowing={setFollowing}
+          setPage={setPage}
+        />
+      </div>
 
       {/* 只有自己的頁面才有 */}
-      {userUID === uid && <Buttons setPage={setPage} />}
+
+      {userUID && <Buttons setPage={setPage} page={page} />}
+
       {userUID === uid && page === 5 ? (
         <Gallary
           visitedUser={visitedUser}
@@ -266,105 +315,109 @@ const ProfileHeader = ({
   }
 
   return (
-    <div className='flex flex-row gap-5'>
-      <img
-        src={data.image}
-        alt={data.name}
-        className='rounded-full w-10 h-10'
-      />
-      <div>
-        <h5>{data.name}</h5>
-        <p>{data.sign}</p>
+    <div className='w-100%  bg-black bg-opacity-30 rounde-2xl fixed'>
+      <div className='flex flex-row pt-6 mx-auto justify-center gap-4'>
+        <img
+          src={data.image}
+          alt={data.name}
+          className='rounded-full w-[70px] h-[70px]'
+        />
+        <div>
+          <h5 className='font-notoSansJP font-light text-lg tracking-wider text-pink mt-2'>
+            {data.name}
+          </h5>
+          <p className='font-notoSansJP font-light text-sm tracking-wider text-yellow mt-2'>
+            {data.sign}
+          </p>
+        </div>
       </div>
-      <button
-        onClick={() => {
-          follow(uid, userUID);
-        }}
-      >
-        {userUID === uid ? <></> : following ? "Unfollow" : "Follow"}
-      </button>
-      <button
-        onClick={() => {
-          setPage(6);
-        }}
-      >
-        編輯個人檔案
-      </button>
-      <button
-        onClick={() => {
-          navigate(`/design`, { replace: true });
-        }}
-      >
-        新增排陣
-      </button>
       {data.followers && (
-        <div className='flex flex-row gap-5'>
+        <div className='flex flex-row gap-3 justify-center my-5 items-center py-[10px] px-[15px]'>
           <span className='flex flex-col items-center'>
-            <h1>{data.followers.length}</h1>
-            <p>Followers</p>
+            <h3 className='text-3xl font-sygma text-yellow'>
+              {data.followers.length}
+            </h3>
+            <p className='text-lg font-sygma text-gold uppercase shadowGold'>
+              Followers
+            </p>
           </span>
+          <Star color={"#E18EA5"} />
           <span className='flex flex-col items-center'>
-            <h1>{data.following.length}</h1>
-            <p>Following</p>
-          </span>
-          <span className='flex flex-col items-center'>
-            <h1>{data.following.length}</h1>
-            <p>Article(Todo)</p>
+            <h3 className='text-3xl font-sygma text-yellow'>
+              {data.following.length}
+            </h3>
+            <p className='text-lg font-sygma text-gold uppercase shadowGold tracking-wider'>
+              Following
+            </p>
           </span>
         </div>
       )}
+      <div className=' pb-10 flex justify-center items-center uppercase'>
+        {userUID === uid ? (
+          <Button
+            action={() => {
+              setPage(6);
+            }}
+            type={"big"}
+            value={"Edit Profile"}
+          />
+        ) : (
+          <Button
+            action={() => {
+              follow(uid, userUID);
+            }}
+            type={"big"}
+            value={following ? "Unfollow" : "Follow"}
+          />
+        )}
+      </div>
     </div>
   );
 };
 
-const Buttons = ({ setPage }) => {
+const Buttons = ({ page, setPage }) => {
   const switchPage = (num: Number) => {
     setPage(num);
     return;
   };
   return (
-    <div className=''>
+    <div
+      className='flex flex-col text-left font-poppins font-light tracking-wider text-yellow  
+    text-xl items-start   ml-[3%] fixed '
+    >
       <button
-        className='m-4'
+        className={`m-4 hover:underline ${page === 1 ? "underline" : ""}`}
         onClick={() => {
           switchPage(1);
         }}
       >
-        GALLARY
+        Home
       </button>
       <button
-        className='m-4'
+        className={`m-4 hover:underline ${page === 2 ? "underline" : ""}`}
         onClick={() => {
           switchPage(2);
         }}
       >
-        DIARY
+        Diary
       </button>
 
       <button
-        className='m-4'
+        className={`m-4 hover:underline ${page === 3 ? "underline" : ""}`}
         onClick={() => {
           switchPage(3);
         }}
       >
-        MY DESIGN
+        Profile
       </button>
 
       <button
-        className='m-4'
+        className={`m-4 hover:underline ${page === 4 ? "underline" : ""}`}
         onClick={() => {
           switchPage(4);
         }}
       >
-        FAVORITE
-      </button>
-      <button
-        className='m-4'
-        onClick={() => {
-          switchPage(5);
-        }}
-      >
-        ARTICLE
+        Design
       </button>
     </div>
   );
@@ -372,26 +425,28 @@ const Buttons = ({ setPage }) => {
 
 const UserSpread = ({ userDesign, visitedUser }) => {
   return (
-    <section className='flex flex-wrap gap-2'>
+    <section className='flex flex-wrap gap-[8px] w-[100%] mx-auto'>
       {userDesign.map((spread, index) => {
         return (
-          <div
-            className='w-[200px] h-[200px] bg-cover relative'
-            style={{ backgroundImage: `url(${spread.image})` }}
-            key={index}
-          >
-            <p className='text-xs mt-1 absolute top-2 left-3 text-white tracking-wide'>
+          <div className='w-[32%] h-0 pt-[32%] bg-cover relative ' key={index}>
+            {spread.image !== "" && (
+              <img
+                src={spread.image}
+                alt={spread.title}
+                className='opacity-60 absolute top-0 object-cover left-0 w-[100%] h-[100%]'
+              />
+            )}
+            <p className='text-xs mt-1 absolute top-2 left-3 text-white shadowWhite tracking-wide font-sygma'>
               PICK A CARD
             </p>
             <div
-              className='h-[70px] w-[100%] bg-gray-900 opacity-60 text-white 
-          p-3 pl-4 absolute bottom-0 tracking-wide'
+              className='min-h-[25%] w-[100%]  bg-darkPink bg-opacity-40
+          p-3 pl-4 absolute bottom-0 tracking-widest font-sygma text-base text-yellow'
             >
               <Link to={`/spread/${spread.spreadId}`}>
                 {" "}
                 <p>{spread.title}</p>
               </Link>
-              <p className='text-xs mt-1  tracking-wide'>{visitedUser.name}</p>
             </div>
           </div>
         );
@@ -465,15 +520,39 @@ const Gallary = ({
   };
 
   return (
-    <div className='flex gap-4 flex-col w-[600px] p-4'>
-      {data.map((item, index) =>
-        item.docId ? (
-          <div key={index} className='bg-yellow-100 p-3 relative'>
+    <div className='flex gap-4 flex-col  w-[100%] '>
+      {data.map((item, index) => (
+        <div
+          key={index}
+          className='bg-yellow-100 px-6 py-5 relative  bg-pink bg-opacity-30  rounde-2xl '
+        >
+          <div className='flex flex-row justify-between items-center'>
+            {item.user && (
+              <Link to={`/profile/${item.user}`}>
+                <div className='flex flex-row  align-center '>
+                  <img
+                    src={item.userName && item.userImg}
+                    alt={item.userName}
+                    className='rounded-full w-[50px] h-[50px] mr-[16px]'
+                  />
+                  <p className='font-notoSansJP text-yellow self-center'>
+                    {item.userName}
+                  </p>
+                  <p
+                    className='font-sygma text-gray shadowGray self-center 
+                  leading-normal tracking-widest mt-1'
+                  >
+                    ・{formatTimestamp(item.time)}
+                  </p>
+                </div>
+              </Link>
+            )}
             {/* 自己的貼文才能編輯 */}
-            {userUID === item.user && (
+            {userUID === item.user && item.docId && (
               <>
                 <div
-                  className='absolute top-1 right-[40px] cursor-pointer'
+                  className='absolute top-[100px] right-6 cursor-pointer inline-flex
+                  font-sygma text-yellow text-xl '
                   onClick={() => {
                     edit[index]
                       ? handleSave(index)
@@ -483,7 +562,7 @@ const Gallary = ({
                   {edit[index] ? "Save" : "Edit"}
                 </div>
                 <div
-                  className='absolute top-1 right-[70px] cursor-pointer'
+                  className='absolute top-[100px] right-[75px] cursor-pointer font-sygma text-gold text-xl'
                   onClick={() => {
                     DeletePost(userUID, item.docId, index);
                   }}
@@ -492,6 +571,8 @@ const Gallary = ({
                 </div>
 
                 <select
+                  className='outline-none font-sygma text-yellow pl-2 pr-20 bg-green ml-auto  
+                 w-[30%] h-[38px] pt-1 text-base item-end bg-opacity-90 rounde-md tracking-widest inline-block'
                   disabled={!edit[index]}
                   onChange={(e) => {
                     setNewEdit({
@@ -506,99 +587,116 @@ const Gallary = ({
                 </select>
               </>
             )}
-            {item.user && (
-              <Link to={`/profile/${item.user}`}>
-                <div className='flex flex-row m-2 align-center'>
-                  <img
-                    src={item.userName && item.userImg}
-                    alt={item.userName}
-                    className='rounded-full w-8 h-8 m-2'
-                  />
-                  <p>{item.userName}</p>
-                  <p className='flex-end flex-grow-1 m-2'>
-                    {formatTimestamp(item.time)}
-                  </p>
-                </div>
-              </Link>
-            )}
-            <h1>{item.question}</h1>
-            <div className='flex flex-row  w-[500px] flex-wrap'>
+          </div>
+          <div className='w-[100%] h-[1px] bg-white bg-opacity-40  mt-3 ' />
+          {item.docId ? (
+            <>
+              <h1 className='ml-4 mt-4 mb-4 font-notoSansJP text-base text-yellow font-light tracking-widest'>
+                {item.question}
+              </h1>
               {/* 多牌牌陣 */}
-              {item.spread.includes(0)
-                ? item.spread.map((q, i) => card(q, i, tarot, true))
-                : item.spread.map((q, i) => (
-                    <div className='w-[150px]' key={i}>
+              {item.spread.includes(0) ? (
+                item.spread.map((q, i) => card(q, i, tarot, true))
+              ) : (
+                <div className='gap-2 flex-row flex   w-[100%] flex-wrap justify-center'>
+                  {item.spread.map((q, i) => (
+                    <div
+                      className='w-[130px] text-yellow font-sygma tracking-wider shadowYellow '
+                      key={i}
+                    >
                       <img
                         src={tarot[q.card] && tarot[q.card].img}
                         alt={tarot[q.card] && tarot[q.card].name}
+                        className={`opacity-70 z-0  ${
+                          q.card.reserve ? "rotate-180" : ""
+                        }`}
                       />
-                      {tarot[q.card] && tarot[q.card].name}
+                      <p className='mt-3'>
+                        {tarot[q.card] && tarot[q.card].name}
+                      </p>
+                      <p className='text-sm font-notoSansJP font-light tracking-widest'>
+                        {q.value}
+                      </p>
                     </div>
                   ))}
+                </div>
+              )}
               {/* 一般 */}
-            </div>
-            <p>
-              AI解牌
-              <br />
-              {item.askGpt}
-            </p>
-            <br />
-            心得筆記
-            <br />
-            {edit[index] ? (
-              <Editor value={item.content} onChange={onEditorContentChanged} />
-            ) : (
-              <Viewer value={item.content} />
-            )}
-            <CommentAndLike
-              item={item}
-              index={index}
-              user={user}
-              uid={uid}
-              commentChange={commentChange}
-              userUID={userUID}
-              setCommentChange={setCommentChange}
-              friendsPosts={friendsPosts}
-              setFriendsPosts={setFriendsPosts}
-              page={page}
-              visitedUser={visitedUser}
-              setVisitedUser={setVisitedUser}
-            />
-          </div>
-        ) : (
-          <div>
-            {item.user && (
-              <Link to={`/spread/${item.spreadId}`}>
-                <div className='flex flex-row m-2 align-center'>
-                  <img
-                    src={item.userName && item.userImg}
-                    alt={item.userName}
-                    className='rounded-full w-8 h-8 m-2'
-                  />
-                  <p>{item.userName}在</p>
-                  <p className='flex-end flex-grow-1 m-2'>
-                    {formatTimestamp(item.time)}新增了一個牌陣！趕快來占卜喔！
+
+              <span className='flex flex-row justify-between mt-8'>
+                <div className='flex flex-col w-[48%] items-center'>
+                  <p className='ml-3 mb-2 shadowYellow text-yellow font-sygma  tracking-wider text-lg'>
+                    Ask AI
+                  </p>
+                  <p className='ml-3 text-sm font-notoSansJP leading-6 text-gray'>
+                    {" "}
+                    {item.askGpt}
                   </p>
                 </div>
-              </Link>
-            )}
-            <CommentAndLike
-              item={item}
-              index={index}
-              user={user}
-              uid={uid}
-              commentChange={commentChange}
-              userUID={userUID}
-              setCommentChange={setCommentChange}
-              friendsPosts={friendsPosts}
-              setFriendsPosts={setFriendsPosts}
-              page={page}
-              visitedUser={visitedUser}
-              setVisitedUser={setVisitedUser}
-            />
-          </div>
-        )
-      )}
+                <div className='flex flex-col gap-2 justify-between items-center '>
+                  <Star color={"#E18EA5"} />
+                  <div className='my-3 w-[1px] bg-pink h-[100%]' />
+                  <Star color={"#E18EA5"} />
+                </div>
+                <div className='flex flex-col w-[48%] items-center'>
+                  <p className='ml-3 mb-2 shadowYellow text-yellow font-sygma  tracking-wider text-lg'>
+                    Memo
+                  </p>
+                  {edit[index] ? (
+                    <Editor
+                      value={item.content}
+                      onChange={onEditorContentChanged}
+                    />
+                  ) : (
+                    <Viewer value={item.content} />
+                  )}
+                </div>
+              </span>
+              <CommentAndLike
+                item={item}
+                index={index}
+                user={user}
+                uid={uid}
+                commentChange={commentChange}
+                userUID={userUID}
+                setCommentChange={setCommentChange}
+                friendsPosts={friendsPosts}
+                setFriendsPosts={setFriendsPosts}
+                page={page}
+                visitedUser={visitedUser}
+                setVisitedUser={setVisitedUser}
+              />
+            </>
+          ) : (
+            <div>
+              {item.user && (
+                <Link to={`/spread/${item.spreadId}`}>
+                  <div className='flex flex-row m-2 align-center hover:underline'>
+                    <p className='flex-end flex-grow-1 m-2 text-yellow'>
+                      我在{formatTimestamp(item.time)}新增了一個 {item.title}
+                      牌陣！趕快來占卜喔！
+                    </p>
+                  </div>
+                </Link>
+              )}
+              <CommentAndLike
+                item={item}
+                index={index}
+                user={user}
+                uid={uid}
+                commentChange={commentChange}
+                userUID={userUID}
+                setCommentChange={setCommentChange}
+                friendsPosts={friendsPosts}
+                setFriendsPosts={setFriendsPosts}
+                page={page}
+                visitedUser={visitedUser}
+                setVisitedUser={setVisitedUser}
+              />
+            </div>
+          )}
+        </div>
+      ))}
     </div>
   );
 };
@@ -638,42 +736,38 @@ export function formatTimestamp(timestamp) {
 const card = (item, i, tarot, end) => {
   return (
     <div
-      className={`flex justify-center w-[50px] h-[41.5px] border border-red-100 `}
+      className={`flex justify-center w-[72px] h-[61px] hover:scale-150 transform transition duration-500 ease-in-out hover:z-10`}
       key={i}
     >
       {item !== 0 && (
         <div
-          className={`border rounded-lg w-[50px] h-[83px] cursor-pointer relative
-      flex items-center justify-center flex-col  text-white z-1 gap-2 bg-slate-700`}
+          className={` rounde-lg w-[95%]  cursor-pointer relative 
+      flex items-center justify-center flex-col  text-white z-1 gap-0 bg-slate-700`}
         >
           <Link to={`/card/${item.card}`}>
             <img
               src={tarot[item.card].img}
               alt={tarot[item.card].name}
-              className={`${
+              className={`opacity-80 ${
                 item.reverse ? "" : "rotate-180"
-              } w-[100%] h-[100%] absolute top-0 left-0 `}
+              } w-[100%] absolute top-0 left-0 `}
             />
           </Link>
           <div
-            className={`w-[100%] h-[100%] absolute top-0 ${
-              item.card !== undefined && end
-                ? "opacity-0 hover:opacity-100"
-                : "hover:opacity-100"
+            className={`w-[120%] absolute top-0 right-1 ${
+              item.card !== undefined ? "" : " hover: opacity-100 "
             }`}
           >
-            <div className='bg-slate-800 opacity-60 w-[100%] h-[100%] rounded-lg'></div>
-            <p className='absolute bottom-2 left-5 text-xs z-10'>
-              {item.value}
-            </p>
-            <p className='absolute bottom-7 left-2 z-10'>{item.order}</p>
+            <div className='bg-green opacity-60 w-[100%] h-[100%] rounde-lg z-10' />
+            <p className='absolute bottom--2  text-xs z-10'>{item.value}</p>
+            <p className='absolute bottom--3 z-10'>{item.order}</p>
             {item.card !== undefined && (
               <Link to={`/card/${item.card}`}>
-                <div className='absolute bottom-16 left-2 z-10 text-xs'>
+                <div className='absolute bottom-6  z-10 text-xs'>
                   {tarot[item.card].name}{" "}
                 </div>
                 {""}
-                <div className='absolute bottom-12 left-2 z-10 text-xs'>
+                <div className='absolute bottom-2 z-10 text-xs'>
                   {item.reverse ? "正位" : "逆位"}
                 </div>
               </Link>

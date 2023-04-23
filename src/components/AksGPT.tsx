@@ -4,6 +4,7 @@ import { AuthContext } from "../context/authContext";
 import cards from "../tarotcard/tarot-images";
 import Quill from "./Editor/Quill";
 import { openAiKey } from "../config";
+import Button from "./Button";
 
 interface Message {
   value: string;
@@ -118,7 +119,7 @@ const AskGPT = ({
         const content = data.choices[0].message.content;
         console.log(content);
         setRes(content);
-        setDivinedData({ ...divinedData, askGpt: content ,content:''});
+        setDivinedData({ ...divinedData, askGpt: content, content: "" });
       })
       .catch((error) => {
         console.error("Error fetching API:", error);
@@ -126,14 +127,14 @@ const AskGPT = ({
   }
   return (
     <>
-      <button
-        onClick={() => {
+      <Button
+        action={() => {
           handleAsk();
           setAskAI(true);
         }}
-      >
-        點我問小Chat
-      </button>
+        type={"small"}
+        value={"Ask AI"}
+      />
       {end && askAI && (
         <>
           <div className=' w-[60%]  '>

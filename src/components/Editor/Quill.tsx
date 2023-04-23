@@ -12,6 +12,7 @@ import {
   arrayUnion,
 } from "firebase/firestore";
 import { db } from "../../utils/firebase";
+import Button from "../Button";
 
 export default function Quill({
   res,
@@ -58,12 +59,12 @@ export default function Quill({
   };
 
   return (
-    <div className=''>
+    <div className='w-[100%]'>
       <Editor
         value={initialMarkdownContent}
         onChange={onEditorContentChanged}
       />
-      <input onClick={handleSave} type='button' value='Save' />
+      <Button action={handleSave} type={"small"} value={"Save"} />
     </div>
   );
 }

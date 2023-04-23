@@ -27,10 +27,10 @@ const uploadImage = async (file) => {
 };
 const TOOLBAR_OPTIONS = [
   [{ header: [1, 2, 3, false] }],
-  ["bold", "italic", "underline", "strike", "blockquote", "link"],
+  ["bold", "italic", "underline", "blockquote"],
   //[{ list: "ordered" }, { list: "bullet" }],
   //[{ indent: "-1" }, { indent: "+1" }],
-  ["link", "image"],
+  // ["link", "image"],
   ["emoji"],
 ];
 
@@ -53,7 +53,7 @@ export default function Editor(props: EditorProps) {
     <>
       <ReactQuill
         ref={reactQuillRef}
-        theme='snow'
+        // theme='snow'
         placeholder='Start writing...'
         modules={{
           toolbar: {
@@ -68,7 +68,7 @@ export default function Editor(props: EditorProps) {
         }}
         value={value}
         onChange={onChange}
-        className='min-h-[100px] w-[400px]'
+        className='min-h-[100px] text-yellow placeholder:text-gray'
       />
     </>
   );

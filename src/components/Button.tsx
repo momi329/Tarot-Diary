@@ -1,16 +1,25 @@
 function Button({ type, value, action }) {
-  const confirm = "w-[60px] h-[20px] bg-blue-300 text-white";
-  const cancel = "w-[60px] h-[20px] bg-white text-blue-300";
-  const Edit = "w-[60px] h-[20px] bg-slate-300 text-white";
-
+  let style =
+    "font-sygma  text-center  tracking-wider " +
+    "leading-8   rounded-[50%]  border-[1.5px] ";
+  const pinkAndYellow =
+    "text-pink border-pink shadowPink hover:bg-pink  pb-1" +
+    " hover:border-yellow hover:text-yellow hover:bg-opacity-50";
+  const pinkAndGreen =
+    "text-gold border-gold shadowGold hover:bg-green  " +
+    " hover:border-gold hover:text-gold hover:bg-opacity-50";
+  if (type === "small") {
+    style += " w-[185px] h-[65px] text-xl " + pinkAndYellow;
+  } else if (type === "big") {
+    style += " w-[230px] h-[73px] text-xl " + pinkAndYellow;
+  } else if (type === "tiny") {
+    style += " w-2/12 h-2/12 text-base " + pinkAndYellow;
+  } else if (type === "little") {
+    style += " w-[120px] h-[40px] text-base " + pinkAndGreen;
+  }
   return (
-    <button
-      className={`${
-        type === "confirm" ? confirm : type === "cancel" ? cancel : Edit
-      } `}
-      onClick={action}
-    >
-      {value}
+    <button className={style} onClick={() => action()}>
+      <div className='mt-2'>{value}</div>
     </button>
   );
 }

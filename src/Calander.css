@@ -1,41 +1,32 @@
-.calendar {
-  font-family: Arial, sans-serif;
-  width: 900px;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
-  margin: 0 auto;
-}
-
-.calendar__header {
+/* .calendar__header {
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 8px;
   background-color: #eee;
   border-radius: 8px 8px 0 0;
-}
+} */
 
-.calendar__button {
+/* .calendar__button {
   background-color: transparent;
   border: none;
   color: #666;
   cursor: pointer;
   font-size: 16px;
-}
-
+} */
+/* 
 .calendar__month {
   font-size: 18px;
   font-weight: bold;
-}
+} */
 
-.calendar__weekdays {
+/* .calendar__weekdays {
   display: flex;
   justify-content: space-around;
   background-color: #eee;
   padding: 8px;
   border-bottom: 1px solid #ccc;
-}
+} */
 
 .calendar__day {
   width: 116px;

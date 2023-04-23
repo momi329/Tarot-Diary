@@ -1,5 +1,10 @@
 import firebase from "../utils/firebase";
 import Button from "./Button";
+import fill from "../images/heartfill.png";
+import like from "../images/heart.png";
+import commentIt from "../images/comment.png";
+import commenting from "../images/commenting.png";
+
 const CommentAndLike = ({
   item,
   index,
@@ -83,78 +88,102 @@ const CommentAndLike = ({
   };
   const commentStatusChange = (item, index) => {
     const newData = [...friendsPosts];
+    newData.forEach((data) => {
+      if (data.addComment) {
+        data.addComment = false;
+      }
+    });
     item.addComment = !item.addComment;
     newData[index] = item;
     setFriendsPosts(newData);
   };
   return (
-    <>
-      {/* 按讚 */}
-      <button
-        className={`p-1 ${
-          item.like && item.like.includes(user.userUID)
-            ? "bg-red-100"
-            : "bg-blue-100"
-        }`}
-        onClick={() => {
-          likeOrUnlike(index);
-        }}
-      >
-        Like
-      </button>
-      {/* 留言 編寫 瀏覽 */}
-      <button
-        className='p-1'
-        onClick={() => {
-          commentStatusChange(item, index);
-        }}
-      >
-        Comment
-      </button>
+    <div className='ml-1 mt-5'>
+      <div className='flex items-center mb-2  text-pink'>
+        {/* 按讚 */}
+        <button
+          className={`p-1 mr-2 flex-row flex items-center`}
+          onClick={() => {
+            likeOrUnlike(index);
+          }}
+        >
+          <img
+            src={item.like && item.like.includes(user.userUID) ? fill : like}
+            alt='like'
+            className='w-6 h-6'
+          />
+          <p className=' p-1 ml-1'>{item.like && item.like.length}</p>
+        </button>
+        {/* 留言 編寫 瀏覽 */}
+        <button
+          className='pl-3 p-1  mr-2 flex-row flex items-center'
+          onClick={() => {
+            commentStatusChange(item, index);
+          }}
+        >
+          <img
+            src={item.addComment ? commenting : commentIt}
+            alt='comment'
+            className='w-[22px] h-[21px] pb-[2px]'
+          />
+          <p className=' p-1 ml-1'>{item.comment && item.comment.length}</p>
+        </button>
+      </div>
       {item.addComment && (
         <>
           {item.comment &&
             item.comment.map((comment, q) => (
-              <div className='flex flex-row' key={q}>
-                <img
-                  src={comment.userImage}
-                  alt={comment.user}
-                  className='w-5 h-5 rounded-full'
-                />
-                <p>{comment.userName}</p>
-                <p>{comment.comment}</p>
-                {user.userUID === uid && (
-                  <button
-                    onClick={() => {
-                      deleteComment(index, q);
-                    }}
-                  >
-                    Delete
-                  </button>
-                )}
-              </div>
+              <>
+                <div
+                  className='flex flex-row items-center ml-2 my-3 text-sm'
+                  key={q}
+                >
+                  <img
+                    src={comment.userImage}
+                    alt={comment.user}
+                    className='w-8 h-8 rounded-full'
+                  />
+                  <p className='font-notoSansJP font-normal  ml-4 text-yellow tracking-widest w-[25%]'>
+                    {comment.userName}
+                  </p>
+                  <p className='font-notoSansJP font-light text-yellow tracking-widest flex-grow'>
+                    {comment.comment}
+                  </p>
+                  {user.userUID === uid && (
+                    <button
+                      onClick={() => {
+                        deleteComment(index, q);
+                      }}
+                      className='font-sygma text-yellow shadowYellow hover:underline tracking-widest mt-[6px]'
+                    >
+                      Delete
+                    </button>
+                  )}
+                </div>
+                <div className='w-[100%] h-[1px] bg-white opacity-40'></div>
+              </>
             ))}
-          <input
-            type='text'
-            onChange={(e) => handleCommentChange(e)}
-            value={commentChange.comment}
-            // onKeyDown={(e) => comment(e, index)}
-          />
-          <Button
-            // onClick={(e) => comment(e, index)}
-            type={"confirm"}
-            value={"Enter"}
-            action={(e) => comment(e, index)}
-          />
-          <Button
-            // onClick={(e) => comment(e, index)}
-            type={"cancel"}
-            value={"cancel"}
-            action={() => alert("好！")}
-          />
+          <div className='flex justify-between items-center mt-6'>
+            <input
+              type='text'
+              onChange={(e) => handleCommentChange(e)}
+              value={commentChange.comment}
+              className='bg-green opacity-60 pl-3 pr-10 py-2 text-yellow  w-[65%] rounded-lg '
+            />
+            <Button
+              type={"tiny"}
+              value={"Enter"}
+              action={(e) => comment(e, index)}
+            />
+            <Button
+              type={"tiny"}
+              value={"Cancel"}
+              action={() => alert("好！")}
+            />
+          </div>
         </>
       )}
-    </>
+    </div>
   );
 };
 export default CommentAndLike;

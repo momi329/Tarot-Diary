@@ -4,6 +4,7 @@ import { useContext, useEffect } from "react";
 import Profile from "./Profile";
 import firebase from "../utils/firebase";
 import { AuthContext } from "../context/authContext";
+import Button from "../components/Button";
 function Member() {
   const { user, isLogin, signIn, signOut, loading } = useContext(AuthContext);
   const auth: Auth = getAuth();
@@ -13,28 +14,29 @@ function Member() {
   });
   return (
     <>
-      {isLogin ? (
-        <>
-          <button
-            className='p-2 bg-blue-800 text-white m-1 rounded-md'
-            onClick={() => signOut(auth)}
-          >
-            Sign Out
-          </button>
-          {/* <Profile /> */}
-        </>
-      ) : (
-        <>
-          <button
-            className='p-2 bg-orange-300 text-white m-1 rounded-md'
-            onClick={() => {
-              signIn(auth, provider);
-            }}
-          >
-            Sign in with Google
-          </button>
-        </>
-      )}
+      <div className='w-screen h-[80px] ' />
+      <div className=' justify-center mx-auto flex  mt-10'>
+        {isLogin ? (
+          <>
+            <Button
+              type={"big"}
+              value={"SIGN OUT"}
+              action={() => signOut(auth)}
+            />
+            {/* <Profile /> */}
+          </>
+        ) : (
+          <>
+            <Button
+              type={"big"}
+              action={() => {
+                signIn(auth, provider);
+              }}
+              value={"SIGN IN WITH GOOGLE"}
+            />
+          </>
+        )}
+      </div>
     </>
   );
 }

@@ -1,6 +1,7 @@
 import { AuthContext } from "../context/authContext";
 import { useState, useEffect, useContext } from "react";
 import firebase from "../utils/firebase";
+import Button from "./Button";
 
 function ProfileEdit() {
   const { isLogin, user, userUID, setUser } = useContext(AuthContext);
@@ -33,38 +34,69 @@ function ProfileEdit() {
     setModify({ ...modify, [category]: e.target.value });
   };
   return (
-    <div>
+    <div className='font-sygma text-yellow '>
       <div>
-        <button
-          onClick={() => {
+        <Button
+          action={() => {
             edit ? updateUserData() : setEdit(true);
           }}
-        >
-          {edit ? "Save" : "Edit"}
-        </button>
-        <img
-          src={modify.image}
-          alt={modify.name}
-          className='w-[80px] h-[80px] object-cover'
+          type={"tiny"}
+          value={edit ? "Save" : "Edit"}
         />
-        <button>Upload Img</button>
-        <input
-          type='file'
-          disabled={!edit}
-          onChange={(e) => {
-            inputImageChange(e);
-          }}
-        />
-        <input
-          value={modify.name}
-          disabled={!edit}
-          onChange={(e) => handleInputChange(e, "name")}
-        />
-        <input
-          value={modify.sign}
-          disabled={!edit}
-          onChange={(e) => handleInputChange(e, "sign")}
-        />
+        <div className='flex flex-col mt-8 gap-4 justify-center mx-auto items-center'>
+          <div className='flex justify-center flex-col relative w-[150px] h-[150px]'>
+            <img
+              src={modify.image}
+              alt={modify.name}
+              className='w-[100%] h-[100%] object-cover'
+            />
+            <label htmlFor='upload'>
+              <button
+                disabled={!edit}
+                onClick={() => {
+                  const uploadImage = document.getElementById("upload");
+                  if (uploadImage) {
+                    uploadImage.click();
+                  }
+                }}
+                className='hover:underline bottom-0 bg-opacity-60
+            absolute w-[100%] bg-darkPink z-10 pt-[2px]'
+              >
+                {" "}
+                Upload Img{" "}
+              </button>
+            </label>
+            <input
+              id='upload'
+              type='file'
+              accept='image/*'
+              onChange={(e) => {
+                inputImageChange(e);
+              }}
+              className='hidden w-[100%] absolute bottom-0 z-0'
+            />
+          </div>
+          <div className='flex flex-col items-start shadowYellow tracking-widest w-[40%]'>
+            <p>Name</p>
+            <div className='h-[1px] w-[100%] bg-yellow my-2' />
+            <input
+              value={modify.name}
+              disabled={!edit}
+              onChange={(e) => handleInputChange(e, "name")}
+              className={`w-[100%] p-2 ${!edit ? "" : "bg-pink bg-opacity-20"}`}
+            />
+          </div>
+          <div className='flex flex-col items-start shadowYellow tracking-widest w-[40%]'>
+            <p>Sign</p>
+            <div className='h-[1px] w-[100%] bg-yellow my-2' />
+            <input
+              value={modify.sign}
+              disabled={!edit}
+              onChange={(e) => handleInputChange(e, "sign")}
+              className={`w-[100%] p-2 ${!edit ? "" : "bg-pink bg-opacity-20"}`}
+            />
+          </div>
+        </div>
       </div>
     </div>
   );

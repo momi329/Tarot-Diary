@@ -28,7 +28,7 @@ interface Day {
 }
 
 function Diary() {
-  const { isLogin, user, userUID } = useContext(AuthContext);
+  const { userUID } = useContext(AuthContext);
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
   const [diaryData, setDiaryData] = useState<{}[] | []>([]);
   const [isDiaryOpen, setIsDiaryOpen] = useState<boolean>(false);
@@ -64,7 +64,7 @@ function Diary() {
   }, []);
 
   return (
-    <div className='calendar'>
+    <div className='w-[100%] rounded-xl font-sygma bg-opacity-60'>
       <CalendarHeader
         selectedDate={selectedDate}
         setSelectedDate={setSelectedDate}
@@ -105,18 +105,41 @@ function CalendarHeader({
   prevMonth,
   nextMonth,
 }: Props): JSX.Element {
-  const monthYear = selectedDate.toLocaleString("default", {
-    month: "long",
-    year: "numeric",
-  });
+  const year = selectedDate.getFullYear();
+  const monthNumber = selectedDate.getMonth() + 1;
+  const monthNames = [
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December",
+  ];
+  const monthName = monthNames[selectedDate.getMonth()];
+  const monthYear = `${year}.${monthNumber},${monthName}`;
 
   return (
-    <div className='calendar__header'>
-      <button className='calendar__button' onClick={prevMonth}>
+    <div
+      className='flex justify-between items-center 
+    p-1 bg-black rounded-sm text-yellow pt-2 rounde-t-lg '
+    >
+      <button
+        className='cursor-pointer text-notoSansJP shadowYellow text-yellow p-2'
+        onClick={prevMonth}
+      >
         &lt;
       </button>
-      <div className='calendar__month'>{monthYear}</div>
-      <button className='calendar__button' onClick={nextMonth}>
+      <div className='text-lg yellowShadow'>{monthYear}</div>
+      <button
+        className='cursor-pointer text-notoSansJP shadowYellow text-yellow p-2'
+        onClick={nextMonth}
+      >
         &gt;
       </button>
     </div>
@@ -127,9 +150,15 @@ function CalendarWeekdays() {
   const weekdays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
   return (
-    <div className='calendar__weekdays'>
+    <div
+      className=' bg-black p-2 flex 
+     text-yellow shadowYellow'
+    >
       {weekdays.map((weekday) => (
-        <div key={weekday} className='calendar__day--header'>
+        <div
+          key={weekday}
+          className='w-[17%]  flex cursor-pointer pl-1  justify-center'
+        >
           {weekday}
         </div>
       ))}
@@ -170,7 +199,10 @@ function CalendarDays({
 
   for (let i = 1; i <= startWeekday; i++) {
     days.push(
-      <div key={`empty-${i}`} className='calendar__day calendar__day--empty' />
+      <div
+        key={`empty-${i}`}
+        className='w-[100%] h-[60px] flex cursor-pointer'
+      />
     );
   }
   for (let i = 1; i <= daysInMonth; i++) {
@@ -192,14 +224,14 @@ function CalendarDays({
       <>
         <div
           key={`day-${i}`}
-          className={`calendar__day ${isToday ? "calendar__day--today" : ""} ${
-            isSelected ? "" : ""
-          }`}
+          className={`w-[100%] h-[60px] flex cursor-pointer pl-1 pt-1 rounded-b-lg ${
+            isToday ? "calendar__day--today" : ""
+          } ${isSelected ? "" : ""}`}
           onClick={handleClick}
           style={{ cursor: "pointer" }}
         >
           {i}
-          <div className='flex flex-wrap gap-[4px]'>
+          <div className='flex flex-wrap gap-[2px] ml-2'>
             {diaryData.map((day, i) => {
               const daySeconds = day.time.seconds;
               if (
@@ -210,7 +242,7 @@ function CalendarDays({
                   <button
                     onClick={() => clickedDiary(day, i)}
                     key={i}
-                    className='w-4 h-4 rounded-full bg-amber-500 '
+                    className='w-4 h-4 p-[2px] rounded-full bg-pink bg-opacity-60 z-10'
                   ></button>
                 );
               }
@@ -223,6 +255,13 @@ function CalendarDays({
     );
   }
 
-  return <div className='calendar__days'>{days}</div>;
+  return (
+    <div
+      className='grid grid-cols-7  gap-4 p-2 text-yellow
+     bg-black bg-opacity-40 rounded-b-sm mb-10'
+    >
+      {days}
+    </div>
+  );
 }
 export default Diary;

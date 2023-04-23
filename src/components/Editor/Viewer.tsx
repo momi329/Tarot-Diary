@@ -6,5 +6,9 @@ export interface ViewerProps {
 
 export default function Viewer(props: ViewerProps) {
   //return <div>{props.value}</div>;
-  return <ReactMarkdown>{props.value}</ReactMarkdown>;
+  return (
+    <ReactMarkdown className='ml-3 mb-4 text-sm font-notoSansJP leading-6 text-gray'>
+      {props.value}
+    </ReactMarkdown>
+  );
 }
