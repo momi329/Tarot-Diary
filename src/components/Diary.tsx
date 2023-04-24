@@ -64,7 +64,7 @@ function Diary() {
   }, []);
 
   return (
-    <div className='w-[100%] rounded-xl font-sygma bg-opacity-60'>
+    <div className='w-[100%] rounded-xl font-NT bg-opacity-60'>
       <CalendarHeader
         selectedDate={selectedDate}
         setSelectedDate={setSelectedDate}
@@ -231,7 +231,7 @@ function CalendarDays({
           style={{ cursor: "pointer" }}
         >
           {i}
-          <div className='flex flex-wrap gap-[2px] ml-2'>
+          <div className='flex flex-wrap gap-[2px] ml-2 flex-start'>
             {diaryData.map((day, i) => {
               const daySeconds = day.time.seconds;
               if (
@@ -242,6 +242,7 @@ function CalendarDays({
                   <button
                     onClick={() => clickedDiary(day, i)}
                     key={i}
+                    title={day.question}
                     className='w-4 h-4 p-[2px] rounded-full bg-pink bg-opacity-60 z-10'
                   ></button>
                 );
@@ -259,6 +260,7 @@ function CalendarDays({
     <div
       className='grid grid-cols-7  gap-4 p-2 text-yellow
      bg-black bg-opacity-40 rounded-b-sm mb-10'
+      key='days'
     >
       {days}
     </div>

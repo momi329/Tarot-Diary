@@ -154,7 +154,7 @@ const CommentAndLike = ({
                       onClick={() => {
                         deleteComment(index, q);
                       }}
-                      className='font-sygma text-yellow shadowYellow hover:underline tracking-widest mt-[6px]'
+                      className='font-NT text-yellow shadowYellow hover:underline tracking-widest mt-[6px]'
                     >
                       Delete
                     </button>

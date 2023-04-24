@@ -10,14 +10,13 @@ function MyImages({ onSave, setOnSave }) {
   const [isOpen, setIsOpen] = useState(false);
   const [input, setInput] = useState("");
   const fetchPhotos = async (search) => {
-    console.log("hi", Key);
     const unsplash = createApi({ accessKey: Key });
     unsplash.photos
       .getRandom({
-        count: 15,
+        count: 16,
         page: 1,
         query: search,
-        orientation: "landscape",
+        orientation: "portrait",
       })
       .then((result) => {
         if (result.errors) {
@@ -27,12 +26,11 @@ function MyImages({ onSave, setOnSave }) {
           // handle success here
           const photo = result.response;
           setPhotos(photo);
-          console.log(photo);
         }
       });
   };
   useEffect(() => {
-    fetchPhotos("spirit");
+    fetchPhotos("flowers");
   }, [isOpen]);
   //暫時關掉
   const chooseImg = (img) => {
@@ -51,23 +49,17 @@ function MyImages({ onSave, setOnSave }) {
         className='w-[100%] h-[316px] border-[1px] border-yellow relative bg-cover bg-center opacity-70'
         style={{ backgroundImage: `url(${onSave.image})` }}
       >
-        <FiImage
-          className='w-5 h-5 absolute top-1 right-1'
-          onClick={() => {
-            setIsOpen(true);
-          }}
-        />
-        {isOpen && (
+        {isOpen ? (
           <div
-            className='w-[350px]  flex flex-wrap flex-col  
-          p-4 pt-1 bg-slate-200 absolute top-0 right-0 z-30 '
+            className='w-[350px]  flex flex-wrap flex-col  text-yellow
+          p-4 pt-1 bg-darkPinks bg-opacity-30 absolute top-0 right-0 z-30 '
           >
             <div
               className='w-[100%] flex flex-wrap  flex-row items-center 
             justify-between p-3 mb-3 border-b-[1px] border-slate-300'
             >
               <FiChevronLeft className='w-5 h-5' />
-              <div className='tracking-wide'>更換背景</div>
+              <div className='tracking-widest'>更換背景</div>
               <FiX
                 className='w-5 h-5'
                 onClick={() => {
@@ -78,7 +70,7 @@ function MyImages({ onSave, setOnSave }) {
             <div className='w-[100%] relative'>
               <FiSearch className='absolute top-3 left-2 text-slate-400' />
               <input
-                className='w-[100%] p-2  mb-3 pl-7'
+                className='w-[100%] p-2  mb-3 pl-9'
                 placeholder='Search'
                 onChange={(e) => {
                   setInput(e.target.value);
@@ -101,7 +93,7 @@ function MyImages({ onSave, setOnSave }) {
                         chooseImg(photo.urls.regular);
                       }}
                     >
-                      <div className='w-[100%] absolute bottom-0 p-[4px] pl-2 bg-slate-900 text-white  underline-offset-1 opacity-0 hover:opacity-80'>
+                      <div className='w-[100%] absolute bottom-0 p-[4px] pl-2 bg-darkPink text-white  underline-offset-1 opacity-0 hover:opacity-90'>
                         <a href={photo.links.html} className=' text-xs'>
                           {photo.user.name}
                         </a>
@@ -111,6 +103,13 @@ function MyImages({ onSave, setOnSave }) {
                 ))}
             </div>
           </div>
+        ) : (
+          <FiImage
+            className='w-5 h-5 absolute top-1 right-1 text-yellow opacity-90'
+            onClick={() => {
+              setIsOpen(true);
+            }}
+          />
         )}
       </div>
     </>

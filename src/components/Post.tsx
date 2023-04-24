@@ -1,19 +1,18 @@
 import { formatTimestamp } from "../pages/Profile";
 import cards from "../tarotcard/tarot-images";
 import { AuthContext } from "../context/authContext";
-import { useParams } from "react-router-dom";
 import Viewer from "./Editor/Viewer";
-import { Link } from "react-router-dom";
 import { useState, useEffect, useContext } from "react";
 import Editor from "./Editor/Editor";
 import firebase from "../utils/firebase";
 import Star from "../images/Star";
 import Moon from "../images/Moon";
+import { SpreadPlace } from "./SpreadPlace";
 const tarot = cards.cards;
 export function Post({ targetDiary, setTargetDiary, setDiaryData }) {
   const { user, userUID, isLogin } = useContext(AuthContext);
   const [edit, setEdit] = useState(false);
-  const [newEdit, setNewEdit] = useState();
+  const [newEdit, setNewEdit] = useState(targetDiary.content);
   useEffect(() => {
     async function getUserDiary(userUID: string) {
       const docSnap = await firebase.getUserDiary(userUID);
@@ -25,12 +24,17 @@ export function Post({ targetDiary, setTargetDiary, setDiaryData }) {
   }, [edit]);
 
   const handleSave = async () => {
-    await firebase.updateDiary(userUID, targetDiary.docId, newEdit);
+    console.log(targetDiary);
+    await firebase.updateDiary(userUID, targetDiary.docId, {
+      ...targetDiary,
+      content: newEdit,
+    });
     setTargetDiary({ ...targetDiary, content: newEdit });
     alert("更新成功");
     setEdit(false);
   };
   const onEditorContentChanged = (content) => {
+    console.log(content.markdown);
     setNewEdit(content.markdown);
   };
   return (
@@ -62,7 +66,7 @@ export function Post({ targetDiary, setTargetDiary, setDiaryData }) {
           </div>
 
           <div className='flex flex-row p-2 gap-2'>
-            <Moon color={"#9F8761"} />
+            <Moon color={"#9F8761"} width={"47px"} height={"52px"} />
             <h1
               className='ml-4 mt-4 mb-4 font-notoSansJP font-normal
          text-xl text-yellow  tracking-widest'
@@ -77,28 +81,32 @@ export function Post({ targetDiary, setTargetDiary, setDiaryData }) {
             </p>
           </div>
           <div className='flex flex-row gap-3 justify-center p-2'>
-            {targetDiary.spread.map((q, i) => (
-              <div
-                className='w-[130px] text-yellow font-sygma tracking-wider shadowYellow '
-                key={i}
-              >
-                <img
-                  src={tarot[q.card] && tarot[q.card].img}
-                  alt={tarot[q.card] && tarot[q.card].name}
-                  // className={`opacity-70 z-0  ${
-                  //   q.card.reserve ? "rotate-180" : ""
-                  // }`}
-                />
-                <p className='mt-3'>{tarot[q.card] && tarot[q.card].name}</p>
-                <p className='text-sm font-notoSansJP font-light tracking-widest'>
-                  {q.value}
-                </p>
-              </div>
-            ))}
+            {!targetDiary.spread.includes(0) ? (
+              targetDiary.spread.map((q, i) => (
+                <div
+                  className='w-[130px] text-yellow font-NT tracking-wider shadowYellow '
+                  key={i}
+                >
+                  <img
+                    src={tarot[q.card] && tarot[q.card].img}
+                    alt={tarot[q.card] && tarot[q.card].name}
+                    // className={`opacity-70 z-0  ${
+                    //   q.card.reserve ? "rotate-180" : ""
+                    // }`}
+                  />
+                  <p className='mt-3'>{tarot[q.card] && tarot[q.card].name}</p>
+                  <p className='text-sm font-notoSansJP font-light tracking-widest'>
+                    {q.value}
+                  </p>
+                </div>
+              ))
+            ) : (
+              <SpreadPlace type={targetDiary} tarot={tarot} size={"medium"} />
+            )}
           </div>
           <span className='flex flex-row justify-between mt-8 mb-9'>
             <div className='flex flex-col w-[48%] items-center'>
-              <p className='ml-3 mb-2 shadowYellow text-yellow font-sygma  tracking-wider text-lg'>
+              <p className='ml-3 mb-2 shadowYellow text-yellow font-NT  tracking-wider text-lg'>
                 Ask AI
               </p>
               <p className='ml-3 text-sm font-notoSansJP leading-6 text-gray'>
@@ -112,7 +120,7 @@ export function Post({ targetDiary, setTargetDiary, setDiaryData }) {
               <Star color={"#E18EA5"} />
             </div>
             <div className='flex flex-col w-[48%] items-center'>
-              <p className='ml-3 mb-2 shadowYellow text-yellow font-sygma  tracking-wider text-lg'>
+              <p className='ml-3 mb-2 shadowYellow text-yellow font-NT  tracking-wider text-lg'>
                 Memo
               </p>
 

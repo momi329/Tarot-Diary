@@ -18,12 +18,16 @@ module.exports = {
       gray: "#B3B3B3",
       black: "#000",
       white: "#fff",
+      cream: "#D8CEC3",
     },
     fontFamily: {
       sygma: ["Sygma", "sans-serif"],
       maintelas: ["Maintelas Blomite", "sans-serif"],
       notoSansJP: ["Noto Sans JP", " sans-serif"],
       poppins: ["Poppins", "sans-serif"],
+      westiga: ["Westiga", "sans-serif"],
+      NT: ["NT Fabulous", "sans-serif"],
+      NTalt: ["NT Fabulous alternative", "sans-serif"],
     },
     extend: {
       transformOrigin: {

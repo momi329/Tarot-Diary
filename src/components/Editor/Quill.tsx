@@ -59,12 +59,14 @@ export default function Quill({
   };
 
   return (
-    <div className='w-[100%]'>
+    <div className='w-[100%] flex flex-col'>
       <Editor
         value={initialMarkdownContent}
         onChange={onEditorContentChanged}
       />
-      <Button action={handleSave} type={"small"} value={"Save"} />
+      <div className='self-end mt-2'>
+        <Button action={handleSave} type={"small"} value={"Save"} />
+      </div>
     </div>
   );
 }

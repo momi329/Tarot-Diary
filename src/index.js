@@ -9,8 +9,8 @@ import Spread from "./pages/Spread";
 import TarotCard from "./pages/TarotCard";
 import Divine from "./components/Divine";
 import AskGPT from "./components/AksGPT";
-import CreateArticle from "./pages/CreateArticle";
 import Profile from "./pages/Profile";
+import Meaning from "./pages/Meanings";
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <BrowserRouter>
@@ -23,6 +23,7 @@ root.render(
         <Route path='/card/:id' element={<TarotCard />} />
         <Route path='/divine' element={<Divine />} />
         <Route path='/ask' element={<AskGPT />} />
+        <Route path='/meaning' element={<Meaning />} />
       </Route>
     </Routes>
   </BrowserRouter>

@@ -1,9 +1,9 @@
 function Button({ type, value, action }) {
   let style =
-    "font-sygma  text-center  tracking-wider " +
-    "leading-8   rounded-[50%]  border-[1.5px] ";
+    "font-NT  text-center  tracking-wider capitalize " +
+    "leading-8   rounded-[50%]  border-[2px] ";
   const pinkAndYellow =
-    "text-pink border-pink shadowPink hover:bg-pink  pb-1" +
+    "text-pink border-pink shadowPink hover:bg-pink " +
     " hover:border-yellow hover:text-yellow hover:bg-opacity-50";
   const pinkAndGreen =
     "text-gold border-gold shadowGold hover:bg-green  " +

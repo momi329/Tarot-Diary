@@ -162,19 +162,7 @@ const firebase = {
     });
     return docRef.id;
   },
-  async uploadArticle(userUID, data) {
-    try {
-      const docRef = await addDoc(collection(db, "article"), data);
-      console.log("Document written with ID: ", docRef.id);
-      const newRef = doc(db, "article", docRef.id);
-      await updateDoc(newRef, {
-        docId: docRef.id,
-      });
-      alert("儲存成功");
-    } catch (e) {
-      console.error("error", e);
-    }
-  },
+
   //參訪其他人頁面
   async getProfile(userUID) {
     const docRef = doc(db, "users", `${userUID}`);

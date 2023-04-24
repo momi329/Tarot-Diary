@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useContext } from "react";
+import { useNavigate } from "react-router-dom";
 import { v4 as uuidv4 } from "uuid";
 import { FiEdit } from "react-icons/fi";
 import { RxCross1 } from "react-icons/rx";
@@ -100,7 +101,7 @@ function Draggable({ edit, setEdit, spreadData, id }) {
     ],
   });
   const { userUID } = useContext(AuthContext);
-
+  const navigate = useNavigate();
   const [cardNumber, setCardNumber] = useState(() =>
     onSave.spread.reduce((acc, curr) => {
       return curr !== 0 ? acc + 1 : acc;
@@ -221,6 +222,7 @@ function Draggable({ edit, setEdit, spreadData, id }) {
         };
       }
       await setDoc(doc(db, "spreads", newData.spreadId), newData);
+      navigate(`/spread/${newData.spreadId}`);
     }
     alert("Success");
     setOnSave({
@@ -318,7 +320,7 @@ function Draggable({ edit, setEdit, spreadData, id }) {
     <>
       <div className='w-screen h-[80px]' />
       <div className='w-ml max-w-screen-md mx-auto mt-16 mb-8'>
-        <h1 className='font-sygma font-bold text-8xl text-yellow leading-4xl tracking-wider uppercase mb-4'>
+        <h1 className='font-NT text-8xl text-yellow  tracking-wide mb-6'>
           Design Your Spread!
         </h1>
         <p className='font-base tracking-wider mb-10 text-yellow'>
@@ -326,7 +328,7 @@ function Draggable({ edit, setEdit, spreadData, id }) {
         </p>
         <div className='flex flex-row gap-9 mb-14'>
           <form className='flex flex-col gap-2 w-2/5 justify-between'>
-            <h1 className='font-sygma text-yellow text-4xl mt-10 mb-10 tracking-wider'>
+            <h1 className='font-NTalt text-yellow text-4xl mt-10 mb-10 tracking-wide font-medium'>
               Pick {cardNumber} {cardNumber === 1 ? "Card" : "Cards"}
             </h1>
             <input
@@ -428,7 +430,7 @@ function Draggable({ edit, setEdit, spreadData, id }) {
                       />
 
                       <div
-                        className={`material-symbols-outlined  text-green  m-1  text-base font-sygma shadowGreen
+                        className={`material-symbols-outlined  text-green  m-1  text-base font-NT shadowGreen
                     absolute z-40 top-[8px] right-2 tracking-wider ${
                       item.disabled ? "" : "opacity-0"
                     }`}
@@ -442,7 +444,7 @@ function Draggable({ edit, setEdit, spreadData, id }) {
                         defaultValue={item.order}
                         onChange={(e) => handleOptionChange(e, item, i)}
                         className='text-green border-b-green bg-white outline-none bottom-2 shadowBlack
-                        rignt-[10px] pl-7 pr-6 pt-[5px] pb-[4px] rounded-sm bg-opacity-30 absolute font-sygma text-base'
+                        rignt-[10px] pl-7 pr-6 pt-[5px] pb-[4px] rounded-sm bg-opacity-30 absolute font-NT text-base'
                       >
                         {onSave.spread
                           .filter((item) => item !== 0)

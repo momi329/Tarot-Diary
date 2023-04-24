@@ -13,6 +13,7 @@ import ProfileEdit from "../components/ProfileEdit";
 import CommentAndLike from "../components/CommentAndLike";
 import Button from "../components/Button";
 import Star from "../images/Star";
+import { AiOutlineArrowRight } from "react-icons/ai";
 
 import {
   collection,
@@ -23,6 +24,7 @@ import {
   getDoc,
 } from "firebase/firestore";
 import { db } from "../utils/firebase";
+import { SpreadPlace } from "../components/SpreadPlace";
 interface VisitedUser {
   name?: string;
   image?: string;
@@ -170,13 +172,13 @@ function Profile(): JSX.Element {
         console.log("本人");
         getUserDesignAndDiary(userUID); //抓自己的
         getAllFollowingDiaryAndSpread(user); //抓自己和別人的
-        //getAllFollowingSnapShop(user); //監聽別人的
+        getAllFollowingSnapShop(user); //監聽別人的
       } else {
         console.log("別人");
-        //getOtherUserDiaryAndSpread(uid);
+        getOtherUserDiaryAndSpread(uid);
       }
     }
-  }, [isLogin, userUID, uid, following]);
+  }, [isLogin, userUID, uid, user]);
 
   if (!user || !visitedUser) {
     return <></>;
@@ -202,6 +204,7 @@ function Profile(): JSX.Element {
                 page={page}
               />
             )}
+            {/* 編輯個人檔案 */}
             {userUID === uid && page === 6 && <ProfileEdit />}
             {/* 日記 */}
             {userUID === uid && page === 2 && <Diary />}
@@ -334,19 +337,19 @@ const ProfileHeader = ({
       {data.followers && (
         <div className='flex flex-row gap-3 justify-center my-5 items-center py-[10px] px-[15px]'>
           <span className='flex flex-col items-center'>
-            <h3 className='text-3xl font-sygma text-yellow'>
+            <h3 className='text-3xl font-NT text-yellow'>
               {data.followers.length}
             </h3>
-            <p className='text-lg font-sygma text-gold uppercase shadowGold'>
+            <p className='text-lg font-NT text-gold uppercase shadowGold'>
               Followers
             </p>
           </span>
           <Star color={"#E18EA5"} />
           <span className='flex flex-col items-center'>
-            <h3 className='text-3xl font-sygma text-yellow'>
+            <h3 className='text-3xl font-NT text-yellow'>
               {data.following.length}
             </h3>
-            <p className='text-lg font-sygma text-gold uppercase shadowGold tracking-wider'>
+            <p className='text-lg font-NT text-gold uppercase shadowGold tracking-wider'>
               Following
             </p>
           </span>
@@ -426,6 +429,15 @@ const Buttons = ({ page, setPage }) => {
 const UserSpread = ({ userDesign, visitedUser }) => {
   return (
     <section className='flex flex-wrap gap-[8px] w-[100%] mx-auto'>
+      <div
+        className='w-[100%] mr-auto font-poppins p-1 text-yellow gap-1
+          hover:underline-offset-1 flex flex-row items-center justify-end'
+      >
+        <p>Design Your Own </p>
+        <Link to='/design'>
+          <AiOutlineArrowRight />
+        </Link>
+      </div>
       {userDesign.map((spread, index) => {
         return (
           <div className='w-[32%] h-0 pt-[32%] bg-cover relative ' key={index}>
@@ -436,12 +448,12 @@ const UserSpread = ({ userDesign, visitedUser }) => {
                 className='opacity-60 absolute top-0 object-cover left-0 w-[100%] h-[100%]'
               />
             )}
-            <p className='text-xs mt-1 absolute top-2 left-3 text-white shadowWhite tracking-wide font-sygma'>
+            <p className='text-xs mt-1 absolute top-2 left-3 text-white shadowWhite tracking-wide font-NT'>
               PICK A CARD
             </p>
             <div
               className='min-h-[25%] w-[100%]  bg-darkPink bg-opacity-40
-          p-3 pl-4 absolute bottom-0 tracking-widest font-sygma text-base text-yellow'
+          p-3 pl-4 absolute bottom-0 tracking-widest font-NT text-base text-yellow'
             >
               <Link to={`/spread/${spread.spreadId}`}>
                 {" "}
@@ -539,7 +551,7 @@ const Gallary = ({
                     {item.userName}
                   </p>
                   <p
-                    className='font-sygma text-gray shadowGray self-center 
+                    className='font-NT text-gray shadowGray self-center 
                   leading-normal tracking-widest mt-1'
                   >
                     ・{formatTimestamp(item.time)}
@@ -552,7 +564,7 @@ const Gallary = ({
               <>
                 <div
                   className='absolute top-[100px] right-6 cursor-pointer inline-flex
-                  font-sygma text-yellow text-xl '
+                  font-NT text-yellow text-xl '
                   onClick={() => {
                     edit[index]
                       ? handleSave(index)
@@ -562,7 +574,7 @@ const Gallary = ({
                   {edit[index] ? "Save" : "Edit"}
                 </div>
                 <div
-                  className='absolute top-[100px] right-[75px] cursor-pointer font-sygma text-gold text-xl'
+                  className='absolute top-[100px] right-[75px] cursor-pointer font-NT text-gold text-xl'
                   onClick={() => {
                     DeletePost(userUID, item.docId, index);
                   }}
@@ -571,7 +583,7 @@ const Gallary = ({
                 </div>
 
                 <select
-                  className='outline-none font-sygma text-yellow pl-2 pr-20 bg-green ml-auto  
+                  className='outline-none font-NT text-yellow pl-2 pr-20 bg-green ml-auto  
                  w-[30%] h-[38px] pt-1 text-base item-end bg-opacity-90 rounde-md tracking-widest inline-block'
                   disabled={!edit[index]}
                   onChange={(e) => {
@@ -588,20 +600,22 @@ const Gallary = ({
               </>
             )}
           </div>
-          <div className='w-[100%] h-[1px] bg-white bg-opacity-40  mt-3 ' />
+          {userUID === uid && (
+            <div className='w-[100%] h-[1px] bg-white bg-opacity-40  mt-3 ' />
+          )}
           {item.docId ? (
             <>
               <h1 className='ml-4 mt-4 mb-4 font-notoSansJP text-base text-yellow font-light tracking-widest'>
-                {item.question}
+                {item.question === "" ? "" : item.question}
               </h1>
               {/* 多牌牌陣 */}
               {item.spread.includes(0) ? (
-                item.spread.map((q, i) => card(q, i, tarot, true))
+                <SpreadPlace type={item} tarot={tarot} size={"medium"} />
               ) : (
                 <div className='gap-2 flex-row flex   w-[100%] flex-wrap justify-center'>
                   {item.spread.map((q, i) => (
                     <div
-                      className='w-[130px] text-yellow font-sygma tracking-wider shadowYellow '
+                      className='w-[130px] text-yellow font-NT tracking-wider shadowYellow '
                       key={i}
                     >
                       <img
@@ -622,10 +636,9 @@ const Gallary = ({
                 </div>
               )}
               {/* 一般 */}
-
               <span className='flex flex-row justify-between mt-8'>
                 <div className='flex flex-col w-[48%] items-center'>
-                  <p className='ml-3 mb-2 shadowYellow text-yellow font-sygma  tracking-wider text-lg'>
+                  <p className='ml-3 mb-2 shadowYellow text-yellow font-NT  tracking-wider text-lg'>
                     Ask AI
                   </p>
                   <p className='ml-3 text-sm font-notoSansJP leading-6 text-gray'>
@@ -639,7 +652,7 @@ const Gallary = ({
                   <Star color={"#E18EA5"} />
                 </div>
                 <div className='flex flex-col w-[48%] items-center'>
-                  <p className='ml-3 mb-2 shadowYellow text-yellow font-sygma  tracking-wider text-lg'>
+                  <p className='ml-3 mb-2 shadowYellow text-yellow font-NT  tracking-wider text-lg'>
                     Memo
                   </p>
                   {edit[index] ? (
@@ -671,9 +684,9 @@ const Gallary = ({
             <div>
               {item.user && (
                 <Link to={`/spread/${item.spreadId}`}>
-                  <div className='flex flex-row m-2 align-center hover:underline'>
-                    <p className='flex-end flex-grow-1 m-2 text-yellow'>
-                      我在{formatTimestamp(item.time)}新增了一個 {item.title}
+                  <div className='flex flex-row m-2 align-center  '>
+                    <p className='flex-end flex-grow-1 m-2 text-yellow hover:underline'>
+                      我新增了一個 {item.title}
                       牌陣！趕快來占卜喔！
                     </p>
                   </div>
@@ -733,48 +746,3 @@ export function formatTimestamp(timestamp) {
   // 剛剛
   return "just now";
 }
-const card = (item, i, tarot, end) => {
-  return (
-    <div
-      className={`flex justify-center w-[72px] h-[61px] hover:scale-150 transform transition duration-500 ease-in-out hover:z-10`}
-      key={i}
-    >
-      {item !== 0 && (
-        <div
-          className={` rounde-lg w-[95%]  cursor-pointer relative 
-      flex items-center justify-center flex-col  text-white z-1 gap-0 bg-slate-700`}
-        >
-          <Link to={`/card/${item.card}`}>
-            <img
-              src={tarot[item.card].img}
-              alt={tarot[item.card].name}
-              className={`opacity-80 ${
-                item.reverse ? "" : "rotate-180"
-              } w-[100%] absolute top-0 left-0 `}
-            />
-          </Link>
-          <div
-            className={`w-[120%] absolute top-0 right-1 ${
-              item.card !== undefined ? "" : " hover: opacity-100 "
-            }`}
-          >
-            <div className='bg-green opacity-60 w-[100%] h-[100%] rounde-lg z-10' />
-            <p className='absolute bottom--2  text-xs z-10'>{item.value}</p>
-            <p className='absolute bottom--3 z-10'>{item.order}</p>
-            {item.card !== undefined && (
-              <Link to={`/card/${item.card}`}>
-                <div className='absolute bottom-6  z-10 text-xs'>
-                  {tarot[item.card].name}{" "}
-                </div>
-                {""}
-                <div className='absolute bottom-2 z-10 text-xs'>
-                  {item.reverse ? "正位" : "逆位"}
-                </div>
-              </Link>
-            )}
-          </div>
-        </div>
-      )}
-    </div>
-  );
-};

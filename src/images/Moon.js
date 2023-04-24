@@ -1,8 +1,10 @@
-function Moon({ color }) {
+function Moon({ color, width, height }) {
   return (
     <svg
-      width='47'
-      height='52'
+      // width='47'
+      // height='52'
+      width={width}
+      height={height}
       viewBox='0 0 47 52'
       fill='none'
       xmlns='http://www.w3.org/2000/svg'

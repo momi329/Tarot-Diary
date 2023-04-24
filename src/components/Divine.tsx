@@ -5,6 +5,7 @@ import type { SpreadData } from "../pages/Spread";
 import firebase from "../utils/firebase";
 import type { DesignSpreadData } from "../pages/Spread";
 import { useScreenshot } from "use-react-screenshot";
+import Button from "./Button";
 interface Props {
   spreadData: SpreadData;
   setSpreadData: React.Dispatch<React.SetStateAction<SpreadData | undefined>>;
@@ -104,7 +105,11 @@ function Divine({
     dispatch({ type: "end" });
   };
   return (
-    <>{divining === 1 && <button onClick={handleClickDivine}>占卜</button>}</>
+    <>
+      {divining === 1 && (
+        <Button action={handleClickDivine} type={"big"} value={"Divine"} />
+      )}
+    </>
   );
 }
 export default Divine;

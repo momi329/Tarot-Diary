@@ -34,7 +34,7 @@ function ProfileEdit() {
     setModify({ ...modify, [category]: e.target.value });
   };
   return (
-    <div className='font-sygma text-yellow '>
+    <div className='font-NT text-yellow '>
       <div>
         <Button
           action={() => {

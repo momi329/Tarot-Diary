@@ -4,8 +4,7 @@ import { AuthContext } from "../context/authContext";
 import cards from "../tarotcard/tarot-images";
 import Quill from "./Editor/Quill";
 import { openAiKey } from "../config";
-import Button from "./Button";
-
+import Star from "../images/Star";
 interface Message {
   value: string;
   name: string;
@@ -126,24 +125,33 @@ const AskGPT = ({
       });
   }
   return (
-    <>
-      <Button
-        action={() => {
-          handleAsk();
-          setAskAI(true);
-        }}
-        type={"small"}
-        value={"Ask AI"}
-      />
-      {end && askAI && (
-        <>
-          <div className=' w-[60%]  '>
-            <p>{res}</p>
-          </div>
-        </>
-      )}
+    <div className='flex flex-row '>
+      <div className='flex flex-col w-[48%]'>
+        <button
+          onClick={() => {
+            handleAsk();
+            setAskAI(true);
+          }}
+          className='font-NT text-xl hover:underline text-yellow shadowYellow w-20'
+          value={"Ask AI"}
+        >
+          Ask AI
+        </button>
+        {end && askAI && (
+          <>
+            <div className=' text-sm leading-6 text-yellow my-2'>
+              <p>{res}</p>
+            </div>
+          </>
+        )}
+      </div>
+      <div className='flex flex-col gap-2 justify-between items-center '>
+        <Star color={"#E18EA5"} />
+        <div className='my-3 w-[1px] bg-pink h-[100%]' />
+        <Star color={"#E18EA5"} />
+      </div>
       {end && (
-        <div className='w-[60%]'>
+        <div className='w-[48%] mt-2'>
           <Quill
             divinedData={divinedData}
             setDivinedData={setDivinedData}
@@ -156,7 +164,7 @@ const AskGPT = ({
           />
         </div>
       )}
-    </>
+    </div>
   );
 };
 
