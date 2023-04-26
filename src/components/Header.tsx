@@ -7,7 +7,7 @@ const headerItems = (isLogin: boolean, userUID: string) => [
   { title: "Tarot Meanings", link: "/meanings" },
   { title: "Personal Page", link: `/profile/${userUID}` },
   { title: `${isLogin ? "Sign Out" : "Log In"}`, link: "/signin" },
-  { title: "About Us", link: "/aboutus" },
+  { title: "Tarot Divination", link: "/divination" },
 ];
 function Header() {
   const { isLogin, user, userUID, signOut, signIn } = useContext(AuthContext);
@@ -19,15 +19,17 @@ function Header() {
         className='w-[105px] h-[60px] text-yellow text-2xl font-NT text-center 
       tracking-wider z-10 ml-16 '
       >
-        <p className='shadowYellow'>TAROT</p>
-        <p className=' shadowYellow'>DIARY</p>
+        <Link to={"/"}>
+          <p className='shadowYellow'>TAROT</p>
+          <p className=' shadowYellow'>DIARY</p>
+        </Link>
       </div>
       <div className='flex flex-row gap-16 text-lg tracking-widest font-NT text-center text-yellow z-10 mr-16 '>
         {headerItems(isLogin, userUID).map((item, index) => (
           <Link to={item.link}>
             <div
               className='hover:underline-offset-2 pb-[0.3px] shadowYellow'
-              key={index}
+              key={item.title}
             >
               {item.title}
             </div>

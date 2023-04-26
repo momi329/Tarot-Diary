@@ -1,4 +1,5 @@
-import { useState, useReducer, useContext, useEffect } from "react";
+import { useContext } from "react";
+import { useNavigate } from "react-router-dom";
 import firebase from "../../utils/firebase";
 import { AuthContext } from "../../context/authContext";
 
@@ -25,6 +26,7 @@ export default function Quill({
   dispatch,
 }) {
   const { userUID } = useContext(AuthContext);
+  const navigate = useNavigate();
   const initialMarkdownContent = res;
   const onEditorContentChanged = (content: EditorContentChanged) => {
     setDivinedData({ ...divinedData, content: content.markdown });
@@ -40,7 +42,6 @@ export default function Quill({
   }
   const handleSave = () => {
     const newData = { ...divinedData, time: Timestamp.fromDate(new Date()) };
-    console.log(newData);
     createDivinedData(newData, userUID);
     // async function userDiary(userUID, newData) {
     //   try {
@@ -56,6 +57,7 @@ export default function Quill({
     setEnd(false);
     setAskAI(false);
     setRes("");
+    navigate(`/profile/${userUID}`);
   };
 
   return (

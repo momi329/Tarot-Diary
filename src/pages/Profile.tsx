@@ -385,19 +385,23 @@ const Buttons = ({ page, setPage }) => {
   };
   return (
     <div
-      className='flex flex-col text-left font-poppins font-light tracking-wider text-yellow  
-    text-xl items-start   ml-[3%] fixed '
+      className='flex flex-col text-left font-NT font-light  text-yellow  
+    text-2xl items-start   ml-[3%] fixed shadowYellow '
     >
       <button
-        className={`m-4 hover:underline ${page === 1 ? "underline" : ""}`}
+        className={`m-4 hover:underline-offset-1 shadowYellow tracking-wider  ${
+          page === 1 ? "underline" : ""
+        }`}
         onClick={() => {
           switchPage(1);
         }}
       >
-        Home
+        Explore
       </button>
       <button
-        className={`m-4 hover:underline ${page === 2 ? "underline" : ""}`}
+        className={`m-4 hover:underline-offset-1 shadowYellow tracking-wider  ${
+          page === 2 ? "underline" : ""
+        }`}
         onClick={() => {
           switchPage(2);
         }}
@@ -405,17 +409,21 @@ const Buttons = ({ page, setPage }) => {
         Diary
       </button>
 
-      <button
-        className={`m-4 hover:underline ${page === 3 ? "underline" : ""}`}
+      {/* <button
+        className={`m-4 hover:underline-offset-1 ${
+          page === 3 ? "underline" : ""
+        }`}
         onClick={() => {
           switchPage(3);
         }}
       >
         Profile
-      </button>
+      </button> */}
 
       <button
-        className={`m-4 hover:underline ${page === 4 ? "underline" : ""}`}
+        className={`m-4 hover:underline-offset-1 shadowYellow tracking-wider ${
+          page === 4 ? "underline" : ""
+        }`}
         onClick={() => {
           switchPage(4);
         }}

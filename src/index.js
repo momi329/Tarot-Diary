@@ -11,11 +11,14 @@ import Divine from "./components/Divine";
 import AskGPT from "./components/AksGPT";
 import Profile from "./pages/Profile";
 import Meaning from "./pages/Meanings";
+
+import Home from "./pages/Home";
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <BrowserRouter>
     <Routes>
       <Route path='/' element={<App />}>
+        <Route index element={<Home />} />
         <Route path='/signin' element={<Member />} />
         <Route path='/profile/:uid' element={<Profile />} />
         <Route path='/design' element={<Draggable />} />
@@ -23,7 +26,7 @@ root.render(
         <Route path='/card/:id' element={<TarotCard />} />
         <Route path='/divine' element={<Divine />} />
         <Route path='/ask' element={<AskGPT />} />
-        <Route path='/meaning' element={<Meaning />} />
+        <Route path='/meanings' element={<Meaning />} />
       </Route>
     </Routes>
   </BrowserRouter>

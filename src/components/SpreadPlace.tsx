@@ -4,14 +4,14 @@ export const SpreadPlace = ({ type, tarot, size }) => {
   let widthAndHeight;
   if (size === "large") {
     widthAndHeight = {
-      a: " max-w-screen-md mb-6 ",
+      a: " max-w-screen-md mb-6 p-[30px]",
       b: " w-[119px] h-[93px] ",
       c: " w-[117px] h-[186px] gap-2 ",
       scale: "",
     };
   } else if (size === "medium") {
     widthAndHeight = {
-      a: " w-[542px] mb-5 ",
+      a: " w-[542px] mb-5 p-5",
       b: " w-[57px] h-[46px] ",
       c: " w-[56px] h-[93px] gap-2 ",
       scale:
@@ -21,7 +21,9 @@ export const SpreadPlace = ({ type, tarot, size }) => {
   return (
     <div
       className={`flex flex-wrap justify-center  border border-yellow z-1 
-  mx-auto  border-opacity-50  ${widthAndHeight.a} ${widthAndHeight.scale} min-h-[350px]`}
+  mx-auto  border-opacity-50  ${widthAndHeight.a} ${
+        widthAndHeight.scale
+      } min-h-[350px] ${type.userUID === "all" ? "border-none" : ""}`}
     >
       {type.spread.map((item: any, i: number) => {
         return (
@@ -31,9 +33,13 @@ export const SpreadPlace = ({ type, tarot, size }) => {
           >
             {item !== 0 && (
               <div
-                className={` rounded-xl ${widthAndHeight.c} cursor-pointer relative box-border 
+                className={` rounded-xl ${
+                  widthAndHeight.c
+                } cursor-pointer relative box-border 
                flex items-center justify-center flex-col bg-slate-800 text-yellow z-0  bg-opacity-80
-               ${widthAndHeight.scale} `}
+               ${widthAndHeight.scale}  ${
+                  type.userUID === "all" ? "scale-125" : ""
+                }`}
               >
                 {item.card !== undefined ? (
                   <Link to={`/card/${item.card}`}>

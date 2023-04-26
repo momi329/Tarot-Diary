@@ -104,7 +104,6 @@ function Spread() {
   const [end, setEnd] = useState<boolean>(false);
   const [askAI, setAskAI] = useState<boolean>(false);
   const [edit, setEdit] = useState<boolean>(false);
-  const [showAI, setShowAI] = useState<boolean>(true);
   useEffect(() => {
     async function getDesign(id: string): Promise<void> {
       const newData = await firebase.getDesign(id);
@@ -244,7 +243,7 @@ function Spread() {
         style={{ backgroundImage: `url(${spreadData.image})` }}
         className='w-screen h-[300px] bg-cover bg-center opacity-75'
       />
-      <div className='mx-auto text-yellow w-[1080px] mt-10 relative mb-20'>
+      <div className={`mx-auto text-yellow w-[1080px] mt-10 relative mb-20 `}>
         <div className='flex flex-row justify-between'>
           <span className='flex flex-col'>
             <h1 className='text-3xl font-NT  tracking-wideest'>
@@ -327,6 +326,7 @@ function Spread() {
                 (acc: any, crr) => (crr !== 0 ? acc + 1 : acc),
                 0
               )}
+              type={"big"}
             />
             <Divine
               spreadData={spreadData}
@@ -401,8 +401,12 @@ flex items-center justify-center flex-col  text-white z-1 gap-2 bg-slate-700`}
     </div>
   );
 };
-export const SelectCard = ({ number }) => {
+export const SelectCard = ({ number, type }) => {
   const [cardArr, setCardArr] = useState(new Array(24).fill(false));
+  let style;
+  if (type === "big") {
+    style = {};
+  }
   return (
     <div className='flex flex-row w-[90%] h-[350px] justify-center relative mt-5 '>
       {cardArr.map((card, index) => {

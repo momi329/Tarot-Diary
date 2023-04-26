@@ -1,7 +1,10 @@
 import pinkFlower1 from "../images/pinkflower1.jpeg";
 
 function Background() {
-  const isProfile = window.location.pathname.includes("/profile/");
+  const isProfile =
+    window.location.pathname.includes("/profile/") ||
+    window.location.pathname.includes("/meanings") ||
+    window.location.pathname === "/";
   return (
     <>
       <div

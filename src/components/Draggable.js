@@ -1,8 +1,10 @@
 import React, { useState, useEffect, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { v4 as uuidv4 } from "uuid";
-import { FiEdit } from "react-icons/fi";
 import { RxCross1 } from "react-icons/rx";
+import { VscAdd } from "react-icons/vsc";
+import { AiOutlineMinus } from "react-icons/ai";
+
 import MyImages from "./MyImages";
 import firebase, { db } from "../utils/firebase";
 import { doc, updateDoc, Timestamp, setDoc } from "firebase/firestore";
@@ -18,52 +20,6 @@ function Draggable({ edit, setEdit, spreadData, id }) {
     image: "",
     spread: [
       { name: uuidv4(), value: "", disabled: true, order: 1 },
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
       0,
       0,
       0,
@@ -367,15 +323,14 @@ function Draggable({ edit, setEdit, spreadData, id }) {
           <Button action={() => saveIt()} type={"small"} value={"SAVE"} />
         </div>
       </div>
-
       <div
         className='flex flex-wrap justify-center max-w-screen-md border border-yellow z-1 
-      mx-auto  border-opacity-50 mb-44'
+      mx-auto  border-opacity-50 mb-14 p-[30px] '
       >
         {onSave.spread.map((item, i) => {
           return (
             <div
-              className={`flex justify-center box-border w-[119px] h-[93px] ${
+              className={`flex justify-center box-border w-[144px] h-[113px] ${
                 shine[i] ? "bg-pink opacity-60" : ""
               }`}
               key={i}
@@ -387,7 +342,7 @@ function Draggable({ edit, setEdit, spreadData, id }) {
               {item !== 0 && (
                 <div
                   style={{ background: `center/contain url(${lightCard})` }}
-                  className={` rounded-xl w-[117px] h-[186px] cursor-pointer relative box-border 
+                  className={` rounded-xl w-[138px] h-[220px] cursor-pointer relative box-border 
                   flex items-center justify-center flex-col bg-slate-800 text-yellow z-10 gap-2 bg-opacity-80`}
                   draggable={true} //TODO
                   onDragStart={(e) => {
@@ -461,6 +416,42 @@ function Draggable({ edit, setEdit, spreadData, id }) {
             </div>
           );
         })}
+      </div>
+      <div className='flex flex-row gap-5 w-[300px] mx-auto mb-40'>
+        <div
+          className='w-20 h-20 rounded-full  border-[2px] border-pink mx-auto justify-center items-center flex 
+         hover:bg-pink hover:bg-opacity-60 hover:text-yellow hover:border-yellow hover:shadowYellow
+        font-NT shadowPink text-8xl text-pink leading-4 text-center opacity-90 z-[2]'
+          onClick={() => {
+            const newOnsave = { ...onSave };
+            const newLine = [0, 0, 0, 0, 0, 0, 0];
+            newOnsave.spread.push(...newLine);
+            // console.log(newOnsave);
+            console.log(newOnsave);
+            setOnSave(newOnsave);
+          }}
+        >
+          <VscAdd className='w-10 h-10 self-center' />
+          <div></div>
+        </div>
+
+        <div
+          className='w-20 h-20 rounded-full  border-[2px] border-pink mx-auto justify-center items-center flex 
+         hover:bg-pink hover:bg-opacity-60 hover:text-yellow hover:border-yellow hover:shadowYellow
+        font-NT shadowPink text-8xl text-pink leading-4 text-center opacity-90 z-[2]'
+          onClick={() => {
+            const newOnsave = { ...onSave };
+            if (newOnsave.spread.length > 28) {
+              const newArray = newOnsave.spread.slice(
+                0,
+                newOnsave.spread.length - 7
+              );
+              setOnSave({ ...newOnsave, spread: newArray });
+            }
+          }}
+        >
+          <AiOutlineMinus className='w-10 h-10 self-center' />
+        </div>
       </div>
     </>
   );
