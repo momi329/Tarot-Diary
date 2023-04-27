@@ -28,7 +28,7 @@ const CommentAndLike = ({
       userImage: user.image,
     });
   };
-  const comment = async (e, index) => {
+  const comment = async (index) => {
     if (uid === userUID && page === 1) {
       const newFriendPost = [...friendsPosts];
       let comments = newFriendPost[index].comment;
@@ -173,7 +173,7 @@ const CommentAndLike = ({
             <Button
               type={"tiny"}
               value={"Enter"}
-              action={(e) => comment(e, index)}
+              action={() => comment(index)}
             />
             <Button
               type={"tiny"}

@@ -20,11 +20,7 @@ export interface EditorProps {
   value?: string;
   onChange?: (changes: EditorContentChanged) => void;
 }
-const uploadImage = async (file) => {
-  // const imageURL = await firebase.uploadImage(file);
-  // console.log("imageURL", imageURL);
-  // return imageURL;
-};
+
 const TOOLBAR_OPTIONS = [
   [{ header: [1, 2, 3, false] }],
   ["bold", "italic", "underline", "blockquote"],
@@ -53,8 +49,7 @@ export default function Editor(props: EditorProps) {
     <>
       <ReactQuill
         ref={reactQuillRef}
-        // theme='snow'
-        placeholder='Start writing...'
+        theme='snow'
         modules={{
           toolbar: {
             container: TOOLBAR_OPTIONS,
@@ -68,7 +63,7 @@ export default function Editor(props: EditorProps) {
         }}
         value={value}
         onChange={onChange}
-        className='min-h-[100px] text-yellow placeholder:text-gray'
+        className='min-h-[150px] w-[95%] text-yellow ml-24 mr-4'
       />
     </>
   );

@@ -25,6 +25,7 @@ interface AuthContextType {
   isLogin: boolean;
   user: User;
   loading: boolean;
+  setLoading: React.Dispatch<React.SetStateAction<boolean>>;
   userUID: string;
   setUser: (user: User) => void;
   signIn: (
@@ -48,6 +49,7 @@ export const AuthContext = createContext<AuthContextType>({
   },
   setUser: (user: User) => {},
   loading: false,
+  setLoading: () => {},
   userUID: "",
   signIn: async () => {},
   signOut: async () => {},
@@ -65,7 +67,7 @@ const initialUserData: User = {
 export const AuthContextProvider: React.FC = ({ children }: any) => {
   const [isLogin, setIsLogin] = useState(false);
   const [user, setUser] = useState<User>(initialUserData);
-  const [loading, setLoading] = useState<boolean>(true);
+  const [loading, setLoading] = useState<boolean>(false);
   const [userUID, setUserUID] = useState<string>("");
   const navigate = useNavigate();
   async function getUsers(userUID) {
@@ -174,6 +176,7 @@ export const AuthContextProvider: React.FC = ({ children }: any) => {
         user,
         setUser,
         loading,
+        setLoading,
         userUID,
         signIn,
         signOut,

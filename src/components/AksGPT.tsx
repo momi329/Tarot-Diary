@@ -18,8 +18,6 @@ const tarot = cards.cards;
 const AskGPT = ({
   divinedData,
   setDivinedData,
-  end,
-  setEnd,
   askAI,
   setAskAI,
   divining,
@@ -36,29 +34,17 @@ const AskGPT = ({
     },
   ]);
   const [res, setRes] = useState([]);
-  // const [article, setArticle] = useState({
-  //   ...divinedData,
-  //   content: "",
-  //   askGpt: "",
-  //   time: "",
-  // });
+  const { loading, setLoading } = useContext(AuthContext);
+
   useEffect(() => {
     const divinedResult = divinedData.spread.filter((data) => data !== 0);
     setMessages(divinedResult);
-  }, [end, divinedData.spread]);
-  // useEffect(() => {
-  //   setArticle({
-  //     ...divinedData,
-  //     content: "",
-  //     askGpt: "",
-  //     time: "",
-  //   });
-  // }, [messages, divinedData]);
+  }, [divinedData.spread]);
 
   const handleAsk = async () => {
     console.log("messages", messages);
     console.log("openAiKey", openAiKey);
-
+    setLoading(true);
     const message = `我問塔羅牌${divinedData.question}，我在${messages.map(
       (mes) =>
         `${mes.value}的位置抽到${tarot[mes.card].name} ${
@@ -73,23 +59,8 @@ const AskGPT = ({
       },
     ];
     await processMessageToChatGPT(newMessage);
+    setLoading(false);
   };
-
-  //   async function storeQuestionAndAnswer(
-  //     question: { message: any },
-  //     answer: { message: any; sender?: string }
-  //   ) {
-  //     try {
-  //       const userRef = doc(db, "users", userUID, "diary", userUID);
-  //       await updateDoc(userRef, {
-  //         question: question.message,
-  //         answer: answer.message,
-  //         timestamp: Timestamp.fromDate(new Date()),
-  //       });
-  //     } catch (error) {
-  //       console.error("Error writing document: ", error);
-  //     }
-  //   }
 
   async function processMessageToChatGPT(newMessage: any[]) {
     let apiMessages = newMessage.map((messageObject) => {
@@ -126,8 +97,40 @@ const AskGPT = ({
   }
   return (
     <div className='flex flex-row '>
-      <div className='flex flex-col w-[48%]'>
+      <div className='flex flex-col w-[48%] '>
         <button
+          className={`text-xl font-NT text-pink tracking-[1px] 
+          flex flex-row gap-4  duration-1000 ${
+            askAI || loading ? "" : "animate-bounce"
+          }
+               group-hover:opacity-1  p-4 bg-black/40 w-[80%] items-center justify-start`}
+          onClick={() => {
+            handleAsk();
+            setAskAI(true);
+          }}
+          disabled={askAI}
+        >
+          <Star color={"#F4E4C3"} />
+          {loading ? (
+            <>
+              <p className='shadowPink'>Asking AI </p>
+              <div className='container self-start'>
+                <div className='block'></div>
+                <div className='block'></div>
+                <div className='block'></div>
+                <div className='block'></div>
+              </div>
+            </>
+          ) : (
+            <div>
+              <p className='shadowPink'> Ask AI Get Your Tarot Reading!</p>
+              <p className='text-base text-gray font-notoSansJP text-start'>
+                點擊按紐等待AI智慧塔羅解牌
+              </p>
+            </div>
+          )}
+        </button>
+        {/* <button
           onClick={() => {
             handleAsk();
             setAskAI(true);
@@ -136,8 +139,8 @@ const AskGPT = ({
           value={"Ask AI"}
         >
           Ask AI
-        </button>
-        {end && askAI && (
+        </button> */}
+        {divining === 3 && askAI && (
           <>
             <div className=' text-sm leading-6 text-yellow my-2'>
               <p>{res}</p>
@@ -150,12 +153,24 @@ const AskGPT = ({
         <div className='my-3 w-[1px] bg-pink h-[100%]' />
         <Star color={"#E18EA5"} />
       </div>
-      {end && (
-        <div className='w-[48%] mt-2'>
+      {divining === 3 && (
+        <div className='w-[48%] '>
+          <button
+            className='text-xl font-NT text-pink tracking-[1px] mb-7 mx-auto
+          flex flex-row gap-4 hover:animate-bounce hover:animate-pulse cursor-auto
+               group-hover:opacity-1  p-4 bg-black/40 w-[80%] items-center justify-start'
+          >
+            <Star color={"#F4E4C3"} />
+            <div>
+              <p className='shadowPink'> Write Your Diary!</p>
+              <p className='text-base text-gray font-notoSansJP text-start'>
+                寫下一些筆記心得吧！
+              </p>
+            </div>
+          </button>
           <Quill
             divinedData={divinedData}
             setDivinedData={setDivinedData}
-            setEnd={setEnd}
             setAskAI={setAskAI}
             res={res}
             setRes={setRes}

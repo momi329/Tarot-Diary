@@ -4,26 +4,27 @@ export const SpreadPlace = ({ type, tarot, size }) => {
   let widthAndHeight;
   if (size === "large") {
     widthAndHeight = {
-      a: " max-w-screen-md mb-6 p-[30px]",
-      b: " w-[119px] h-[93px] ",
-      c: " w-[117px] h-[186px] gap-2 ",
+      a: " max-w-screen-md mb-12 p-[30px]",
+      b: " w-[144px] h-[113px] ",
+      c: " w-[138px] h-[220px] gap-2 ",
       scale: "",
     };
   } else if (size === "medium") {
     widthAndHeight = {
       a: " w-[542px] mb-5 p-5",
-      b: " w-[57px] h-[46px] ",
-      c: " w-[56px] h-[93px] gap-2 ",
+      b: " w-[71px] h-[60px] ",
+      c: " w-[70px] h-[120px] gap-2 ",
       scale:
         " hover:transform hover:scale-125 transition duration-300 hover:z-10 ",
     };
   }
+  // backdrop-blur-sm bg-white/10
   return (
     <div
       className={`flex flex-wrap justify-center  border border-yellow z-1 
-  mx-auto  border-opacity-50  ${widthAndHeight.a} ${
+  mx-auto  border-opacity-50  ${widthAndHeight.a} border-none  ${
         widthAndHeight.scale
-      } min-h-[350px] ${type.userUID === "all" ? "border-none" : ""}`}
+      } min-h-[350px] ${type.userUID === "all" ? "pt-[60px]" : ""}`}
     >
       {type.spread.map((item: any, i: number) => {
         return (
@@ -38,7 +39,7 @@ export const SpreadPlace = ({ type, tarot, size }) => {
                 } cursor-pointer relative box-border 
                flex items-center justify-center flex-col bg-slate-800 text-yellow z-0  bg-opacity-80
                ${widthAndHeight.scale}  ${
-                  type.userUID === "all" ? "scale-125" : ""
+                  type.userUID === "all" ? "scale-110" : ""
                 }`}
               >
                 {item.card !== undefined ? (
@@ -57,7 +58,10 @@ export const SpreadPlace = ({ type, tarot, size }) => {
                       <p className='text-5xl font-NT text-green ml-2'>
                         {item.order}
                       </p>
-                      <p className='text-sm font-NT text-green mt-[70px] w-[100%] tracking-widest px-2 py-2 bg-cream bg-opacity-30'>
+                      <p
+                        className='text-sm font-notoSansJP text-green mt-[70px] w-[100%] bg-cream/20 backdrop-blur-sm
+                      tracking-widest px-2 py-2 bg-cream bg-opacity-30 '
+                      >
                         {item.value}
                       </p>
                     </div>

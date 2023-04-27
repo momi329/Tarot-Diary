@@ -24,6 +24,9 @@ body {
     display: none;
   }
 }
+.shadowself {
+  text-shadow: 0px 0px 8px black;
+}
 .shadowWhite {
   text-shadow: 0 0 white, 0 0 white, 0 0 white;
 }
@@ -34,7 +37,7 @@ body {
   text-shadow: 0 0 #000, 0 0 #000, 0 0 #000;
 }
 .shadowGreen {
-  text-shadow: 0 0 #222e29, 0 0 #222e29, 0 0 #222e29;
+  text-shadow: 0 0 #222e29, 0 0 #222e29;
 }
 .shadowGold {
   text-shadow: 0 0 #9f8761, 0 0 #9f8761, 0 0 #9f8761;
@@ -50,15 +53,69 @@ input {
   outline: none;
 }
 .ql-toolbar {
+  border: none;
   background: white;
-  opacity: 0.3;
-  :hover {
-    color: #e18ea5;
-  }
 }
 .ql-formats {
   color: white;
 }
-.ql-editor {
-  border: 0px solid;
+.ql-editor .ql-container .ql-snow {
+  border: 0px solid #e18ea5;
+  padding-bottom: 40px;
+  opacity: 0.2;
+}
+
+.ql-formats {
+  opacity: 0.6;
+}
+
+.container {
+  width: 70px;
+  margin-top: auto;
+  margin-bottom: auto;
+}
+
+.block {
+  position: relative;
+  box-sizing: border-box;
+  float: left;
+  margin: 0 5px 5px 0;
+  width: 5px;
+  height: 5px;
+  border-radius: 3px;
+  background: #fff;
+}
+
+.block:nth-child(4n + 1) {
+  animation: wave_23 2s ease 0s infinite;
+}
+
+.block:nth-child(4n + 2) {
+  animation: wave_23 2s ease 0.2s infinite;
+}
+
+.block:nth-child(4n + 3) {
+  animation: wave_23 2s ease 0.4s infinite;
+}
+
+.block:nth-child(4n + 4) {
+  animation: wave_23 2s ease 0.6s infinite;
+  margin-right: 0;
+}
+
+@keyframes wave_23 {
+  0% {
+    top: 0;
+    opacity: 1;
+  }
+
+  50% {
+    top: 10px;
+    opacity: 0.2;
+  }
+
+  100% {
+    top: 0;
+    opacity: 1;
+  }
 }

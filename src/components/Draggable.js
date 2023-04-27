@@ -6,7 +6,7 @@ import { VscAdd } from "react-icons/vsc";
 import { AiOutlineMinus } from "react-icons/ai";
 
 import MyImages from "./MyImages";
-import firebase, { db } from "../utils/firebase";
+import { db } from "../utils/firebase";
 import { doc, updateDoc, Timestamp, setDoc } from "firebase/firestore";
 import { AuthContext } from "../context/authContext";
 import Button from "./Button";
@@ -15,7 +15,7 @@ function Draggable({ edit, setEdit, spreadData, id }) {
   const [onSave, setOnSave] = useState({
     spreadId: "",
     title: "",
-    discription: "",
+    description: "",
     userUID: "",
     image: "",
     spread: [
@@ -169,6 +169,7 @@ function Draggable({ edit, setEdit, spreadData, id }) {
           spreadId: id,
           time: Timestamp.fromDate(new Date()),
         };
+        // navigate(`/spread/${id}`);
       }
       if (onSave.userUID === "") {
         newData = {
@@ -180,11 +181,10 @@ function Draggable({ edit, setEdit, spreadData, id }) {
       await setDoc(doc(db, "spreads", newData.spreadId), newData);
       navigate(`/spread/${newData.spreadId}`);
     }
-    alert("Success");
     setOnSave({
       spreadId: "",
       title: "",
-      discription: "",
+      description: "",
       userUID: "",
       image: "",
       spread: [
@@ -301,10 +301,10 @@ function Draggable({ edit, setEdit, spreadData, id }) {
               className='w-[100%] h-[130px] pl-2 pb-16 border-b-[1px] text-yellow
                border-yellow  tracking-wider placeholder:text-gray placeholder:opacity-75'
               type='text'
-              name='discription'
+              name='description'
               placeholder='請描述一下此牌陣的用法'
-              value={onSave.discription}
-              onChange={(e) => inputChange(e, "discription")}
+              value={onSave.description}
+              onChange={(e) => inputChange(e, "description")}
               disabled={saved}
             />
           </form>
@@ -325,7 +325,7 @@ function Draggable({ edit, setEdit, spreadData, id }) {
       </div>
       <div
         className='flex flex-wrap justify-center max-w-screen-md border border-yellow z-1 
-      mx-auto  border-opacity-50 mb-14 p-[30px] '
+      mx-auto  border-opacity-50 mb-14 p-[30px] pb-[133px] backdrop-blur-sm bg-white/10 '
       >
         {onSave.spread.map((item, i) => {
           return (
@@ -364,10 +364,10 @@ function Draggable({ edit, setEdit, spreadData, id }) {
                   ) : (
                     <>
                       <textarea
-                        className={`p-2 outline-none opacity-80 absolute top-8 text-green rounded-lg text-center 
-                    w-[95px] h-[110px] resize-none  z-20 text-base text-slate-700 font-normal font-notoSansJP tracking-widest
+                        className={`p-2 outline-none opacity-100 absolute top-9 text-green rounded-lg text-center 
+                    w-[100px] h-[130px] resize-none  z-20 text-base text-slate-700 font-normal font-notoSansJP tracking-widest
                     ${
-                      item.disabled ? " text-green opacity-0 bg-slate-300 " : ""
+                      item.disabled ? " text-green bg-opacity-40 bg-white " : ""
                     }`}
                         type='text'
                         disabled={item.disabled}

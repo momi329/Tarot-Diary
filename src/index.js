@@ -11,7 +11,7 @@ import Divine from "./components/Divine";
 import AskGPT from "./components/AksGPT";
 import Profile from "./pages/Profile";
 import Meaning from "./pages/Meanings";
-
+import Divination from "./pages/Divination";
 import Home from "./pages/Home";
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
@@ -27,6 +27,7 @@ root.render(
         <Route path='/divine' element={<Divine />} />
         <Route path='/ask' element={<AskGPT />} />
         <Route path='/meanings' element={<Meaning />} />
+        <Route path='/divination' element={<Divination />} />
       </Route>
     </Routes>
   </BrowserRouter>

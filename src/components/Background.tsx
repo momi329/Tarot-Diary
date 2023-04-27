@@ -4,6 +4,7 @@ function Background() {
   const isProfile =
     window.location.pathname.includes("/profile/") ||
     window.location.pathname.includes("/meanings") ||
+    window.location.pathname.includes("/spread") ||
     window.location.pathname === "/";
   return (
     <>

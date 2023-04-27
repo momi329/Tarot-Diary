@@ -13,11 +13,12 @@ function MyImages({ onSave, setOnSave }) {
     const unsplash = createApi({ accessKey: Key });
     unsplash.photos
       .getRandom({
-        count: 16,
+        count: 26,
         page: 1,
         query: search,
         orientation: "portrait",
       })
+      //"portrait"
       .then((result) => {
         if (result.errors) {
           // handle error here
@@ -30,7 +31,7 @@ function MyImages({ onSave, setOnSave }) {
       });
   };
   useEffect(() => {
-    fetchPhotos("flowers");
+    fetchPhotos(" flowers dark background ");
   }, [isOpen]);
   //暫時關掉
   const chooseImg = (img) => {
@@ -46,13 +47,13 @@ function MyImages({ onSave, setOnSave }) {
   return (
     <>
       <div
-        className='w-[100%] h-[316px] border-[1px] border-yellow relative bg-cover bg-center opacity-70'
+        className='w-[100%] h-[316px] border-[1px] border-yellow relative z-10 bg-cover bg-center opacity-70'
         style={{ backgroundImage: `url(${onSave.image})` }}
       >
         {isOpen ? (
           <div
             className='w-[350px]  flex flex-wrap flex-col  text-yellow
-          p-4 pt-1 bg-darkPinks bg-opacity-30 absolute top-0 right-0 z-30 '
+          p-4 pt-1 bg-darkPink bg-opacity-60 absolute top-0 right-0 '
           >
             <div
               className='w-[100%] flex flex-wrap  flex-row items-center 

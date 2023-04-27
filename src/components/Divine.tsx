@@ -1,36 +1,27 @@
-import { useState, useEffect, useContext, createRef } from "react";
+import { useState, useEffect, useContext } from "react";
 import { AuthContext } from "../context/authContext";
 import cards from "../tarotcard/tarot-images";
 import type { SpreadData } from "../pages/Spread";
-import firebase from "../utils/firebase";
 import type { DesignSpreadData } from "../pages/Spread";
-import { useScreenshot } from "use-react-screenshot";
 import Button from "./Button";
 interface Props {
   spreadData: SpreadData;
   setSpreadData: React.Dispatch<React.SetStateAction<SpreadData | undefined>>;
-  end: boolean;
-  setEnd: React.Dispatch<React.SetStateAction<boolean>>;
   divinedData: any;
   setDivinedData: React.Dispatch<React.SetStateAction<DesignSpreadData>>;
   divining: number;
   dispatch: React.Dispatch<any>;
-  image: any;
-  imgRef: any;
-  takeScreenshot: any;
+  pickCard: Number[];
 }
 
 function Divine({
   spreadData,
   setSpreadData,
-  setEnd,
   divinedData,
   setDivinedData,
   divining,
   dispatch,
-  image,
-  imgRef,
-  takeScreenshot,
+  pickCard,
 }: Props) {
   const { isLogin, user, userUID } = useContext(AuthContext);
   const number = spreadData.spread.reduce(
@@ -101,13 +92,18 @@ function Divine({
     );
     const newData = { ...divinedData, spread: modifiedData };
     setDivinedData(newData);
-    setEnd(true);
+
     dispatch({ type: "end" });
   };
   return (
     <>
       {divining === 1 && (
-        <Button action={handleClickDivine} type={"big"} value={"Divine"} />
+        <Button
+          action={handleClickDivine}
+          disabled={pickCard[0] !== pickCard[1] || divinedData.question === ""}
+          type={"big"}
+          value={"Divine"}
+        />
       )}
     </>
   );

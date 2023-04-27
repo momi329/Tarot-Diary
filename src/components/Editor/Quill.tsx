@@ -4,21 +4,13 @@ import firebase from "../../utils/firebase";
 import { AuthContext } from "../../context/authContext";
 
 import Editor, { EditorContentChanged } from "./Editor";
-import Viewer from "./Viewer";
-import {
-  doc,
-  setDoc,
-  Timestamp,
-  updateDoc,
-  arrayUnion,
-} from "firebase/firestore";
-import { db } from "../../utils/firebase";
+
+import { Timestamp } from "firebase/firestore";
 import Button from "../Button";
 
 export default function Quill({
   res,
   setRes,
-  setEnd,
   divinedData,
   setDivinedData,
   setAskAI,
@@ -54,19 +46,22 @@ export default function Quill({
     // }
     dispatch({ type: "preview" });
     // userDiary(userUID, newData);
-    setEnd(false);
     setAskAI(false);
     setRes("");
     navigate(`/profile/${userUID}`);
   };
 
   return (
-    <div className='w-[100%] flex flex-col'>
+    <div className='w-[100%]  flex flex-col justify-center items-center'>
+      <p className='text-gray text-sm tracking-widest  self-start ml-14 mb-3'>
+        記得按下儲存，才能紀錄占卜結果喔！
+      </p>
       <Editor
         value={initialMarkdownContent}
         onChange={onEditorContentChanged}
       />
-      <div className='self-end mt-2'>
+
+      <div className='self-end mt-2 animate-bounce '>
         <Button action={handleSave} type={"small"} value={"Save"} />
       </div>
     </div>
