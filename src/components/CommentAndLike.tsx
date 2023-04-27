@@ -149,7 +149,7 @@ const CommentAndLike = ({
                   <p className='font-notoSansJP font-light text-yellow tracking-widest flex-grow'>
                     {comment.comment}
                   </p>
-                  {user.userUID === uid && (
+                  {user.userUID === comment.user && (
                     <button
                       onClick={() => {
                         deleteComment(index, q);
