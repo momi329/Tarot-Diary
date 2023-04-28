@@ -7,14 +7,13 @@ import Diary from "../components/Diary";
 import firebase from "../utils/firebase";
 import cards from "../tarotcard/tarot-images";
 import Viewer from "../components/Editor/Viewer";
-import Member from "./Member";
 import Editor from "../components/Editor/Editor";
 import ProfileEdit from "../components/ProfileEdit";
 import CommentAndLike from "../components/CommentAndLike";
 import Button from "../components/Button";
 import Star from "../images/Star";
 import { AiOutlineArrowRight } from "react-icons/ai";
-
+import Loading from "../components/Loading";
 import {
   collection,
   query,
@@ -46,6 +45,7 @@ function Profile(): JSX.Element {
   const [friendsPosts, setFriendsPosts] = useState<DocumentData[] | never[]>(
     []
   );
+
   useEffect(() => {
     initialFollowing();
   }, [userUID]);
@@ -192,8 +192,24 @@ function Profile(): JSX.Element {
             {userUID && <Buttons setPage={setPage} page={page} />}
           </div>
           <div className=' h-[100%] w-6/12'>
-            <Toggle page={page} setPage={setPage} />
+            {page === 2 || page === 3 ? (
+              <Toggle page={page} setPage={setPage} />
+            ) : (
+              <></>
+            )}
             {page === 1 && (
+              <Gallery
+                visitedUser={visitedUser}
+                setVisitedUser={setVisitedUser}
+                userDiary={userDiary}
+                uid={uid}
+                userUID={userUID}
+                friendsPosts={friendsPosts}
+                setFriendsPosts={setFriendsPosts}
+                page={page}
+              />
+            )}
+            {page === 3 && (
               <Gallery
                 visitedUser={visitedUser}
                 setVisitedUser={setVisitedUser}
@@ -411,6 +427,7 @@ const UserSpread = ({ userDesign, visitedUser }) => {
     </section>
   );
 };
+
 const Gallery = ({
   visitedUser,
   setVisitedUser,
@@ -430,26 +447,36 @@ const Gallery = ({
     userImage: "",
     comment: "",
   });
-  const { user } = useContext(AuthContext);
-  if (
-    visitedUser.length === 0 &&
-    userDiary.length === 0 &&
-    friendsPosts.length === 0
-  )
-    return <div></div>;
+  const { user, loading, setLoading } = useContext(AuthContext);
+  const [data, setData] = useState([]);
   const tarot = cards.cards;
-  let data;
-  if (uid === userUID && page === 5) {
-    data = userDiary;
-    console.log("userDiary", userDiary);
-  }
-  if (uid === userUID && page === 1) {
-    data = friendsPosts;
-    console.log("friendsPosts", friendsPosts);
-  } else {
-    data = visitedUser.diary;
-    console.log("visitedUser", visitedUser);
-  }
+  useEffect(() => {
+    let post;
+    if (
+      visitedUser.length === 0 ||
+      friendsPosts.length === 0 ||
+      visitedUser.length === 0
+    )
+      return;
+    if (uid === userUID && page === 3) {
+      console.log("1");
+      post = userDiary.slice(0, 5);
+      setData(post);
+      console.log("userDiary", userDiary);
+    }
+    if (uid === userUID && page === 1) {
+      console.log("2", friendsPosts);
+      post = friendsPosts.slice(0, 5);
+      setData(post);
+    }
+    if (visitedUser) {
+      console.log("3", visitedUser);
+      post = visitedUser.diary.slice(0, 5);
+      setData(post);
+    }
+    console.log("4");
+  }, [visitedUser, friendsPosts, userDiary]);
+
   const handleSave = async (index) => {
     await firebase.updateDiary(userUID, data[index].docId, newEdit);
     data[index].content = newEdit.content;
@@ -475,13 +502,28 @@ const Gallery = ({
     newData.splice(index, 1);
     setFriendsPosts(newData);
   };
-
+  const seeMore = () => {
+    setLoading(true);
+    const more = data.length + 5;
+    if (uid === userUID && page === 3) {
+      setData(userDiary.slice(0, more));
+      setLoading(false);
+    }
+    if (uid === userUID && page === 1) {
+      setData(friendsPosts.slice(0, more));
+      setLoading(false);
+    } else {
+      setData(visitedUser.diary.slice(0, more));
+      setLoading(false);
+    }
+  };
+  if (data.length === 0) return null;
   return (
     <div className='flex gap-4 flex-col  w-[100%] '>
       {data.map((item, index) => (
         <div
           key={index}
-          className='bg-yellow-100 px-6 py-5 relative  bg-pink bg-opacity-30  rounde-2xl '
+          className='bg-yellow-100 px-6 py-5 relative  bg-pink bg-opacity-30   '
         >
           <div className='flex flex-row justify-between items-center'>
             {item.user && (
@@ -545,7 +587,7 @@ const Gallery = ({
               </>
             )}
           </div>
-          {userUID === uid && (
+          {item.user && (
             <div className='w-[100%] h-[1px] bg-white bg-opacity-40  mt-3 ' />
           )}
           {item.docId ? (
@@ -655,6 +697,19 @@ const Gallery = ({
           )}
         </div>
       ))}
+      <div className='w-full flex items-center justify-center mt-7 mb-10'>
+        {loading ? (
+          <Loading text={"Loading"} />
+        ) : (
+          <Button
+            type={"big"}
+            value={"See More"}
+            action={() => {
+              seeMore();
+            }}
+          />
+        )}
+      </div>
     </div>
   );
 };
@@ -703,7 +758,7 @@ function Toggle({ page, setPage }) {
           type='checkbox'
           checked={page === 2}
           onChange={() => {
-            setPage(4);
+            page === 3 ? setPage(2) : setPage(3);
           }}
           className='opacity-0 w-0 h-0'
         />
@@ -722,7 +777,7 @@ function Toggle({ page, setPage }) {
         </label>
       </div>
       <p className='text-yellow font-NT text-lg shadowYellow tracking-widest'>
-        Design
+        Calender
       </p>
     </div>
   );

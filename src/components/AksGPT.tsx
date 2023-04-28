@@ -5,6 +5,7 @@ import cards from "../tarotcard/tarot-images";
 import Quill from "./Editor/Quill";
 import { openAiKey } from "../config";
 import Star from "../images/Star";
+import Loading from "./Loading";
 interface Message {
   value: string;
   name: string;
@@ -112,15 +113,7 @@ const AskGPT = ({
         >
           <Star color={"#F4E4C3"} />
           {loading ? (
-            <>
-              <p className='shadowPink'>Asking AI </p>
-              <div className='container self-start'>
-                <div className='block'></div>
-                <div className='block'></div>
-                <div className='block'></div>
-                <div className='block'></div>
-              </div>
-            </>
+            <Loading text={"Asking AI "} />
           ) : (
             <div>
               <p className='shadowPink'> Ask AI Get Your Tarot Reading!</p>

@@ -184,13 +184,12 @@ const firebase = {
   //參訪其他人頁面
   async getOtherUserDiary(uid) {
     const diaryRef = collection(db, "users", uid, "diary");
-    const q = query(diaryRef, where("secret", "==", false));
-    const querySnapshot = await getDocs(q);
+    // const q = query(diaryRef, where("secret", "==", false));
+    const querySnapshot = await getDocs(diaryRef);
     const diary: DocumentData[] = [];
     querySnapshot.forEach((doc) => {
       diary.push(doc.data());
     });
-
     return diary;
   },
 
@@ -206,6 +205,7 @@ const firebase = {
     );
     return newData;
   },
+
   //追蹤中的日記
   async getAllFollowingDiary(user) {
     let diary: DocumentData[] = [];
