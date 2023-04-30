@@ -1,10 +1,10 @@
-import { AuthContext } from "../context/authContext";
+import { AuthContext } from "../../context/authContext";
 import { useState, useEffect, useContext } from "react";
-import firebase from "../utils/firebase";
-import Button from "./Button";
+import firebase from "../../utils/firebase";
+import Button from "../../components/Button";
 
 function ProfileEdit() {
-  const { isLogin, user, userUID, setUser } = useContext(AuthContext);
+  const { user, userUID, setUser } = useContext(AuthContext);
   const [edit, setEdit] = useState(false);
   const [modify, setModify] = useState({
     image: user.image,

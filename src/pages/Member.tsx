@@ -1,7 +1,7 @@
 import { Auth, getAuth } from "firebase/auth";
 import { GoogleAuthProvider, FacebookAuthProvider } from "firebase/auth";
 import { useContext, useEffect } from "react";
-import Profile from "./Profile";
+import Profile from "./Profile/Profile";
 import firebase from "../utils/firebase";
 import { AuthContext } from "../context/authContext";
 import Button from "../components/Button";

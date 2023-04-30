@@ -9,10 +9,10 @@ import Spread from "./pages/Spread";
 import TarotCard from "./pages/TarotCard";
 import Divine from "./components/Divine";
 import AskGPT from "./components/AksGPT";
-import Profile from "./pages/Profile";
+import Profile from "./pages/Profile/Profile";
 import Meaning from "./pages/Meanings";
 import Divination from "./pages/Divination";
-import Home from "./pages/Home";
+import Home from "./pages/Home/Home";
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <BrowserRouter>

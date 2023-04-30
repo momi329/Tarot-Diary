@@ -1,12 +1,12 @@
 import { useState, useEffect, useContext } from "react";
 import { AuthContext } from "../context/authContext";
 import cards from "../tarotcard/tarot-images";
-import type { SpreadData } from "../pages/Spread";
-import type { DesignSpreadData } from "../pages/Spread";
+import type { SpreadData } from "../utils/type";
+import type { DesignSpreadData } from "../utils/type";
 import Button from "./Button";
 interface Props {
   spreadData: SpreadData;
-  setSpreadData: React.Dispatch<React.SetStateAction<SpreadData | undefined>>;
+  setSpreadData?: React.Dispatch<React.SetStateAction<SpreadData | undefined>>;
   divinedData: any;
   setDivinedData: React.Dispatch<React.SetStateAction<DesignSpreadData>>;
   divining: number;
@@ -16,7 +16,6 @@ interface Props {
 
 function Divine({
   spreadData,
-  setSpreadData,
   divinedData,
   setDivinedData,
   divining,
@@ -29,25 +28,6 @@ function Divine({
     0
   );
   const tarot = cards.cards;
-
-  function getRandomCards(n: number) {
-    const indexes = Array.from({ length: 78 }, (_, i) => i); // 創建包含 0 到 77 的陣列
-    for (let i = indexes.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1)); // 生成 0 到 i 之間的隨機整數
-      [indexes[i], indexes[j]] = [indexes[j], indexes[i]]; // 交換 indexes[i] 和 indexes[j] 的位置
-    }
-    return indexes.slice(0, n);
-  }
-  function getRandom(min: number, max: number) {
-    return Math.floor(Math.random() * (max - min + 1)) + min;
-  }
-  function getRandomBool(n: number) {
-    const boolArray: boolean[] = [];
-    for (let i = 0; i < number; i++) {
-      boolArray.push(getRandom(1, 1000) % 2 === 0);
-    }
-    return boolArray;
-  }
 
   useEffect(() => {
     if (divining !== 3) return;
@@ -92,9 +72,9 @@ function Divine({
     );
     const newData = { ...divinedData, spread: modifiedData };
     setDivinedData(newData);
-
     dispatch({ type: "end" });
   };
+
   return (
     <>
       {divining === 1 && (
@@ -109,3 +89,22 @@ function Divine({
   );
 }
 export default Divine;
+
+export function getRandomCards(n: number) {
+  const indexes = Array.from({ length: 78 }, (_, i) => i); // 創建包含 0 到 77 的陣列
+  for (let i = indexes.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1)); // 生成 0 到 i 之間的隨機整數
+    [indexes[i], indexes[j]] = [indexes[j], indexes[i]]; // 交換 indexes[i] 和 indexes[j] 的位置
+  }
+  return indexes.slice(0, n);
+}
+export function getRandom(min: number, max: number) {
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+export function getRandomBool(n: number) {
+  const boolArray: boolean[] = [];
+  for (let i = 0; i < n; i++) {
+    boolArray.push(getRandom(1, 1000) % 2 === 0);
+  }
+  return boolArray;
+}

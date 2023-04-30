@@ -7,38 +7,15 @@ import { Link } from "react-router-dom";
 import firebase from "../utils/firebase";
 import Draggable from "../components/Draggable";
 import AskGPT from "../components/AksGPT";
-import { createRef } from "react";
-import { useScreenshot } from "use-react-screenshot";
 import lightCard from "../images/card-light.png";
 import Button from "../components/Button";
-import Moon from "../images/Moon";
 import { SpreadPlace } from "../components/SpreadPlace";
-import Star from "../images/Star";
-export interface SpreadData {
-  userUID: string;
-  title: string;
-  image: string;
-  spread: (
-    | number
-    | {
-        order: number;
-        disabled?: boolean;
-        value: string;
-        name: string;
-        card: number;
-        reverse: boolean;
-      }
-  )[];
-  description?: string;
-  spreadId: string;
-}
+import type {
+  SpreadData,
+  DraggableProps,
+  DesignSpreadData,
+} from "../utils/type";
 
-export interface DraggableProps {
-  edit: boolean;
-  setEdit: React.Dispatch<React.SetStateAction<boolean>>;
-  spreadData: SpreadData | undefined;
-  setSpreadData: React.Dispatch<React.SetStateAction<SpreadData | undefined>>;
-}
 const initialDivinedData: DesignSpreadData = {
   userUID: "",
   title: "",
@@ -49,25 +26,6 @@ const initialDivinedData: DesignSpreadData = {
   question: "",
   secret: false,
 };
-export interface DesignSpreadData {
-  image: string;
-  title: string;
-  spread:
-    | number[]
-    | {
-        disabled: boolean;
-        value: string;
-        order: number;
-        name: string;
-        card: number;
-        reverse: boolean;
-      }[];
-  userUID?: string;
-  description: string;
-  spreadId: string;
-  question?: string;
-  secret: boolean;
-}
 function reducer(state, action) {
   switch (action.type) {
     case "preview": {
@@ -91,9 +49,7 @@ function reducer(state, action) {
 }
 
 function Spread() {
-  const imgRef: React.RefObject<HTMLImageElement> = createRef();
-  const [image, takeScreenshot] = useScreenshot();
-  const { isLogin, user, userUID } = useContext(AuthContext);
+  const { userUID } = useContext(AuthContext);
   const [spreadData, setSpreadData] = useState<SpreadData | undefined>(
     undefined
   );
@@ -106,32 +62,41 @@ function Spread() {
   const [askAI, setAskAI] = useState<boolean>(false);
   const [edit, setEdit] = useState<boolean>(false);
   const [pickCard, setPickCard] = useState<Number[]>([0, 0]);
-  useEffect(() => {
-    async function getDesign(id: string): Promise<void> {
-      const newData = await firebase.getDesign(id);
-      if (newData) {
-        setSpreadData(newData[0]);
-        setDivinedData({
-          userUID: newData[0].userUID,
-          title: newData[0].title,
-          image: newData[0].image,
-          spread: [],
-          description: newData[0].description,
-          spreadId: newData[0].spreadId,
-          question: "",
-          secret: false,
-        });
-        setPickCard([
-          0,
-          newData[0].spread.reduce(
-            (acc: any, crr) => (crr !== 0 ? acc + 1 : acc),
-            0
-          ),
-        ]);
-      }
+  async function getDesign(id: string): Promise<void> {
+    const newData = await firebase.getDesign(id);
+    if (newData) {
+      setSpreadData(newData[0]);
+      setDivinedData({
+        userUID: newData[0].userUID,
+        title: newData[0].title,
+        image: newData[0].image,
+        spread: [],
+        description: newData[0].description,
+        spreadId: newData[0].spreadId,
+        question: "",
+        secret: false,
+      });
+      setPickCard([
+        0,
+        newData[0].spread.reduce(
+          (acc: any, crr) => (crr !== 0 ? acc + 1 : acc),
+          0
+        ),
+      ]);
     }
-    if (id) {
-      getDesign(id);
+  }
+  useEffect(() => {
+    const divine = localStorage.getItem("myResult");
+    if (divine) {
+      const data = JSON.parse(divine);
+      setSpreadData(data);
+      setDivinedData(data);
+      dispatch({ type: "end" });
+      localStorage.removeItem("myResult");
+    } else {
+      if (id) {
+        getDesign(id);
+      }
     }
   }, [id, edit]);
 
@@ -226,7 +191,7 @@ function Spread() {
             <SpreadPlace type={spreadData} tarot={tarot} size={"large"} />
           )}
           {/* 可編輯 */}
-          {edit && (
+          {spreadData.userUID === userUID && edit && (
             <div
               className='w-[110%] h-[100%] overflow-y-scroll p-16 bg-darkPink z-20 mx-auto fixed top-1/2 left-1/2 
           transform -translate-x-1/2 -translate-y-1/2'
@@ -274,8 +239,6 @@ function Spread() {
             <Divine
               spreadData={spreadData}
               setSpreadData={setSpreadData}
-              // end={end}
-              // setEnd={setEnd}
               divinedData={divinedData}
               setDivinedData={setDivinedData}
               divining={divining}

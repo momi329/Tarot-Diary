@@ -1,4 +1,4 @@
-import { formatTimestamp } from "../pages/Profile";
+import { formatTimestamp } from "../pages/Profile/Profile";
 import cards from "../tarotcard/tarot-images";
 import { AuthContext } from "../context/authContext";
 import Viewer from "./Editor/Viewer";

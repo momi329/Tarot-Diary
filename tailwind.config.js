@@ -6,7 +6,7 @@ module.exports = {
     screens: {
       sm: "360px",
       md: "1080px",
-      lg: "1024",
+      lg: "1024px", // <-- add closing double quote here
       xl: "1280px",
     },
     colors: {
@@ -30,6 +30,38 @@ module.exports = {
       NTalt: ["NT Fabulous alternative", "sans-serif"],
     },
     extend: {
+      keyframes: {
+        fadeIn: {
+          "0%": { opacity: 0 },
+          "100%": { opacity: 1 },
+        },
+        slideIn: {
+          "0%": {
+            transform: "translateX(-100%)",
+            opacity: 0,
+          },
+          "100%": {
+            transform: "translateX(0)",
+            opacity: 1,
+          },
+        },
+        slideCard: {
+          "0%": {
+            transform: "translateX(-100%)",
+            opacity: 0,
+          },
+          "100%": {
+            transform: "translateX(0)",
+            opacity: 1,
+          },
+        },
+      },
+      animation: {
+        fadeInAnimate: "fadeIn 1s ease-in forwards",
+        slideInAnimate: "slideIn 1s forwards 1000ms",
+        slideCardAnimate: "slideCard 1s forwards 1000ms",
+        slideWithIndex: (index) => `slideIn 1s forwards ${index * 1000}ms`,
+      },
       transformOrigin: {
         "top-left-1/3-3/4": "33% 75%",
       },

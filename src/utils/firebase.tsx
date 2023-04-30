@@ -1,4 +1,5 @@
 import { initializeApp } from "firebase/app";
+import type { FriendsData, SpreadData } from "./type";
 import {
   arrayRemove,
   DocumentData,
@@ -36,6 +37,7 @@ const firebaseConfig = {
   appId: "1:339110698426:web:f115d61ea8668a6a565183",
   measurementId: "G-L8RC14KPQY",
 };
+
 // Initialize Firebase
 export const app = initializeApp(firebaseConfig);
 export const db = getFirestore(app);
@@ -73,9 +75,6 @@ const firebase = {
     const docRef = doc(db, "users", userUID);
     const docSnap = await getDoc(docRef);
     return docSnap.data();
-    //   const unsub = onSnapshot(doc(db, "cities", "SF"), (doc) => {
-    //     console.log("Current data: ", doc.data());
-    // });
   },
   async updateUserData(userUID, data) {
     const userDataRef = doc(db, "users", userUID);
@@ -197,9 +196,10 @@ const firebase = {
   async getOtherUserSpread(uid) {
     const querySnapshot = await getDocs(collection(db, "spreads"));
     let data: DocumentData[] = [];
-    querySnapshot.forEach((doc) => {
-      data.push(doc.data());
-    });
+    querySnapshot &&
+      querySnapshot.forEach((doc) => {
+        data.push(doc.data());
+      });
     const newData: DocumentData[] | never[] = await data.filter(
       (i) => i.userUID === uid
     );
@@ -298,7 +298,29 @@ const firebase = {
       return diary;
     });
   },
-  //async snapshotFollowingDiary
+  async getAllSpread(): Promise<SpreadData[]> {
+    const querySnapshot = await getDocs(collection(db, "spreads"));
+    let spread: SpreadData[] = [];
+
+    await querySnapshot.forEach((doc) => {
+      spread.push(doc.data() as SpreadData);
+    });
+    return spread;
+  },
+  async getAllUserName(data) {
+    let newData: {}[] = [];
+    console.log(data, "data");
+    await data.forEach(async (i) => {
+      if (i.userUID === "all") {
+        newData.push({ ...i, name: "預設" });
+      } else {
+        const docRef = doc(db, "users", `${i.userUID}`);
+        const docSnap = await getDoc(docRef);
+        docSnap.exists() && newData.push({ ...i, name: docSnap.data().name });
+      }
+    });
+    return newData;
+  },
   async follow(uid, userUID) {
     //對方followers加我
     const targetRef = doc(db, "users", uid);
@@ -322,6 +344,45 @@ const firebase = {
     await updateDoc(myRef, {
       following: arrayRemove(uid),
     });
+  },
+  async getFriendsProfile(followers, following) {
+    const friendsData: FriendsData = { followers: [], following: [] };
+
+    followers &&
+      followers.length !== 0 &&
+      (await followers.forEach(async (i) => {
+        const docRef = doc(db, "users", i);
+        const docSnap = await getDoc(docRef);
+        if (docSnap.exists()) {
+          const followers = {
+            name: docSnap.data().name,
+            image: docSnap.data().image,
+            sign: docSnap.data().sign,
+            uid: docSnap.data().userUID,
+          };
+          friendsData.followers.push(followers);
+        } else {
+          console.log("no document");
+        }
+      }));
+    following &&
+      following.length !== 0 &&
+      (await following.forEach(async (i) => {
+        const docRef = doc(db, "users", i);
+        const docSnap = await getDoc(docRef);
+        if (docSnap.exists()) {
+          const following = {
+            name: docSnap.data().name,
+            image: docSnap.data().image,
+            sign: docSnap.data().sign,
+            uid: docSnap.data().userUID,
+          };
+          friendsData.following.push(following);
+        } else {
+          console.log("no document");
+        }
+      }));
+    return friendsData;
   },
   async uploadBlob(userUID, file) {
     console.log("上傳");

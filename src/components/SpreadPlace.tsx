@@ -36,7 +36,7 @@ export const SpreadPlace = ({ type, tarot, size }) => {
               <div
                 className={` rounded-xl ${
                   widthAndHeight.c
-                } cursor-pointer relative box-border 
+                } cursor-pointer relative box-border  hover:scale-110 hover:z-10 hover:shadow-lg hover:shadow-green/60 hover:duration-200
                flex items-center justify-center flex-col bg-slate-800 text-yellow z-0  bg-opacity-80
                ${widthAndHeight.scale}  ${
                   type.userUID === "all" ? "scale-110" : ""
@@ -72,56 +72,64 @@ export const SpreadPlace = ({ type, tarot, size }) => {
                     />
                   </>
                 )}
-                <div
-                  className={`w-[60px] h-[40px] bg-pink bg-opacity-100 absolute top-[-60px] right-[-20px]
+                {item.card !== undefined && (
+                  <div
+                    className={`w-full h-full bg-white/60 backdrop-blur-sm absolute 
                    opacity-0 leading-tight p-2 ${
-                     item.card !== undefined ? "hover:opacity-100" : ""
+                     item.card !== undefined
+                       ? "hover:opacity-100 duration-500"
+                       : ""
                    }`}
-                >
-                  {item.card !== undefined ? (
-                    <div className='text-[6px] font-NT'>
-                      <p>{item.order}</p>
-                      <p>{item.value}</p>
-                      {/* <p>{tarot[item.card].name}</p>
-                      <p> {item.reverse ? "正位" : "逆位"}</p> */}
-                    </div>
-                  ) : (
-                    <div className='text-[20px] font-NT'>
-                      <p>{item.order}</p>
-                      <p>{item.value}</p>
-                    </div>
-                  )}
-                  {/* <div
-                  className={`w-[100%] h-[100%] bg-black bg-opacity-40 absolute top-[0px] right-0
-                   opacity-100 leading-tight p-2 ${
-                     item.card !== undefined ? "hover:opacity-100" : ""
-                   }`}
-                > */}
-                  {item.card !== undefined && (
-                    <Link to={`/card/${item.card}`}>
-                      <div className='text-[5px] font-NT leading-none shadowYellow'>
-                        {tarot[item.card].name}{" "}
-                      </div>
-                      {""}
-                      <div className='z-10 text-[1px] mt-[1px] leading-none text-gray'>
-                        {item.reverse ? "正位" : "逆位"}
-                      </div>
-                    </Link>
-                  )}
-                  <div className='absolute bottom-2 left-0 bg-opacity-80 bg-black filter blur-sm w-[100%] h-100%'></div>
-                  <p
-                    className='absolute bottom-1 left-1 leading-tight 
-                     text-[3px] z-10  w-[90%] tracking-wide text-yellow'
                   >
-                    {item.value}
-                  </p>
-                  <p
-                    className='absolute top-14 left-1 z-10 font-NT text-xl w-[10%] text-yellow
+                    {item.card !== undefined && size === "large" ? (
+                      <>
+                        <p
+                          className='absolute top-1 left-2 z-8 font-NT text-8xl w-[10%] text-green
                       shadowGreen text-center tracking-wide leading-tight'
-                  >
-                    {item.order}
-                  </p>
-                </div>
+                        >
+                          {item.order}
+                        </p>
+                        <p
+                          className='absolute top-[100px] left-2 leading-tight 
+                     text-sm  w-[90%] tracking-wide text-green'
+                        >
+                          {item.value}
+                        </p>
+
+                        <div className='text-lg font-NT bottom-7 absolute leading-none text-green shadowGreen'>
+                          {tarot[item.card].name}{" "}
+                        </div>
+                        {""}
+                        <div className='z-10 text-sm mt-[1px] leading-none text-gray bottom-2 absolute text-green'>
+                          {item.reverse ? "正位" : "逆位"}
+                        </div>
+                      </>
+                    ) : (
+                      <>
+                        <p
+                          className='absolute top-1 left-2 z-8 font-NT text-2xl w-[10%] text-green
+                      shadowGreen text-center tracking-wide leading-tight'
+                        >
+                          {item.order}
+                        </p>
+                        <p
+                          className='absolute bottom-2 left-2 leading-none
+                     text-[6px]  w-[80%] tracking-wide text-green'
+                        >
+                          {item.value}
+                        </p>
+
+                        <div className='text-[9px] font-NT top-8 left-2 absolute leading-none text-green shadowGreen'>
+                          {tarot[item.card].name}{" "}
+                        </div>
+                        {""}
+                        <span className='z-10 text-[6px] font-notoSansJP mt-[1px] leading-none text-gray top-2 right-1 absolute text-green'>
+                          {item.reverse ? "正位" : "逆位"}
+                        </span>
+                      </>
+                    )}
+                  </div>
+                )}
               </div>
             )}
           </div>

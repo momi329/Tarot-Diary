@@ -3,6 +3,83 @@
 @tailwind utilities;
 @import url("https://fonts.cdnfonts.com/css/sygma");
 
+@keyframes slide-in {
+  0% {
+    transform: translateX(-100%);
+    opacity: 0;
+  }
+  100% {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+.animate-slide-in {
+  animation-name: slide-in;
+  animation-duration: 1s;
+  animation-fill-mode: forwards;
+}
+
+.animate-slide-in.delay-500 {
+  animation-delay: 500ms;
+}
+
+.animate-slide-in.delay-1000 {
+  animation-delay: 1000ms;
+}
+
+.animate-slide-in.delay-1500 {
+  animation-delay: 1500ms;
+}
+
+.fade-in {
+  opacity: 0;
+  animation: fade-in 0.5s ease-in forwards;
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@layer utilities {
+  .upanddown {
+    animation: upanddown 10s ease-in-out infinite;
+  }
+
+  @keyframes upanddown {
+    0% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(-50px);
+    }
+    100% {
+      transform: translateY(0);
+    }
+  }
+
+  .downThenUp {
+    animation: downThenUp 10s ease-in-out infinite;
+  }
+
+  @keyframes downThenUp {
+    0% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(50px);
+    }
+    100% {
+      transform: translateY(0);
+    }
+  }
+}
+
 body {
   margin: 0;
   -webkit-font-smoothing: antialiased;
@@ -11,15 +88,6 @@ body {
   box-sizing: border-box;
   /* background-color: black; */
   /* height: 100%; */
-
-  ::-webkit-scrollbar {
-    width: 5px;
-    height: 8px;
-    background-color: #aaa; /* or add it to the track */
-  }
-  ::-webkit-scrollbar-thumb {
-    background-color: #000;
-  }
   ::-webkit-scrollbar {
     display: none;
   }
@@ -118,4 +186,30 @@ input {
     top: 0;
     opacity: 1;
   }
+}
+@keyframes fadeIn {
+  0% {
+    opacity: 0.2;
+  }
+
+  50% {
+    opacity: 0.6;
+  }
+
+  100% {
+    opacity: 1;
+  }
+}
+.selected {
+  transform: scale(1.5, 1.5);
+  animation: 5s fadeIn;
+  opacity: 1;
+  z-index: 20;
+  transform-origin: bottom center;
+  animation-duration: 750ms;
+  margin-bottom: 0px;
+}
+.unSelected {
+  animation-duration: 750ms;
+  transform: scale(0.7, 0.6);
 }

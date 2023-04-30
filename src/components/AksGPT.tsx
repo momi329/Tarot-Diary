@@ -1,4 +1,4 @@
-import type { SpreadData } from "../pages/Spread";
+import type SpreadData from "../pages/Spread";
 import { useState, useContext, useEffect } from "react";
 import { AuthContext } from "../context/authContext";
 import cards from "../tarotcard/tarot-images";
@@ -6,14 +6,7 @@ import Quill from "./Editor/Quill";
 import { openAiKey } from "../config";
 import Star from "../images/Star";
 import Loading from "./Loading";
-interface Message {
-  value: string;
-  name: string;
-  order: number;
-  disabled: boolean;
-  card: number;
-  reverse: boolean;
-}
+import type { Message } from "../utils/type";
 
 const tarot = cards.cards;
 const AskGPT = ({

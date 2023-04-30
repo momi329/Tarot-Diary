@@ -63,7 +63,7 @@ export default function Editor(props: EditorProps) {
         }}
         value={value}
         onChange={onChange}
-        className='min-h-[150px] w-[95%] text-yellow ml-24 mr-4'
+        className='min-h-[130px] w-[95%] text-yellow  mr-4'
       />
     </>
   );

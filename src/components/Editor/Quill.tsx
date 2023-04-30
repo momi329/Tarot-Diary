@@ -35,15 +35,6 @@ export default function Quill({
   const handleSave = () => {
     const newData = { ...divinedData, time: Timestamp.fromDate(new Date()) };
     createDivinedData(newData, userUID);
-    // async function userDiary(userUID, newData) {
-    //   try {
-    //     const docRef = doc(db, "users", userUID, "diary", article.docId);
-    //     await updateDoc(docRef, newData);
-    //     alert("儲存成功");
-    //   } catch (e) {
-    //     console.error("error", e);
-    //   }
-    // }
     dispatch({ type: "preview" });
     // userDiary(userUID, newData);
     setAskAI(false);
@@ -53,7 +44,7 @@ export default function Quill({
 
   return (
     <div className='w-[100%]  flex flex-col justify-center items-center'>
-      <p className='text-gray text-sm tracking-widest  self-start ml-14 mb-3'>
+      <p className='text-gray text-sm tracking-widest  self-start  mb-3'>
         記得按下儲存，才能紀錄占卜結果喔！
       </p>
       <Editor
