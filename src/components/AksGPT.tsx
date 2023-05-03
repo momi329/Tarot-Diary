@@ -44,7 +44,7 @@ const AskGPT = ({
         `${mes.value}的位置抽到${tarot[mes.card].name} ${
           mes.reverse ? "正位" : "逆位"
         }`
-    )}，請幫我解釋`;
+    )}，先幫我總結再請幫我依據牌意解釋`;
     const newMessage = [
       {
         message: message,

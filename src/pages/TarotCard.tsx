@@ -64,7 +64,7 @@ function TarotCard() {
       <>
         <div className='w-screen  mx-auto flex items-center flex-col justify-center mb-[120px] h-auto'>
           <div className='w-screen h-[110px] mx-auto' />
-          <div>這裡用來放導覽</div>
+
           <div
             className='w-[1200px] flex mx-auto mb-10
        items-center flex-row justify-center text-yellow'
@@ -93,7 +93,7 @@ function TarotCard() {
           {/* 下半部 */}
           <div>
             {/* 關鍵字 */}
-            <div className='flex items-center flex-col'>
+            <div className='flex items-center flex-col gap-4'>
               <h3 className={subTitle}>Keywords</h3>
               <div className='flex flex-row gap-8'>
                 {tarot.keywords.map((keyword) => (

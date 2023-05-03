@@ -1,25 +1,15 @@
 import { DocumentData } from "firebase/firestore";
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, useContext } from "react";
 import SpreadPreview from "../components/SpreadPreview";
 import Arrow from "../images/Arrow";
 import Star from "../images/Star";
 import firebase from "../utils/firebase";
 import type { SpreadData } from "../utils/type";
-function shuffle(array) {
-  return array.sort(() => Math.random() - 0.5);
-}
+import { AuthContext } from "../context/authContext";
 function Divination() {
-  const [spreads, setSpread] = useState<SpreadData[] | null>();
   const [page, setPage] = useState(0);
   const listRef = useRef<HTMLDivElement>(null);
-
-  async function getAllSpread() {
-    const spreads: SpreadData[] = await firebase.getAllSpread();
-    const addNameSpreads = await firebase.getAllUserName(spreads);
-    if (spreads) {
-      setSpread(shuffle(addNameSpreads));
-    }
-  }
+  const { spreads } = useContext(AuthContext);
 
   function scrollToIndex(index) {
     if (spreads && index === spreads.length) {
@@ -43,14 +33,13 @@ function Divination() {
       imgNode.classList.add("selected");
     }
   }
-  useEffect(() => {
-    getAllSpread();
-  }, []);
-  useEffect(() => {
-    console.log(page, "page");
-  }, [page]);
+  // useEffect(() => {
+  //   getAllSpread();
+  // }, []);
+
   useEffect(() => {
     if (spreads) {
+      console.log("?");
       scrollToIndex(0);
     }
   }, [spreads]);
@@ -157,15 +146,18 @@ function Divination() {
             </div>
 
             <div className='flex flex-wrap w-full mb-40 gap-4'>
-              {spreads?.map((spread, index) => (
-                <SpreadPreview
-                  type={"personal"}
-                  spread={spread}
-                  index={index}
-                  key={index}
-                  page={page}
-                />
-              ))}
+              {spreads?.map(
+                (spread, index) =>
+                  index > 5 && (
+                    <SpreadPreview
+                      type={"personal"}
+                      spread={spread}
+                      index={index}
+                      key={index}
+                      page={page}
+                    />
+                  )
+              )}
             </div>
           </div>
         </div>

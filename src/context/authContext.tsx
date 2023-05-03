@@ -1,7 +1,7 @@
 import { createContext, useState, useEffect } from "react";
 import firebase from "../utils/firebase";
 import { useNavigate } from "react-router-dom";
-
+import { SpreadData } from "../utils/type";
 import {
   Auth,
   getAuth,
@@ -33,8 +33,12 @@ interface AuthContextType {
     provider: GoogleAuthProvider | FacebookAuthProvider
   ) => Promise<void>;
   signOut: (auth: Auth) => Promise<void>;
+  spreads: SpreadData[] | null;
 }
 
+function shuffle(array) {
+  return array.sort(() => Math.random() - 0.5);
+}
 export const AuthContext = createContext<AuthContextType>({
   isLogin: false,
   user: {
@@ -53,6 +57,7 @@ export const AuthContext = createContext<AuthContextType>({
   userUID: "",
   signIn: async () => {},
   signOut: async () => {},
+  spreads: null,
 });
 const initialUserData: User = {
   name: "",
@@ -69,12 +74,22 @@ export const AuthContextProvider: React.FC = ({ children }: any) => {
   const [user, setUser] = useState<User>(initialUserData);
   const [loading, setLoading] = useState<boolean>(false);
   const [userUID, setUserUID] = useState<string>("");
+  const [spreads, setSpread] = useState<SpreadData[] | null>(null);
   const navigate = useNavigate();
   async function getUsers(userUID) {
     const getUser = firebase.getUser(userUID);
     return getUser;
   }
-
+  async function getAllSpread() {
+    const spreads: SpreadData[] = await firebase.getAllSpread();
+    const addNameSpreads = await firebase.getAllUserName(spreads);
+    if (spreads) {
+      setSpread(shuffle(addNameSpreads));
+    }
+  }
+  useEffect(() => {
+    getAllSpread();
+  }, []);
   useEffect(() => {
     const auth = getAuth();
     onAuthStateChanged(auth, async (user) => {
@@ -180,6 +195,7 @@ export const AuthContextProvider: React.FC = ({ children }: any) => {
         userUID,
         signIn,
         signOut,
+        spreads,
       }}
     >
       {children}

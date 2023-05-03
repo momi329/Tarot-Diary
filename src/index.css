@@ -202,7 +202,7 @@ input {
 }
 .selected {
   transform: scale(1.5, 1.5);
-  animation: 5s fadeIn;
+  animation: 2s fadeIn;
   opacity: 1;
   z-index: 20;
   transform-origin: bottom center;

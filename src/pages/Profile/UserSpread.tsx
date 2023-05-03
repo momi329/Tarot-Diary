@@ -10,7 +10,7 @@ const UserSpread = ({ userDesign, visitedUser }) => {
           hover:underline-offset-1 flex flex-row items-center justify-end'
       >
         <Link to='/design'>
-          <div className='flex flex-row'>
+          <div className='flex flex-row items-center'>
             <p>Design Your Own </p>
             <AiOutlineArrowRight />
           </div>

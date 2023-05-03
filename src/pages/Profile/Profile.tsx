@@ -1,6 +1,6 @@
 import { useState, useEffect, useContext } from "react";
 import { AuthContext } from "../../context/authContext";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 //firebase
 import firebase from "../../utils/firebase";
 import {
@@ -33,8 +33,11 @@ function Profile(): JSX.Element {
   const [friendsPosts, setFriendsPosts] = useState<DocumentData[] | never[]>(
     []
   );
-
+  const navigate = useNavigate();
   useEffect(() => {
+    if (!isLogin) {
+      navigate("/signin");
+    }
     initialFollowing();
   }, [userUID]);
   const initialFollowing = () => {

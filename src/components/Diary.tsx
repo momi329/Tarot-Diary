@@ -243,8 +243,16 @@ function CalendarDays({
                     onClick={() => clickedDiary(day, i)}
                     key={i}
                     title={day.question}
-                    className='w-4 h-4 p-[2px] rounded-full bg-pink bg-opacity-60 z-10'
-                  ></button>
+                    className='group w-4 h-4 p-[2px] rounded-full bg-pink 
+                    bg-opacity-60 z-10 relative'
+                  >
+                    <div
+                      className='group-hover:opacity-100 absolute text-sm top-4 left-4 p-2 text-start
+                    opacity-0  min-w-[150px] min-h-[20px] text-yellow bg-pink/60  rounded-xl tracking-widest'
+                    >
+                      ・{day.question}
+                    </div>
+                  </button>
                 );
               }
 

@@ -16,7 +16,13 @@ function SpreadPreview({ spread, index, type }: SpreadPreviewProps) {
   }
 
   return (
-    <div id='spread' className={`${style.a} bg-cover  `} key={index}>
+    <div
+      id='spread'
+      className={`${style.a} bg-cover duration-200  ${
+        type === "personal" ? "hover:scale-110" : ""
+      } `}
+      key={index}
+    >
       {spread.image !== "" && (
         <img
           src={spread.image}
