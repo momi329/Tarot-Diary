@@ -1,6 +1,10 @@
 import { createContext, useState } from "react";
+interface LoadingContextType {
+  isLoading: boolean;
+  setIsLoading: React.Dispatch<React.SetStateAction<boolean>>;
+}
 
-export const LoadingContext = createContext({
+export const LoadingContext = createContext<LoadingContextType>({
   isLoading: true,
   setIsLoading: () => {},
 });

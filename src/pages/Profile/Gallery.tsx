@@ -18,6 +18,8 @@ import Loading from "../../components/Loading";
 //type
 import type { SpreadData, VisitedUser } from "../../utils/type";
 import LoadingPage from "../LoadingPage";
+import Moon from "../../images/Moon";
+import Alert from "../../components/Alert";
 
 const Gallery = ({
   visitedUserRef,
@@ -40,7 +42,8 @@ const Gallery = ({
     userImage: "",
     comment: "",
   });
-  const { user, loading, setLoading } = useContext(AuthContext);
+  const { user, loading, setLoading, alert, setAlert } =
+    useContext(AuthContext);
   const [data, setData] = useState<SpreadData[] | VisitedUser[] | []>([]);
   const tarot = cards.cards;
   const navigate = useNavigate();
@@ -68,9 +71,8 @@ const Gallery = ({
       }
     }
   }, [
-    page,
-    visitedUser,
-    friendsPosts,
+    uid,
+    userUID,
     userDiary,
     friendsPostsRef.current,
     visitedUserRef.current,
@@ -82,7 +84,7 @@ const Gallery = ({
   const handleSave = async (index) => {
     await firebase.updateDiary(userUID, data[index].docId, newEdit);
     data[index].content = newEdit.content;
-    alert("更新成功");
+    // alert("更新成功");
     const newData = [...edit];
     newData[index] = false;
     setEdit(newData);
@@ -98,11 +100,15 @@ const Gallery = ({
     return;
   };
   const DeletePost = async (userUID, docID, index) => {
+    console.log("userUID, docID, index", userUID, docID, index);
+
     await firebase.deleteDiary(userUID, docID);
-    alert("已刪除");
-    const newData = [...friendsPosts];
+    const newData = [...data];
     newData.splice(index, 1);
-    setFriendsPosts(newData);
+    setData(newData);
+    friendsPostsRef.current.splice(index, 1);
+    console.log(friendsPostsRef.current, " friendsPostsRef.current");
+    setAlert(false);
   };
   const seeMore = () => {
     setLoading(true);
@@ -112,14 +118,39 @@ const Gallery = ({
       setLoading(false);
     }
     if (uid === userUID && page === 1) {
-      setData(friendsPosts.slice(0, more));
+      setData(friendsPostsRef.current.slice(0, more));
       setLoading(false);
     } else {
-      setData(visitedUser.diary.slice(0, more));
+      setData(visitedUserRef.current.diary.slice(0, more));
       setLoading(false);
     }
   };
-  if (data.length === 0) return null;
+  if (data.length === 0)
+    return (
+      <div className='flex gap-4 flex-col  w-[100%] animate-pulse'>
+        <div className='bg-yellow-100 px-6 py-5 relative  bg-pink bg-opacity-30 h-[400px]'>
+          <div className='flex flex-row justify-between items-center'>
+            <div className='flex flex-row  align-center '>
+              <div className='rounded-full w-[50px] h-[50px] mr-[16px] bg-yellow/20' />
+              <div className=' w-40 h-4 self-center bg-gray/20 rounded-sm  w-40 h-4' />
+              <div
+                className='font-NT bg-gray rounded-sm shadowGray self-center 
+                  leading-normal tracking-widest mt-1'
+              />
+            </div>
+          </div>
+          <div className='w-[100%] h-[1px] bg-white/20 mt-3 ' />
+          <div className=' w-[90%] h-4 self-center bg-white/20 rounded-sm   h-4 m-4 mt-7' />
+          <div className=' w-80 h-4 self-center bg-gray/20 rounded-sm  h-4 m-4' />
+          <div className=' w-96 h-4 self-center bg-white/20 rounded-sm   h-4 m-4' />
+          <div className=' w-[90%] h-4 self-center bg-gray/20 rounded-sm   h-4 m-4' />
+          <div className=' w-96 h-4 self-center bg-gray/20 rounded-sm   h-4 m-4' />
+          <div className='w-[90%] h-4 bg-white/20 mt-3 m-4' />
+          <div className=' w-96 h-4 self-center bg-white/20 rounded-sm   h-4 m-4' />
+          <div className=' w-[90%] h-4 self-center bg-gray/20 rounded-sm   h-4 m-4' />
+        </div>
+      </div>
+    );
   return (
     <>
       <div className='flex gap-4 flex-col  w-[100%] '>
@@ -166,27 +197,58 @@ const Gallery = ({
                   <div
                     className='absolute top-[100px] right-[75px] cursor-pointer font-NT text-gold text-xl'
                     onClick={() => {
-                      DeletePost(userUID, item.docId, index);
+                      setAlert(true);
+                      console.log(index);
                     }}
                   >
                     Delete
                   </div>
-
-                  <select
-                    className='outline-none font-NT text-yellow pl-2 pr-20 bg-green ml-auto  
-                 w-[30%] h-[38px] pt-1 text-base item-end bg-opacity-90 rounde-md tracking-widest inline-block'
-                    disabled={!edit[index]}
-                    onChange={(e) => {
-                      setNewEdit({
-                        ...newEdit,
-                        secret: e.target.value === "true",
-                      });
-                    }}
-                    value={item.secret ? "true" : "false"}
-                  >
-                    <option value='false'>Public</option>
-                    <option value='true'>Private</option>
-                  </select>
+                  {!edit[index] && alert && (
+                    <Alert
+                      value={"Are you sure you want to delete?"}
+                      buttonValue={[
+                        {
+                          value: "Cancel",
+                          type: "little",
+                          action: () => setAlert(false),
+                        },
+                        {
+                          value: "Confirm",
+                          type: "littlePink",
+                          action: () => {
+                            DeletePost(userUID, item.docId, index);
+                          },
+                        },
+                      ]}
+                    />
+                  )}
+                  {edit[index] ? (
+                    <select
+                      className='outline-none font-NT text-yellow pl-2 pr-20 bg-green ml-auto  
+                 w-[30%] h-[38px] pt-1 text-base item-end bg-opacity-90 rounded-md tracking-widest inline-block'
+                      disabled={!edit[index]}
+                      onChange={(e) => {
+                        setNewEdit({
+                          ...newEdit,
+                          secret: e.target.value === "true",
+                        });
+                      }}
+                      value={item.secret ? "true" : "false"}
+                    >
+                      <option value='false'>Public</option>
+                      <option value='true'>Private</option>
+                    </select>
+                  ) : (
+                    <div
+                      className='font-NT text-yellow tracking-widest shadowYellow text-base flex 
+                    flex-row items-center justify-center'
+                    >
+                      {item.secret ? "Private" : "Public"}・
+                      <div className='pb-[2px]'>
+                        <Moon color={"#9F8761"} width={20} height={20} />
+                      </div>
+                    </div>
+                  )}
                 </>
               )}
             </div>
@@ -195,7 +257,7 @@ const Gallery = ({
             )}
             {item.question ? (
               <>
-                <h1 className='ml-4 mt-4 mb-4 h-4 pb-10 font-notoSansJP text-base text-yellow font-light tracking-widest'>
+                <h1 className='ml-4 mt-4 mb-4 h-4 pb-10 font-notoSansJP text-base text-yellow font-normal tracking-widest'>
                   {item.question === "" ? "" : item.question}
                 </h1>
 

@@ -1,5 +1,9 @@
 import lightCard from "../images/card-light.png";
+import { useContext } from "react";
+import { LoadingContext } from "../context/loadingContext";
 function LoadingPage() {
+  const { isLoading } = useContext(LoadingContext);
+  console.log(isLoading);
   return (
     <div className='w-screen h-screen fixed top-0 left-0 z-50 flex items-center justify-center  '>
       <div className='bg-black/90 w-full h-full backdrop-blur-lg fixed top-0 left-0' />

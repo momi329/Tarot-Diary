@@ -102,11 +102,13 @@ export const AuthContextProvider: React.FC = ({ children }: any) => {
     }
   }
   useEffect(() => {
-    console.log("有嗎");
+    // console.log("有嗎");
     getAllSpread();
   }, []);
+
+  console.log("context", isLoading);
   useEffect(() => {
-    console.log("有進來嗎");
+    // console.log("有進來嗎");
 
     const auth = getAuth();
     onAuthStateChanged(auth, async (user) => {
@@ -128,9 +130,8 @@ export const AuthContextProvider: React.FC = ({ children }: any) => {
           };
           setUser(data);
           setUserUID(user.uid);
-          setLoading(false);
         } else {
-          console.log("沒有");
+          // console.log("沒有");
           setIsLogin(true);
           const data: User = {
             name: user.displayName || "",
@@ -143,16 +144,15 @@ export const AuthContextProvider: React.FC = ({ children }: any) => {
             userUID: user.uid || "",
           };
           setUser(data);
-          setLoading(false);
         }
       } else {
         setIsLogin(false);
-        setLoading(false);
       }
     });
-    console.log("沒有");
-    setLoading(false);
+    setTimeout(() => setIsLoading(false), 1500);
   }, []);
+
+  // console.log(isLoading);
   const signIn = async (
     auth: ReturnType<typeof getAuth>,
     provider: GoogleAuthProvider | FacebookAuthProvider

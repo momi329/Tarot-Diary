@@ -3,8 +3,8 @@ import { GoogleAuthProvider } from "firebase/auth";
 import { useContext, useState } from "react";
 import { AuthContext } from "../context/authContext";
 import { AiOutlineArrowRight } from "react-icons/ai";
-import UnderlineButton from "./UnderlineButton";
-import UnderlineInput from "./UnderlineInput";
+import UnderlineButton from "../components/UnderlineButton";
+import UnderlineInput from "../components/UnderlineInput";
 import Star from "../images/Star";
 
 function Member() {

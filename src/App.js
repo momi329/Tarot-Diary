@@ -10,26 +10,28 @@ import { useContext, useEffect } from "react";
 import LoadingPage from "./pages/LoadingPage";
 
 function App() {
-  const { isLoading } = useContext(LoadingContext);
+  const { isLoading, setIsLoading } = useContext(LoadingContext);
 
-  useEffect(() => {
-    console.log("loading", isLoading);
-  }, [isLoading]);
+  // useEffect(() => {
+  //   console.log("loading", isLoading);
+  //   setTimeout(() => {
+  //     setIsLoading(false);
+  //   }, 5000);
+  // }, []);
+
   return (
     <>
       <Background />
-      <LoadingContextProvider>
-        <AuthContextProvider>
-          {isLoading ? (
-            <LoadingPage />
-          ) : (
-            <>
-              <Header />
-              <Outlet />
-            </>
-          )}
-        </AuthContextProvider>
-      </LoadingContextProvider>
+      <AuthContextProvider>
+        {isLoading ? (
+          <LoadingPage />
+        ) : (
+          <>
+            <Header />
+            <Outlet />
+          </>
+        )}
+      </AuthContextProvider>
     </>
   );
 }

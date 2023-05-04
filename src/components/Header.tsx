@@ -2,7 +2,7 @@ import { Link, useNavigate, useLocation } from "react-router-dom";
 import "../index.css";
 import { AuthContext } from "../context/authContext";
 import { useContext } from "react";
-import UnderlineButton from "../pages/UnderlineButton";
+import UnderlineButton from "./UnderlineButton";
 import { getAuth } from "firebase/auth";
 import Alert from "./Alert";
 function Header() {

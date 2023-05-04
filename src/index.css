@@ -113,6 +113,9 @@ body {
 .shadowYellow {
   text-shadow: 0 0 #f4e4c3, 0 0 #f4e4c3, 0 0 #f4e4c3;
 }
+.shadowGrey {
+  text-shadow: 0 0 #b3b3b3, 0 0 #b3b3b3, 0 0 #b3b3b3;
+}
 input {
   appearance: none;
   -webkit-appearance: none;
