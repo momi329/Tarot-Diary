@@ -213,3 +213,31 @@ input {
   animation-duration: 750ms;
   transform: scale(0.7, 0.6);
 }
+.spinner {
+  display: inline-block;
+  transform: translateZ(1px);
+}
+@keyframes spinner {
+  0%,
+  100% {
+    animation-timing-function: cubic-bezier(0.5, 0, 1, 0.5);
+  }
+
+  0% {
+    transform: rotateY(0deg);
+    rotate: -15deg;
+  }
+
+  50% {
+    transform: rotateY(1800deg);
+    animation-timing-function: cubic-bezier(0, 0.5, 0, 1);
+    rotate: 15deg;
+  }
+}
+.card {
+  display: inline-block;
+
+  border-radius: 5%;
+  background: #fff;
+  animation: spinner 20s cubic-bezier(0, 0.2, 0.8, 1) infinite;
+}

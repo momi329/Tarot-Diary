@@ -1,5 +1,5 @@
 import { initializeApp } from "firebase/app";
-import type { FriendsData, SpreadData } from "./type";
+import type { comment, FriendsData, SpreadData } from "./type";
 import {
   arrayRemove,
   DocumentData,
@@ -380,19 +380,18 @@ const firebase = {
     return friendsData;
   },
   async getCommentsProfile(data) {
-    const comments = [];
+    const comments: comment[] = [];
     await Promise.all(
       data.map(async (i) => {
         const docRef = doc(db, "users", i.user);
         const docSnap = await getDoc(docRef);
         if (docSnap.exists()) {
-          const comment = {
+          const comment: comment = {
             userName: docSnap.data().name,
             userImage: docSnap.data().image,
             comment: i.comment,
             user: i.user,
           };
-          console.log("comment", comment);
           comments.push(comment);
         }
       })

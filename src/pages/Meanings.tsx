@@ -3,7 +3,6 @@ import Star from "../images/Star";
 import Moon from "../images/Moon";
 import cards from "../tarotcard/tarot-images";
 import { useNavigate } from "react-router-dom";
-import { convertToRomanNumeral } from "./TarotCard";
 import Footer from "../components/Footer";
 const subTitle = " text-5xl text-pink font-NT shadowPink mt-1 mb-10";
 function Meaning() {
@@ -24,12 +23,15 @@ function Meaning() {
                       <img
                         src={card.img}
                         alt={card.name}
-                        className='w-20 h-20 rounded-full object-cover contrast-50 hover:filter-none'
+                        className='w-20 h-20 rounded-full object-cover contrast-50 hover:filter-none object-top
+                        duration-300 hover:scale-110 cursor-pointer hover:object-center'
                         onClick={() => navigate(`/card/${index}`)}
                       />
-                      <p className='hover:underline font-NT text-yellow shadowYellow text-center tracking-widest text-base mt-2 font-medium'>
+                      <p
+                        className=' cursor-pointer font-NT 
+                      text-yellow shadowYellow text-center tracking-widest text-base mt-2 font-medium'
+                      >
                         {card.name}
-                        {/* <Link to={`/card/${index}`}></Link> */}
                       </p>
                     </div>
                   )
@@ -44,16 +46,20 @@ function Meaning() {
             <div className='flex flex-row flex-wrap gap-4 justify-start mt-8'>
               {tarot.map(
                 (card, index) =>
-                  21 < index &&
+                  index > 21 &&
                   index < 36 && (
                     <div className='flex flex-col items-center w-[120px] mt-4'>
                       <img
                         src={card.img}
                         alt={card.name}
-                        className='w-20 h-20 rounded-full object-cover contrast-50 hover:filter-none'
+                        className='w-20 h-20 rounded-full object-cover contrast-50 hover:filter-none object-top
+                        duration-300 hover:scale-110 cursor-pointer hover:object-center'
                         onClick={() => navigate(`/card/${index}`)}
                       />
-                      <p className='font-NT text-yellow shadowYellow text-center tracking-widest text-base mt-2 font-medium'>
+                      <p
+                        className=' cursor-pointer font-NT 
+                      text-yellow shadowYellow text-center tracking-widest text-base mt-2 font-medium'
+                      >
                         {card.name}
                       </p>
                     </div>
@@ -68,16 +74,20 @@ function Meaning() {
             <div className='flex flex-row flex-wrap gap-4 justify-start mt-8'>
               {tarot.map(
                 (card, index) =>
-                  35 < index &&
+                  index > 35 &&
                   index < 50 && (
                     <div className='flex flex-col items-center w-[120px] mt-4'>
                       <img
                         src={card.img}
                         alt={card.name}
-                        className='w-20 h-20 rounded-full object-cover contrast-50 hover:filter-none'
+                        className='w-20 h-20 rounded-full object-cover contrast-50 hover:filter-none object-top
+                        duration-300 hover:scale-110 cursor-pointer hover:object-center'
                         onClick={() => navigate(`/card/${index}`)}
                       />
-                      <p className='font-NT text-yellow shadowYellow text-center tracking-widest text-base mt-2 font-medium'>
+                      <p
+                        className=' cursor-pointer font-NT 
+                      text-yellow shadowYellow text-center tracking-widest text-base mt-2 font-medium'
+                      >
                         {card.name}
                       </p>
                     </div>
@@ -92,16 +102,20 @@ function Meaning() {
             <div className='flex flex-row flex-wrap gap-4 justify-start mt-8'>
               {tarot.map(
                 (card, index) =>
-                  50 < index &&
+                  index > 50 &&
                   index < 64 && (
                     <div className='flex flex-col items-center w-[120px] mt-4'>
                       <img
                         src={card.img}
                         alt={card.name}
-                        className='w-20 h-20 rounded-full object-cover contrast-50 hover:filter-none'
+                        className='w-20 h-20 rounded-full object-cover contrast-50 hover:filter-none object-top
+                        duration-300 hover:scale-110 cursor-pointer hover:object-center'
                         onClick={() => navigate(`/card/${index}`)}
                       />
-                      <p className='font-NT text-yellow shadowYellow text-center tracking-widest text-base mt-2 font-medium'>
+                      <p
+                        className=' cursor-pointer font-NT 
+                      text-yellow shadowYellow text-center tracking-widest text-base mt-2 font-medium'
+                      >
                         {card.name}
                       </p>
                     </div>
@@ -116,16 +130,20 @@ function Meaning() {
             <div className='flex flex-row flex-wrap gap-4 justify-start mt-8'>
               {tarot.map(
                 (card, index) =>
-                  64 < index &&
+                  index > 64 &&
                   index < 78 && (
                     <div className='flex flex-col items-center w-[120px] mt-4'>
                       <img
                         src={card.img}
                         alt={card.name}
-                        className='w-20 h-20 rounded-full object-cover contrast-50 hover:filter-none'
+                        className='w-20 h-20 rounded-full object-cover contrast-50 hover:filter-none object-top
+                        duration-300 hover:scale-110 cursor-pointer hover:object-center'
                         onClick={() => navigate(`/card/${index}`)}
                       />
-                      <p className='font-NT text-yellow shadowYellow text-center tracking-widest text-base mt-2 font-medium'>
+                      <p
+                        className=' cursor-pointer font-NT 
+                      text-yellow shadowYellow text-center tracking-widest text-base mt-2 font-medium'
+                      >
                         {card.name}
                       </p>
                     </div>

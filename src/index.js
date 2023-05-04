@@ -13,6 +13,7 @@ import Profile from "./pages/Profile/Profile";
 import Meaning from "./pages/Meanings";
 import Divination from "./pages/Divination";
 import Home from "./pages/Home/Home";
+import { AuthContextProvider } from "./context/authContext";
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <BrowserRouter>

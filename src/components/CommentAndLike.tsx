@@ -7,6 +7,7 @@ import commenting from "../images/commenting.png";
 import { useContext } from "react";
 import { AuthContext } from "../context/authContext";
 import Alert from "./Alert";
+import { useNavigate } from "react-router-dom";
 
 const CommentAndLike = ({
   item,
@@ -23,6 +24,7 @@ const CommentAndLike = ({
   setVisitedUser,
 }) => {
   const { alert, setAlert } = useContext(AuthContext);
+  const navigate = useNavigate();
   const handleCommentChange = (e) => {
     setCommentChange({
       ...commentChange,
@@ -149,9 +151,7 @@ const CommentAndLike = ({
               alt='like'
               className='w-6 h-6'
             />
-            <p className=' p-1 ml-1'>
-              {item.like && item.like > 0 && item.like.length}
-            </p>
+            <p className=' p-1 ml-1'>{item.like ? item.like.length : 0}</p>
           </button>
           {/* 留言 編寫 瀏覽 */}
           <button
@@ -165,7 +165,9 @@ const CommentAndLike = ({
               alt='comment'
               className='w-[22px] h-[21px] pb-[2px]'
             />
-            <p className=' p-1 ml-1'>{item.comment && item.comment.length}</p>
+            <p className=' p-1 ml-1'>
+              {item.comment ? item.comment.length : 0}
+            </p>
           </button>
         </div>
         {item.addComment && (
@@ -180,7 +182,8 @@ const CommentAndLike = ({
                     <img
                       src={comment.userImage}
                       alt={comment.user}
-                      className='w-8 h-8 rounded-full'
+                      className='w-8 h-8 rounded-full cursor-pointer'
+                      onClick={() => navigate(`/profile/${comment.user}`)}
                     />
                     <p
                       className='font-notoSansJP font-normal  ml-4 text-yellow tracking-widest

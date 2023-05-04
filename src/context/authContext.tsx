@@ -1,4 +1,5 @@
-import { createContext, useState, useEffect } from "react";
+import { createContext, useState, useEffect, useContext } from "react";
+import { LoadingContext } from "./loadingContext";
 import firebase from "../utils/firebase";
 import { useLocation, useNavigate } from "react-router-dom";
 import { SpreadData } from "../utils/type";
@@ -56,7 +57,7 @@ export const AuthContext = createContext<AuthContextType>({
     userUID: "",
   },
   setUser: (user: User) => {},
-  loading: false,
+  loading: true,
   setLoading: () => {},
   userUID: "",
   signIn: async () => {},
@@ -87,6 +88,7 @@ export const AuthContextProvider: React.FC = ({ children }: any) => {
   const [alert, setAlert] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
+  const { isLoading, setIsLoading } = useContext(LoadingContext);
 
   async function getUsers(userUID) {
     const getUser = firebase.getUser(userUID);
@@ -100,9 +102,12 @@ export const AuthContextProvider: React.FC = ({ children }: any) => {
     }
   }
   useEffect(() => {
+    console.log("有嗎");
     getAllSpread();
   }, []);
   useEffect(() => {
+    console.log("有進來嗎");
+
     const auth = getAuth();
     onAuthStateChanged(auth, async (user) => {
       if (user) {
@@ -123,6 +128,7 @@ export const AuthContextProvider: React.FC = ({ children }: any) => {
           };
           setUser(data);
           setUserUID(user.uid);
+          setLoading(false);
         } else {
           console.log("沒有");
           setIsLogin(true);
@@ -137,11 +143,15 @@ export const AuthContextProvider: React.FC = ({ children }: any) => {
             userUID: user.uid || "",
           };
           setUser(data);
+          setLoading(false);
         }
       } else {
         setIsLogin(false);
+        setLoading(false);
       }
     });
+    console.log("沒有");
+    setLoading(false);
   }, []);
   const signIn = async (
     auth: ReturnType<typeof getAuth>,
@@ -192,12 +202,10 @@ export const AuthContextProvider: React.FC = ({ children }: any) => {
 
   const signOut = async (auth: Auth): Promise<void> => {
     setAlert(true);
-    setLoading(false);
     await firebase.signOut(auth);
     setUser(initialUserData);
     setUserUID("");
     setIsLogin(false);
-    setLoading(false);
     setTimeout(() => {
       setAlert(false);
     }, 5000);

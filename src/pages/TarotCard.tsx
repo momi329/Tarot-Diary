@@ -44,18 +44,10 @@ function TarotCard() {
   const [tarot, setTarot] = useState<any>(null);
 
   useEffect(() => {
-    console.log(id);
-
     if (!id) return;
     const data = cards.cards[id];
     setTarot(data);
-
-    console.log(data);
   }, [id]);
-
-  useEffect(() => {
-    console.log(tarot);
-  }, [tarot]);
 
   if (!tarot) {
     return <p>loading</p>;

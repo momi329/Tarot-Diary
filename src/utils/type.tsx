@@ -92,3 +92,9 @@ type friends = {
   image: string;
   uid: string;
 };
+export type comment = {
+  userName: string;
+  userImage: string;
+  comment: string;
+  user: string;
+};

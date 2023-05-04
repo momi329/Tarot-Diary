@@ -1,4 +1,4 @@
-import { useState, useEffect, useContext } from "react";
+import { useState, useEffect, useContext, useRef } from "react";
 import { AuthContext } from "../../context/authContext";
 import { useNavigate, useParams } from "react-router-dom";
 //firebase
@@ -23,9 +23,11 @@ import ProfileEdit from "./ProfileEdit";
 //type
 import type { VisitedUser } from "../../utils/type";
 import Member from "../Member";
+import LoadingPage from "../LoadingPage";
 
 function Profile(): JSX.Element {
-  const { isLogin, user, userUID } = useContext(AuthContext);
+  const { isLogin, user, userUID, loading, setLoading } =
+    useContext(AuthContext);
   const [userDesign, setUserDesign] = useState<DocumentData[] | never[]>([]);
   const [userDiary, setUserDiary] = useState<DocumentData[] | never[]>([]);
   const [page, setPage] = useState<Number>(1);
@@ -35,6 +37,8 @@ function Profile(): JSX.Element {
     []
   );
   const navigate = useNavigate();
+  const friendsPostsRef = useRef<DocumentData[] | []>([]);
+  const visitedUserRef = useRef<VisitedUser | {}>({});
 
   useEffect(() => {
     initialFollowing();
@@ -68,12 +72,19 @@ function Profile(): JSX.Element {
         return a.time.seconds - b.time.seconds;
       })
       .reverse();
-    setVisitedUser({
+
+    return {
       ...profile,
       userUID: uid,
       diary: diary,
       spread: spread,
-    });
+    };
+    // setVisitedUser({
+    //   ...profile,
+    //   userUID: uid,
+    //   diary: diary,
+    //   spread: spread,
+    // });
   }
   async function getAllFollowingDiaryAndSpread(user) {
     const allDiary = await firebase.getAllFollowingDiary(user);
@@ -85,7 +96,8 @@ function Profile(): JSX.Element {
           return a.time.seconds - b.time.seconds;
         })
         .reverse());
-    setFriendsPosts(allDiaryAndSpread);
+    // setFriendsPosts(allDiaryAndSpread);
+    return allDiaryAndSpread;
   }
   async function getAllFollowingSnapShop(user) {
     const allPerson = [...user.following, user.userUID];
@@ -107,6 +119,7 @@ function Profile(): JSX.Element {
               userName: followingUser.name,
             };
             setFriendsPosts((prev) => [newDocData, ...prev]);
+            // friendsPostsRef.current((prev) => [newDocData, ...prev])
           }
         });
       });
@@ -137,24 +150,29 @@ function Profile(): JSX.Element {
   }
 
   useEffect(() => {
-    if (uid) {
-      if (uid === userUID) {
-        //本人
-        console.log("本人");
-        getUserDesignAndDiary(userUID); //抓自己的
-        getAllFollowingDiaryAndSpread(user); //抓自己和別人的
-        getAllFollowingSnapShop(user); //監聽別人的
-        return () => {
-          getAllFollowingSnapShop(user);
-        };
-      } else {
-        console.log("別人");
-        getOtherUserDiaryAndSpread(uid);
+    async function getAllData() {
+      if (uid) {
+        if (uid === userUID) {
+          //本人
+          console.log("本人");
+          getUserDesignAndDiary(userUID); //抓自己的
+          const friendsPost = await getAllFollowingDiaryAndSpread(user); //抓自己和別人的
+          friendsPostsRef.current = friendsPost;
+          getAllFollowingSnapShop(user); //監聽別人的
+
+          return () => {
+            getAllFollowingSnapShop(user);
+          };
+        } else {
+          console.log("別人");
+          const visited = getOtherUserDiaryAndSpread(uid);
+          visitedUserRef.current = visited;
+        }
       }
     }
+    getAllData();
   }, [isLogin, uid, user, page, userUID]);
   if (!user || !visitedUser) {
-    console.log("!user || !visitedUser");
     return <></>;
   }
 
@@ -187,6 +205,8 @@ function Profile(): JSX.Element {
                   friendsPosts={friendsPosts}
                   setFriendsPosts={setFriendsPosts}
                   page={page}
+                  visitedUserRef={visitedUserRef}
+                  friendsPostsRef={friendsPostsRef}
                 />
               )}
               {page === 3 && (
@@ -199,6 +219,8 @@ function Profile(): JSX.Element {
                   friendsPosts={friendsPosts}
                   setFriendsPosts={setFriendsPosts}
                   page={page}
+                  visitedUserRef={visitedUserRef}
+                  friendsPostsRef={friendsPostsRef}
                 />
               )}
               {/* 編輯個人檔案 */}

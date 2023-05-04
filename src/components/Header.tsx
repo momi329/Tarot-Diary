@@ -16,7 +16,7 @@ function Header() {
     {
       title: "Personal Page",
       link: `/profile/${userUID}`,
-      route: "profile",
+      route: `/profile/${userUID}`,
     },
     {
       title: "Tarot Divination",

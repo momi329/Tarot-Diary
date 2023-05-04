@@ -1,6 +1,6 @@
 type UnderlineButtonProps = {
   value: string;
-  icon: any;
+  icon?: any;
   type: string;
   selected?: boolean;
   action: (() => {}) | (() => void);
@@ -24,6 +24,12 @@ function UnderlineButton({
     style = {
       a: "text-xl text-yellow font-NT shadowYellow",
       b: `bg-yellow h-[1.5px] ${selected ? "w-full" : ""}`,
+    };
+  }
+  if (type === "meanings") {
+    style = {
+      a: "text-base text-yellow font-medium font-NT shadowYellow mt-2  tracking-widest  ",
+      b: `bg-yellow h-[1px]`,
     };
   }
   return (
