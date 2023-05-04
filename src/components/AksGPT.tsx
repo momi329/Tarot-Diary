@@ -1,4 +1,4 @@
-import type SpreadData from "../pages/Spread";
+import type SpreadData from "../pages/Spread/Spread";
 import { useState, useContext, useEffect } from "react";
 import { AuthContext } from "../context/authContext";
 import cards from "../tarotcard/tarot-images";

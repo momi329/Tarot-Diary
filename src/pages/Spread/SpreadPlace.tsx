@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import lightCard from "../images/card-light.png";
+import lightCard from "../../images/card-light.png";
 export const SpreadPlace = ({ type, tarot, size }) => {
   let widthAndHeight;
   if (size === "large") {

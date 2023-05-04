@@ -1,20 +1,20 @@
 import { useParams } from "react-router-dom";
 import { useState, useEffect, useContext, useReducer } from "react";
-import { AuthContext } from "../context/authContext";
-import Divine from "../components/Divine";
-import cards from "../tarotcard/tarot-images";
+import { AuthContext } from "../../context/authContext";
+import Divine from "./Divine";
+import cards from "../../tarotcard/tarot-images";
 import { Link } from "react-router-dom";
-import firebase from "../utils/firebase";
-import Draggable from "../components/Draggable";
-import AskGPT from "../components/AksGPT";
-import lightCard from "../images/card-light.png";
-import Button from "../components/Button";
-import { SpreadPlace } from "../components/SpreadPlace";
+import firebase from "../../utils/firebase";
+import Draggable from "../Draggable";
+import AskGPT from "../../components/AksGPT";
+import lightCard from "../../images/card-light.png";
+import Button from "../../components/Button";
+import { SpreadPlace } from "./SpreadPlace";
 import type {
   SpreadData,
   DraggableProps,
   DesignSpreadData,
-} from "../utils/type";
+} from "../../utils/type";
 
 const initialDivinedData: DesignSpreadData = {
   userUID: "",

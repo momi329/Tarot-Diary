@@ -1,9 +1,9 @@
 import { useState, useEffect, useContext } from "react";
-import { AuthContext } from "../context/authContext";
-import cards from "../tarotcard/tarot-images";
-import type { SpreadData } from "../utils/type";
-import type { DesignSpreadData } from "../utils/type";
-import Button from "./Button";
+import { AuthContext } from "../../context/authContext";
+import cards from "../../tarotcard/tarot-images";
+import type { SpreadData } from "../../utils/type";
+import type { DesignSpreadData } from "../../utils/type";
+import Button from "../../components/Button";
 interface Props {
   spreadData: SpreadData;
   setSpreadData?: React.Dispatch<React.SetStateAction<SpreadData | undefined>>;

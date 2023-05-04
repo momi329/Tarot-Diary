@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import Moon from "../../images/Moon";
 import { useContext, useEffect, useState } from "react";
 import Button from "../../components/Button";
-import { getRandomBool, getRandomCards } from "../../components/Divine";
+import { getRandomBool, getRandomCards } from "../Spread/Divine";
 import Footer from "../../components/Footer";
 import Star from "../../images/Star";
 import React, { useRef } from "react";
@@ -13,13 +13,14 @@ import SelectCardHomePage from "./SelectCardHomePage";
 import { AuthContext } from "../../context/authContext";
 import DesignVideo from "../../images/design.mp4";
 import DivineVideo from "../../images/divine.mp4";
-import { SpreadPlace } from "../../components/SpreadPlace";
+import { SpreadPlace } from "../Spread/SpreadPlace";
 import SpreadPreview from "../../components/SpreadPreview";
+import Member from "../Member";
 const tarot = cards.cards;
 function Home() {
   const navigate = useNavigate();
-  const { isLogin, spreads } = useContext(AuthContext);
-
+  const { isLogin, spreads, openSignIn, setOpenSignIn } =
+    useContext(AuthContext);
   const [showFourthParagraph, setShowFourthParagraph] = useState(false);
   useEffect(() => {
     setTimeout(() => {
@@ -109,6 +110,25 @@ function Home() {
   }
   return (
     <>
+      {openSignIn && (
+        <div className='w-screen h-screen fixed z-50'>
+          <div
+            className={`w-0 opacity-0 h-screen fixed transition bg-black/90 duration-700 ease-in-out ${
+              openSignIn ? "w-screen opacity-100" : ""
+            }`}
+          />
+          <div
+            className='relative left-[95%] top-[5%] cursor-pointer'
+            onClick={() => setOpenSignIn(false)}
+          >
+            <div className='absolute top-0 w-10 h-[1px] bg-white rotate-[-45deg]' />
+            <div className='absolute top-0 w-10 h-[1px] bg-white rotate-[45deg]' />
+          </div>
+          <div className='w-full mx-auto mt-20 fixed z-[51]'>
+            <Member />
+          </div>
+        </div>
+      )}
       <div>
         <div
           className='h-[880px] overflow-hidden bg-black  
@@ -166,7 +186,7 @@ function Home() {
           <p
             className='underline underline-offset-2 text-2xl tracking-widest flex flex-row gap-1 cursor-pointer
            text-white z-[2] bottom-[100px] right-[100px] absolute font-NT shadowWhite'
-            onClick={() => navigate(`/signin`)}
+            onClick={() => (isLogin ? "" : setOpenSignIn(true))}
           >
             Log In To Start{" "}
             <MdKeyboardArrowRight className='underline underline-offset-2 mt-1' />
@@ -333,7 +353,7 @@ function Home() {
           }`}
         >
           <SelectCardHomePage number={1} />
-          <div className=''>
+          <div className='w-[250px]'>
             <Button
               type={"big"}
               action={async () => {
@@ -363,14 +383,13 @@ function Home() {
                   localStorage.setItem("myResult", data);
                   navigate("/spread/common-1");
                 } else {
-                  navigate("/signin");
+                  setOpenSignIn(true);
                 }
               }}
               value={isLogin ? "Start" : "Log in"}
             />
           </div>
         </div>
-        {/* 缺一個按鈕占卜 */}
       </div>
       <div className='w-screen h-[300px] z-[1] relative'>
         <div

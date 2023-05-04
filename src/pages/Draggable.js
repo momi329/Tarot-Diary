@@ -5,11 +5,11 @@ import { RxCross1 } from "react-icons/rx";
 import { VscAdd } from "react-icons/vsc";
 import { AiOutlineMinus } from "react-icons/ai";
 
-import MyImages from "./MyImages";
+import MyImages from "../components/MyImages";
 import { db } from "../utils/firebase";
 import { doc, updateDoc, Timestamp, setDoc } from "firebase/firestore";
 import { AuthContext } from "../context/authContext";
-import Button from "./Button";
+import Button from "../components/Button";
 import lightCard from "../images/card-light.png";
 function Draggable({ edit, setEdit, spreadData, id }) {
   const [onSave, setOnSave] = useState({

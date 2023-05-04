@@ -1,6 +1,6 @@
 import { createContext, useState, useEffect } from "react";
 import firebase from "../utils/firebase";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { SpreadData } from "../utils/type";
 import {
   Auth,
@@ -34,6 +34,10 @@ interface AuthContextType {
   ) => Promise<void>;
   signOut: (auth: Auth) => Promise<void>;
   spreads: SpreadData[] | null;
+  openSignIn: boolean;
+  setOpenSignIn: React.Dispatch<React.SetStateAction<boolean>>;
+  alert: boolean;
+  setAlert: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 function shuffle(array) {
@@ -58,6 +62,10 @@ export const AuthContext = createContext<AuthContextType>({
   signIn: async () => {},
   signOut: async () => {},
   spreads: null,
+  openSignIn: false,
+  setOpenSignIn: () => {},
+  alert: false,
+  setAlert: () => {},
 });
 const initialUserData: User = {
   name: "",
@@ -75,7 +83,11 @@ export const AuthContextProvider: React.FC = ({ children }: any) => {
   const [loading, setLoading] = useState<boolean>(false);
   const [userUID, setUserUID] = useState<string>("");
   const [spreads, setSpread] = useState<SpreadData[] | null>(null);
+  const [openSignIn, setOpenSignIn] = useState(false);
+  const [alert, setAlert] = useState(false);
   const navigate = useNavigate();
+  const location = useLocation();
+
   async function getUsers(userUID) {
     const getUser = firebase.getUser(userUID);
     return getUser;
@@ -126,9 +138,7 @@ export const AuthContextProvider: React.FC = ({ children }: any) => {
           };
           setUser(data);
         }
-        //navigate(`/profile/${data.userUID}`, { replace: true });
       } else {
-        // User is signed out
         setIsLogin(false);
       }
     });
@@ -155,7 +165,10 @@ export const AuthContextProvider: React.FC = ({ children }: any) => {
       setUser(data);
       setUserUID(data.userUID);
       setIsLogin(true);
-      navigate(`/profile/${data.userUID}`, { replace: true });
+      setOpenSignIn(false);
+      if (location.pathname.includes("signin")) {
+        navigate(`/profile/${data.userUID}`, { replace: true });
+      }
     } else {
       const data: User = {
         name: user.user.displayName || "",
@@ -171,17 +184,23 @@ export const AuthContextProvider: React.FC = ({ children }: any) => {
       setUser(data);
       setUserUID(data.userUID);
       setIsLogin(true);
-      navigate(`/profile/${data.userUID}`, { replace: true });
+      if (location.pathname.includes("signin")) {
+        navigate(`/profile/${data.userUID}`, { replace: true });
+      }
     }
   };
 
   const signOut = async (auth: Auth): Promise<void> => {
+    setAlert(true);
     setLoading(false);
     await firebase.signOut(auth);
     setUser(initialUserData);
     setUserUID("");
     setIsLogin(false);
     setLoading(false);
+    setTimeout(() => {
+      setAlert(false);
+    }, 5000);
   };
 
   return (
@@ -196,6 +215,10 @@ export const AuthContextProvider: React.FC = ({ children }: any) => {
         signIn,
         signOut,
         spreads,
+        openSignIn,
+        setOpenSignIn,
+        alert,
+        setAlert,
       }}
     >
       {children}

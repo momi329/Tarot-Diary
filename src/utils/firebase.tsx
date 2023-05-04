@@ -107,9 +107,6 @@ const firebase = {
     return newData;
   },
   async getUserDiary(userUID: string) {
-    // const docRef = (db, "users", userUID, "diary");
-    // const docSnap = await getDoc(docRef);
-    // return docSnap;
     const q = query(collection(db, "users", userUID, "diary"));
     const querySnapshot = await getDocs(q);
     const diaryData: {}[] = [];
@@ -309,7 +306,6 @@ const firebase = {
   },
   async getAllUserName(data) {
     let newData: {}[] = [];
-    console.log(data, "data");
     await data.forEach(async (i) => {
       if (i.userUID === "all") {
         newData.push({ ...i, name: "預設" });
@@ -347,7 +343,6 @@ const firebase = {
   },
   async getFriendsProfile(followers, following) {
     const friendsData: FriendsData = { followers: [], following: [] };
-
     followers &&
       followers.length !== 0 &&
       (await followers.forEach(async (i) => {
@@ -383,6 +378,26 @@ const firebase = {
         }
       }));
     return friendsData;
+  },
+  async getCommentsProfile(data) {
+    const comments = [];
+    await Promise.all(
+      data.map(async (i) => {
+        const docRef = doc(db, "users", i.user);
+        const docSnap = await getDoc(docRef);
+        if (docSnap.exists()) {
+          const comment = {
+            userName: docSnap.data().name,
+            userImage: docSnap.data().image,
+            comment: i.comment,
+            user: i.user,
+          };
+          console.log("comment", comment);
+          comments.push(comment);
+        }
+      })
+    );
+    return comments;
   },
   async uploadBlob(userUID, file) {
     console.log("上傳");

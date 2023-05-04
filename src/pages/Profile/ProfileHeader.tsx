@@ -52,23 +52,22 @@ const ProfileHeader = ({
     data = user;
   } else {
     data = visitedUser;
-    console.log("data", data);
   }
 
   return (
     <>
       <div className='w-100%  bg-black bg-opacity-30  fixed'>
-        <div className='flex flex-row pt-6 mx-auto justify-center gap-4'>
+        <div className='flex flex-row pt-6 mx-auto justify-center gap-4 '>
           <img
             src={data.image}
             alt={data.name}
             className='rounded-full w-[70px] h-[70px]'
           />
           <div>
-            <h5 className='font-notoSansJP font-light text-lg tracking-wider text-pink mt-2'>
+            <h5 className='font-notoSansJP font-medium text-lg tracking-wider text-pink mt-2 truncate w-[180px]'>
               {data.name}
             </h5>
-            <p className='font-notoSansJP font-light text-sm tracking-wider text-yellow mt-2'>
+            <p className='font-notoSansJP font-medium text-sm tracking-wider text-yellow mt-1 w-[180px] '>
               {data.sign}
             </p>
           </div>
@@ -87,7 +86,7 @@ const ProfileHeader = ({
               <h3 className='text-3xl font-NT text-yellow'>
                 {data.followers.length}
               </h3>
-              <p className='text-lg font-NT text-gold uppercase shadowGold cursor-pointer'>
+              <p className='text-lg font-NT text-gold uppercase shadowGold cursor-pointer tracking-wider'>
                 Followers
               </p>
             </span>
@@ -104,55 +103,15 @@ const ProfileHeader = ({
               <h3 className='text-3xl font-NT text-yellow'>
                 {data.following.length}
               </h3>
-              <p className='text-lg font-NT text-gold uppercase shadowGold tracking-wider cursor-pointer'>
+              <p className='text-lg font-NT text-gold uppercase shadowGold tracking-wider cursor-pointer tracking-wider'>
                 Following
               </p>
             </span>
           </div>
         )}
-        {openFriends.following || openFriends.followers ? (
-          openFriends.following ? (
-            friends.following.map((friend) => (
-              <div className='flex flex-row py-2 ml-5 justify-start gap-4'>
-                <img
-                  src={friend.image}
-                  alt={friend.name}
-                  className='rounded-full w-[70px] h-[70px]'
-                  onClick={() => navigate(`/profile/${friend.uid}`)}
-                />
-                <div>
-                  <h5 className='font-notoSansJP font-light text-lg tracking-wider text-pink mt-2'>
-                    {friend.name}
-                  </h5>
-                  <p className='font-notoSansJP font-light text-sm tracking-wider text-yellow mt-2'>
-                    {friend.sign}
-                  </p>
-                </div>
-              </div>
-            ))
-          ) : (
-            friends.followers.map((friend) => (
-              <div className='flex flex-row py-2 ml-5 justify-start gap-4'>
-                <img
-                  src={friend.image}
-                  alt={friend.name}
-                  className='rounded-full w-[70px] h-[70px]'
-                  onClick={() => navigate(`/profile/${friend.uid}`)}
-                />
-                <div>
-                  <h5 className='font-notoSansJP font-light text-lg tracking-wider text-pink mt-2'>
-                    {friend.name}
-                  </h5>
-                  <p className='font-notoSansJP font-light text-sm tracking-wider text-yellow mt-2'>
-                    {friend.sign}
-                  </p>
-                </div>
-              </div>
-            ))
-          )
-        ) : (
-          <div className=' pb-10 flex justify-center items-center uppercase'>
-            {userUID === uid ? (
+        <div className=' pb-8 flex justify-center items-center uppercase'>
+          {userUID === uid ? (
+            <div className='w-[250px]'>
               <Button
                 action={() => {
                   setPage(6);
@@ -160,17 +119,41 @@ const ProfileHeader = ({
                 type={"big"}
                 value={"Edit Profile"}
               />
-            ) : (
+            </div>
+          ) : (
+            <div className='w-[250px]'>
               <Button
                 action={() => {
                   following ? unfollow(uid, userUID) : follow(uid, userUID);
                 }}
                 type={"big"}
                 value={following ? "Unfollow" : "Follow"}
+              />{" "}
+            </div>
+          )}
+        </div>
+        {/* <div className='w-[95%] h-[1px] bg-gold/40 mx-auto' />
+        <div className='overflow-y-hidden h-[200px] pb-6'>
+          <p>FOllOWERS</p>
+          {friends.followers.map((friend) => (
+            <div className='flex flex-row py-2 ml-5 justify-start gap-4'>
+              <img
+                src={friend.image}
+                alt={friend.name}
+                className='rounded-full w-[60px] h-[60px]'
+                onClick={() => navigate(`/profile/${friend.uid}`)}
               />
-            )}
-          </div>
-        )}
+              <div>
+                <h5 className='font-notoSansJP font-light text-lg tracking-wider text-pink mt-2'>
+                  {friend.name}
+                </h5>
+                <p className='font-notoSansJP font-light text-sm tracking-wider text-yellow mt-1'>
+                  {friend.sign}
+                </p>
+              </div>
+            </div>
+          ))}
+        </div> */}
       </div>
     </>
   );

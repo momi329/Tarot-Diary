@@ -3,9 +3,10 @@ type ButtonType = {
   value: string;
   action: () => void | {};
   disabled?: boolean;
+  url?: string;
 };
 
-function Button({ type, value, action, disabled }: ButtonType) {
+function Button({ type, value, action, disabled, url }: ButtonType) {
   let style =
     `${disabled ? `cursor-not-allowed` : `cursor-pointer`}` +
     " font-NT  text-center  tracking-wider capitalize hover:animate-pulse " +
@@ -19,15 +20,29 @@ function Button({ type, value, action, disabled }: ButtonType) {
   if (type === "small") {
     style += " w-[185px] h-[65px] text-xl " + pinkAndYellow;
   } else if (type === "big") {
-    style += " w-[230px] h-[73px] text-2xl " + pinkAndYellow;
+    style += " w-[100%] h-[78px] text-2xl leading-[23px]" + pinkAndYellow;
   } else if (type === "tiny") {
     style += " w-2/12 h-2/12 text-base text-xl " + pinkAndYellow;
   } else if (type === "little") {
     style += " w-[120px] h-[40px] text-xl " + pinkAndGreen;
+  } else if (type === "littlePink") {
+    style += " w-[120px] h-[40px] text-xl " + pinkAndYellow;
   }
   return (
-    <button className={style} onClick={() => action()} disabled={disabled}>
-      <div className='mt-2'>{value}</div>
+    <button
+      className={style}
+      onClick={() => {
+        action();
+      }}
+      disabled={disabled}
+    >
+      <div
+        className={`${
+          type === "little" || type === "littlePink" ? "mt-1" : "mt-2"
+        }`}
+      >
+        {value}
+      </div>
     </button>
   );
 }

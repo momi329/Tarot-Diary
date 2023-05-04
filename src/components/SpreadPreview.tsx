@@ -1,6 +1,7 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import type { SpreadPreviewProps } from "../utils/type";
 function SpreadPreview({ spread, index, type }: SpreadPreviewProps) {
+  const navigate = useNavigate();
   let style;
   if (type === "personal") {
     style = {
@@ -18,10 +19,11 @@ function SpreadPreview({ spread, index, type }: SpreadPreviewProps) {
   return (
     <div
       id='spread'
-      className={`${style.a} bg-cover duration-200  ${
+      className={`${style.a} bg-cover duration-200 cursor-pointer ${
         type === "personal" ? "hover:scale-110" : ""
       } `}
       key={index}
+      onClick={() => navigate(`/spread/${spread.spreadId}`)}
     >
       {spread.image !== "" && (
         <img
@@ -39,13 +41,11 @@ function SpreadPreview({ spread, index, type }: SpreadPreviewProps) {
         className='min-h-[25%] w-[100%]  bg-darkPink bg-opacity-40
 p-3 pl-4 absolute bottom-0 tracking-widest font-NT text-base text-yellow'
       >
-        <Link to={`/spread/${spread.spreadId}`}>
-          {" "}
-          <p>{spread.title}</p>
-          {spread.name && (
-            <p className='text-sm text-gray'>Author/{spread.name}</p>
-          )}
-        </Link>
+        {" "}
+        <p>{spread.title}</p>
+        {spread.name && (
+          <p className='text-sm text-gray'>Author/{spread.name}</p>
+        )}
       </div>
     </div>
   );

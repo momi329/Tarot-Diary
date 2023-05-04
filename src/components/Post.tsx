@@ -7,7 +7,7 @@ import Editor from "./Editor/Editor";
 import firebase from "../utils/firebase";
 import Star from "../images/Star";
 import Moon from "../images/Moon";
-import { SpreadPlace } from "./SpreadPlace";
+import { SpreadPlace } from "../pages/Spread/SpreadPlace";
 const tarot = cards.cards;
 export function Post({ targetDiary, setTargetDiary, setDiaryData }) {
   const { user, userUID, isLogin } = useContext(AuthContext);

@@ -22,6 +22,7 @@ import UserSpread from "./UserSpread";
 import ProfileEdit from "./ProfileEdit";
 //type
 import type { VisitedUser } from "../../utils/type";
+import Member from "../Member";
 
 function Profile(): JSX.Element {
   const { isLogin, user, userUID } = useContext(AuthContext);
@@ -34,10 +35,8 @@ function Profile(): JSX.Element {
     []
   );
   const navigate = useNavigate();
+
   useEffect(() => {
-    if (!isLogin) {
-      navigate("/signin");
-    }
     initialFollowing();
   }, [userUID]);
   const initialFollowing = () => {
@@ -154,67 +153,74 @@ function Profile(): JSX.Element {
       }
     }
   }, [isLogin, uid, user, page, userUID]);
-
   if (!user || !visitedUser) {
+    console.log("!user || !visitedUser");
     return <></>;
   }
+
   return (
     <>
-      <div className='w-screen h-[110px] mx-auto' />
+      {uid && <div className='w-screen h-[110px] mx-auto' />}
       <div className='mx-auto w-screen'>
-        <div className='flex flex-row w-[1180px] z-20 h-[300px] justify-center gap-[2%] mx-auto'>
-          <div className='h-[100%] w-2/12'>
-            {userUID && <Buttons setPage={setPage} page={page} />}
-          </div>
-          <div className=' h-[100%] w-6/12'>
-            {page === 2 || page === 3 ? (
-              <Toggle page={page} setPage={setPage} />
-            ) : (
-              <></>
-            )}
-            {page === 1 && (
-              <Gallery
-                visitedUser={visitedUser}
-                setVisitedUser={setVisitedUser}
-                userDiary={userDiary}
+        {!uid ? (
+          <>
+            <Member />
+          </>
+        ) : (
+          <div className='flex flex-row w-[1180px] z-20 h-[300px] justify-center gap-[2%] mx-auto '>
+            <div className='h-[100%] w-2/12'>
+              {userUID && <Buttons setPage={setPage} page={page} />}
+            </div>
+            <div className=' h-[100%] w-6/12'>
+              {page === 2 || page === 3 ? (
+                <Toggle page={page} setPage={setPage} />
+              ) : (
+                <></>
+              )}
+              {page === 1 && (
+                <Gallery
+                  visitedUser={visitedUser}
+                  setVisitedUser={setVisitedUser}
+                  userDiary={userDiary}
+                  uid={uid}
+                  userUID={userUID}
+                  friendsPosts={friendsPosts}
+                  setFriendsPosts={setFriendsPosts}
+                  page={page}
+                />
+              )}
+              {page === 3 && (
+                <Gallery
+                  visitedUser={visitedUser}
+                  setVisitedUser={setVisitedUser}
+                  userDiary={userDiary}
+                  uid={uid}
+                  userUID={userUID}
+                  friendsPosts={friendsPosts}
+                  setFriendsPosts={setFriendsPosts}
+                  page={page}
+                />
+              )}
+              {/* 編輯個人檔案 */}
+              {userUID === uid && page === 6 && <ProfileEdit />}
+              {/* 日記 */}
+              {userUID === uid && page === 2 && <Diary />}
+              {/* 設計牌陣 */}
+              {userUID === uid && page === 4 && (
+                <UserSpread userDesign={userDesign} visitedUser={visitedUser} />
+              )}
+            </div>
+            <div className=' h-[100%] w-3/12'>
+              <ProfileHeader
                 uid={uid}
-                userUID={userUID}
-                friendsPosts={friendsPosts}
-                setFriendsPosts={setFriendsPosts}
-                page={page}
-              />
-            )}
-            {page === 3 && (
-              <Gallery
                 visitedUser={visitedUser}
-                setVisitedUser={setVisitedUser}
-                userDiary={userDiary}
-                uid={uid}
-                userUID={userUID}
-                friendsPosts={friendsPosts}
-                setFriendsPosts={setFriendsPosts}
-                page={page}
+                following={following}
+                setFollowing={setFollowing}
+                setPage={setPage}
               />
-            )}
-            {/* 編輯個人檔案 */}
-            {userUID === uid && page === 6 && <ProfileEdit />}
-            {/* 日記 */}
-            {userUID === uid && page === 2 && <Diary />}
-            {/* 設計牌陣 */}
-            {userUID === uid && page === 4 && (
-              <UserSpread userDesign={userDesign} visitedUser={visitedUser} />
-            )}
+            </div>
           </div>
-          <div className=' h-[100%] w-3/12'>
-            <ProfileHeader
-              uid={uid}
-              visitedUser={visitedUser}
-              following={following}
-              setFollowing={setFollowing}
-              setPage={setPage}
-            />
-          </div>
-        </div>
+        )}
       </div>
     </>
   );

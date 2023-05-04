@@ -4,10 +4,10 @@ import "./index.css";
 import App from "./App";
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import Member from "./pages/Member.tsx";
-import Draggable from "./components/Draggable";
-import Spread from "./pages/Spread";
+import Draggable from "./pages/Draggable";
+import Spread from "./pages/Spread/Spread";
 import TarotCard from "./pages/TarotCard";
-import Divine from "./components/Divine";
+import Divine from "./pages/Spread/Divine";
 import AskGPT from "./components/AksGPT";
 import Profile from "./pages/Profile/Profile";
 import Meaning from "./pages/Meanings";
@@ -21,6 +21,7 @@ root.render(
         <Route index element={<Home />} />
         <Route path='/signin' element={<Member />} />
         <Route path='/profile/:uid' element={<Profile />} />
+        <Route path='/profile' element={<Profile />} />
         <Route path='/design' element={<Draggable />} />
         <Route path='/spread/:id' element={<Spread />} />
         <Route path='/card/:id' element={<TarotCard />} />
@@ -28,6 +29,7 @@ root.render(
         <Route path='/ask' element={<AskGPT />} />
         <Route path='/meanings' element={<Meaning />} />
         <Route path='/divination' element={<Divination />} />
+        {/* <Route path='*' element={<Navigate to='/' replace />} /> */}
       </Route>
     </Routes>
   </BrowserRouter>

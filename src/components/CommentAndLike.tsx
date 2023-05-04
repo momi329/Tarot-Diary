@@ -4,6 +4,9 @@ import fill from "../images/heartfill.png";
 import like from "../images/heart.png";
 import commentIt from "../images/comment.png";
 import commenting from "../images/commenting.png";
+import { useContext } from "react";
+import { AuthContext } from "../context/authContext";
+import Alert from "./Alert";
 
 const CommentAndLike = ({
   item,
@@ -19,12 +22,13 @@ const CommentAndLike = ({
   visitedUser,
   setVisitedUser,
 }) => {
+  const { alert, setAlert } = useContext(AuthContext);
   const handleCommentChange = (e) => {
     setCommentChange({
       ...commentChange,
-      userName: user.name,
       user: user.userUID,
       comment: e.target.value,
+      userName: user.name,
       userImage: user.image,
     });
   };
@@ -34,10 +38,12 @@ const CommentAndLike = ({
       let comments = newFriendPost[index].comment;
       comments = comments ? [...comments, commentChange] : [commentChange];
       newFriendPost[index].comment = comments;
+      console.log(newFriendPost[index].comment);
       setFriendsPosts(newFriendPost);
       await firebase.updateComment(newFriendPost[index]);
       setCommentChange({
         ...commentChange,
+        user: userUID,
         comment: "",
       });
     } else {
@@ -45,11 +51,12 @@ const CommentAndLike = ({
       let comments = newVisitedUser[index].comment;
       comments = comments ? [...comments, commentChange] : [commentChange];
       newVisitedUser[index].comment = comments;
-      console.log("newVisitedUser", newVisitedUser[index]);
       setVisitedUser({ ...visitedUser, diary: newVisitedUser });
       await firebase.updateComment(newVisitedUser[index]);
       setCommentChange({
         ...commentChange,
+        user: userUID,
+
         comment: "",
       });
     }
@@ -86,104 +93,159 @@ const CommentAndLike = ({
       await firebase.updateComment(newVisitedUser[index]);
     }
   };
-  const commentStatusChange = (item, index) => {
-    const newData = [...friendsPosts];
-    newData.forEach((data) => {
-      if (data.addComment) {
-        data.addComment = false;
+  const commentStatusChange = async (item, index) => {
+    if (item.addComment === true) {
+      const newData = [...friendsPosts];
+      item.addComment = false;
+      newData[index] = item;
+      setFriendsPosts(newData);
+    } else {
+      const newData = [...friendsPosts];
+      if (!friendsPosts[index].comment) {
+        newData.forEach((data) => {
+          if (data.addComment) {
+            data.addComment = false;
+          }
+        });
+        item.addComment = !item.addComment;
+        newData[index] = item;
+        setFriendsPosts(newData);
+      } else if (friendsPosts[index].comment.length === 0) {
+        newData.forEach((data) => {
+          if (data.addComment) {
+            data.addComment = false;
+          }
+        });
+        item.addComment = !item.addComment;
+        newData[index] = item;
+        setFriendsPosts(newData);
+      } else {
+        const comments = await firebase.getCommentsProfile(item.comment);
+        newData.forEach((data) => {
+          if (data.addComment) {
+            data.addComment = false;
+          }
+        });
+        item.addComment = !item.addComment;
+        item.comment = comments;
+        newData[index] = item;
+        setFriendsPosts(newData);
       }
-    });
-    item.addComment = !item.addComment;
-    newData[index] = item;
-    setFriendsPosts(newData);
+    }
   };
   return (
-    <div className='ml-1 mt-5'>
-      <div className='flex items-center mb-2  text-pink'>
-        {/* 按讚 */}
-        <button
-          className={`p-1 mr-2 flex-row flex items-center`}
-          onClick={() => {
-            likeOrUnlike(index);
-          }}
-        >
-          <img
-            src={item.like && item.like.includes(user.userUID) ? fill : like}
-            alt='like'
-            className='w-6 h-6'
-          />
-          <p className=' p-1 ml-1'>{item.like && item.like.length}</p>
-        </button>
-        {/* 留言 編寫 瀏覽 */}
-        <button
-          className='pl-3 p-1  mr-2 flex-row flex items-center'
-          onClick={() => {
-            commentStatusChange(item, index);
-          }}
-        >
-          <img
-            src={item.addComment ? commenting : commentIt}
-            alt='comment'
-            className='w-[22px] h-[21px] pb-[2px]'
-          />
-          <p className=' p-1 ml-1'>{item.comment && item.comment.length}</p>
-        </button>
-      </div>
-      {item.addComment && (
-        <>
-          {item.comment &&
-            item.comment.map((comment, q) => (
-              <>
-                <div
-                  className='flex flex-row items-center ml-2 my-3 text-sm'
-                  key={q}
-                >
-                  <img
-                    src={comment.userImage}
-                    alt={comment.user}
-                    className='w-8 h-8 rounded-full'
-                  />
-                  <p className='font-notoSansJP font-normal  ml-4 text-yellow tracking-widest w-[25%]'>
-                    {comment.userName}
-                  </p>
-                  <p className='font-notoSansJP font-light text-yellow tracking-widest flex-grow'>
-                    {comment.comment}
-                  </p>
-                  {user.userUID === comment.user && (
-                    <button
-                      onClick={() => {
-                        deleteComment(index, q);
-                      }}
-                      className='font-NT text-yellow shadowYellow hover:underline tracking-widest mt-[6px]'
+    <>
+      <div className='ml-1 mt-5'>
+        <div className='flex items-center mb-2  text-pink'>
+          {/* 按讚 */}
+          <button
+            className={`p-1 mr-2 flex-row flex items-center`}
+            onClick={() => {
+              likeOrUnlike(index);
+            }}
+          >
+            <img
+              src={item.like && item.like.includes(user.userUID) ? fill : like}
+              alt='like'
+              className='w-6 h-6'
+            />
+            <p className=' p-1 ml-1'>
+              {item.like && item.like > 0 && item.like.length}
+            </p>
+          </button>
+          {/* 留言 編寫 瀏覽 */}
+          <button
+            className='pl-3 p-1  mr-2 flex-row flex items-center'
+            onClick={() => {
+              commentStatusChange(item, index);
+            }}
+          >
+            <img
+              src={item.addComment ? commenting : commentIt}
+              alt='comment'
+              className='w-[22px] h-[21px] pb-[2px]'
+            />
+            <p className=' p-1 ml-1'>{item.comment && item.comment.length}</p>
+          </button>
+        </div>
+        {item.addComment && (
+          <>
+            {item.comment &&
+              item.comment.map((comment, q) => (
+                <>
+                  <div
+                    className='flex flex-row items-center ml-2 my-3 text-sm'
+                    key={q}
+                  >
+                    <img
+                      src={comment.userImage}
+                      alt={comment.user}
+                      className='w-8 h-8 rounded-full'
+                    />
+                    <p
+                      className='font-notoSansJP font-normal  ml-4 text-yellow tracking-widest
+                    whitespace-normal w-28 mr-2'
                     >
-                      Delete
-                    </button>
-                  )}
-                </div>
-                <div className='w-[100%] h-[1px] bg-white opacity-40'></div>
-              </>
-            ))}
-          <div className='flex justify-between items-center mt-6'>
-            <input
-              type='text'
-              onChange={(e) => handleCommentChange(e)}
-              value={commentChange.comment}
-              className='bg-green opacity-60 pl-3 pr-10 py-2 text-yellow  w-[65%] rounded-lg '
-            />
-            <Button
-              type={"tiny"}
-              value={"Enter"}
-              action={() => comment(index)}
-            />
-            <Button
-              type={"tiny"}
-              value={"Cancel"}
-              action={() => alert("好！")}
-            />
-          </div>
-        </>
-      )}
-    </div>
+                      {comment.userName}
+                    </p>
+                    <p
+                      className='font-notoSansJP font-normal text-yellow tracking-widest 
+                  flex-grow w-[300px] break-words whitespace-normal mr-2'
+                    >
+                      {comment.comment}
+                    </p>
+                    {user.userUID === comment.user && (
+                      <button
+                        onClick={() => {
+                          setAlert(true);
+                          // deleteComment(index, q);
+                        }}
+                        className='font-NT text-yellow shadowYellow hover:underline tracking-widest mt-[6px]'
+                      >
+                        Delete
+                      </button>
+                    )}
+                    {alert && (
+                      <Alert
+                        value={"Are you sure you want to delete?"}
+                        buttonValue={[
+                          {
+                            value: "Cancel",
+                            type: "little",
+                            action: () => setAlert(false),
+                          },
+                          {
+                            value: "Confirm",
+                            type: "littlePink",
+                            action: (q) => {
+                              deleteComment(index, q);
+                              setTimeout(() => setAlert(false), 5000);
+                            },
+                          },
+                        ]}
+                      />
+                    )}
+                  </div>
+                  <div className='w-[100%] h-[1px] bg-white opacity-40'></div>
+                </>
+              ))}
+            <div className='flex justify-between items-center mt-6'>
+              <input
+                type='text'
+                onChange={(e) => handleCommentChange(e)}
+                value={commentChange.comment}
+                className='bg-green opacity-60 pl-3 py-2 text-yellow mr-2 w-84 rounded-lg w-[450px]'
+              />
+              <Button
+                type={"tiny"}
+                value={"Enter"}
+                action={() => comment(index)}
+              />
+            </div>
+          </>
+        )}
+      </div>
+    </>
   );
 };
 export default CommentAndLike;

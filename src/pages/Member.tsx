@@ -1,10 +1,12 @@
 import { Auth, getAuth } from "firebase/auth";
-import { GoogleAuthProvider, FacebookAuthProvider } from "firebase/auth";
-import { useContext, useEffect } from "react";
-import Profile from "./Profile/Profile";
-import firebase from "../utils/firebase";
+import { GoogleAuthProvider } from "firebase/auth";
+import { useContext, useState } from "react";
 import { AuthContext } from "../context/authContext";
-import Button from "../components/Button";
+import { AiOutlineArrowRight } from "react-icons/ai";
+import UnderlineButton from "./UnderlineButton";
+import UnderlineInput from "./UnderlineInput";
+import Star from "../images/Star";
+
 function Member() {
   const { user, isLogin, signIn, signOut, loading } = useContext(AuthContext);
   const auth: Auth = getAuth();
@@ -12,30 +14,106 @@ function Member() {
   provider.setCustomParameters({
     prompt: "select_account",
   });
+  const [haveAccount, setHaveAccount] = useState(true);
+
   return (
     <>
-      <div className='w-screen h-[80px] ' />
-      <div className=' justify-center mx-auto flex  mt-10'>
-        {isLogin ? (
-          <>
-            <Button
-              type={"big"}
-              value={"SIGN OUT"}
-              action={() => signOut(auth)}
-            />
-            {/* <Profile /> */}
-          </>
-        ) : (
-          <>
-            <Button
-              type={"big"}
-              action={() => {
-                signIn(auth, provider);
-              }}
-              value={"SIGN IN WITH GOOGLE"}
-            />
-          </>
-        )}
+      <div className='w-screen h-[100px] ' />
+      <div className='mx-auto justify-center mt-15 flex flex-col  gap-5 w-[350px] items-center'>
+        <>
+          <UnderlineButton
+            icon={
+              <AiOutlineArrowRight className='text-pink scale-125 cursor-pointer' />
+            }
+            value={"Continue with Google"}
+            action={() => signIn(auth, provider)}
+            type={"memberPage"}
+          />
+
+          <span className='font-NT text-yellow tracking-widest shadowYellow mb-1 '>
+            ーーorーー
+          </span>
+          {haveAccount ? (
+            <>
+              <div className=' w-full'>
+                <UnderlineInput
+                  value={"Email"}
+                  inputType={"text"}
+                  action={() => {}}
+                />
+              </div>
+              <div className=' w-full'>
+                <UnderlineInput
+                  value={"Password"}
+                  inputType={"password"}
+                  action={() => {}}
+                />
+              </div>
+              <UnderlineButton
+                icon={
+                  <AiOutlineArrowRight className='text-pink scale-125 cursor-pointer' />
+                }
+                value={"Start Your Journey"}
+                action={() => {}}
+                type={"memberPage"}
+              />
+              <span
+                className='text-gray '
+                onClick={() => {
+                  setHaveAccount(false);
+                }}
+              >
+                Have no account?
+                <span className='text-yellow hover:underline cursor-pointer'>
+                  Sign Up
+                </span>{" "}
+              </span>
+            </>
+          ) : (
+            <>
+              <div className=' w-full'>
+                <UnderlineInput
+                  value={"Name"}
+                  inputType={"text"}
+                  action={() => {}}
+                />
+              </div>
+              <div className=' w-full'>
+                <UnderlineInput
+                  value={"Email"}
+                  inputType={"text"}
+                  action={() => {}}
+                />
+              </div>
+              <div className=' w-full'>
+                <UnderlineInput
+                  value={"Password"}
+                  inputType={"password"}
+                  action={() => {}}
+                />
+              </div>
+              <UnderlineButton
+                icon={
+                  <AiOutlineArrowRight className='text-pink scale-125 cursor-pointer' />
+                }
+                value={"Tarot it !"}
+                action={() => {}}
+                type={"memberPage"}
+              />
+              <span
+                className='text-gray '
+                onClick={() => {
+                  setHaveAccount(true);
+                }}
+              >
+                Already have a account?
+                <span className='text-yellow hover:underline cursor-pointer'>
+                  Sign In
+                </span>{" "}
+              </span>
+            </>
+          )}
+        </>
       </div>
     </>
   );

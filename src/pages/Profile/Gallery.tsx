@@ -6,7 +6,7 @@ import firebase from "../../utils/firebase";
 import cards from "../../tarotcard/tarot-images";
 
 import SpreadPreview from "../../components/SpreadPreview";
-import { SpreadPlace } from "../../components/SpreadPlace";
+import { SpreadPlace } from "../Spread/SpreadPlace";
 import { formatTimestamp } from "./Profile";
 import Viewer from "../../components/Editor/Viewer";
 import Editor from "../../components/Editor/Editor";
