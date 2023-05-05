@@ -7,10 +7,12 @@ import firebase from "../../utils/firebase";
 import Button from "../../components/Button";
 import Star from "../../images/Star";
 import { FriendsData } from "../../utils/type";
+import Friends from "./Friends";
 
 const ProfileHeader = ({
   uid,
   visitedUser,
+  setVisitedUser,
   following,
   setFollowing,
   setPage,
@@ -25,19 +27,36 @@ const ProfileHeader = ({
     following: [],
     followers: [],
   });
+  const [data, setData] = useState({});
+
   async function follow(uid, userUID) {
     if (!isLogin) return;
     if (userUID === uid) return;
     await firebase.follow(uid, userUID);
     setFollowing(true);
+    if (userUID !== uid) {
+      const newData = { ...visitedUser };
+      newData.followers = [...newData.followers, userUID];
+      setVisitedUser(newData);
+    }
     console.log("已追蹤");
   }
   async function unfollow(uid, userUID) {
     await firebase.unfollow(uid, userUID);
     setFollowing(false);
+    if (userUID !== uid) {
+      const newData = { ...visitedUser };
+      const index = newData.followers.indexOf(userUID);
+      if (index > -1) {
+        newData.followers.splice(index, 1);
+      }
+      setVisitedUser(newData);
+      console.log("已取消");
+    }
   }
   async function getFriends(followers, following) {
     const profile = await firebase.getFriendsProfile(followers, following);
+    console.log("getFriends", profile);
     setFriends(profile);
   }
   useEffect(() => {
@@ -46,17 +65,59 @@ const ProfileHeader = ({
     } else {
       getFriends(visitedUser.followers, visitedUser.following);
     }
-  }, [uid]);
-  let data;
-  if (userUID === uid) {
-    data = user;
-  } else {
-    data = visitedUser;
-  }
+  }, [uid, visitedUser, user, userUID, following]);
 
+  useEffect(() => {
+    if (userUID === uid) {
+      console.log("自己", user);
+      setData(user);
+    } else {
+      setData(visitedUser);
+    }
+  }, [uid, user, userUID, visitedUser]);
+  useEffect(() => {
+    console.log(data);
+  }, [data]);
+  if (Object.keys(data).length === 0)
+    return (
+      <div className='bg-black bg-opacity-30 w-[304px] fixed'>
+        <div className='flex flex-row pt-6 mx-auto justify-center gap-4 animate-pulse'>
+          <div className='rounded-full w-[70px] h-[70px] bg-gray/20' />
+          <div>
+            <div className='h-5 w-[130px] mt-3 rounded-sm bg-gray/40'></div>
+            <p className='h-5 mt-1 w-[80px] mt-2 rounded-sm bg-gray/10'></p>
+          </div>
+        </div>
+
+        <div className='flex flex-row gap-3 justify-center my-5 items-center py-[10px] gap-5 px-[15px]'>
+          <span className='flex flex-col items-start gap-3'>
+            <div className=' w-[100px] h-5 mb-3 bg-gray/10 rounded-sm' />
+            <p className=' w-[100px] h-5 bg-gray/10 rounded-sm' />
+            <p className=' w-[100px] h-5 bg-gray/10 rounded-sm' />
+          </span>
+
+          <span className='flex flex-col items-start gap-3'>
+            <div className=' w-[100px] h-5 mb-3 bg-gray/10 rounded-sm' />
+            <p className=' w-[100px] h-5 bg-gray/20 rounded-sm' />
+            <p className=' w-[100px] h-5 bg-gray/5 rounded-sm' />
+          </span>
+        </div>
+
+        <div className=' pb-8 flex justify-center items-center uppercase'>
+          <div className='w-[250px] h-[78px] rounded-[50%] bg-gray/10 ' />
+        </div>
+      </div>
+    );
   return (
     <>
-      <div className='w-100%  bg-black bg-opacity-30  fixed'>
+      {openFriends.followers || openFriends.following ? (
+        <Friends
+          openFriends={openFriends}
+          setOpenFriends={setOpenFriends}
+          friends={friends}
+        />
+      ) : null}
+      <div className=' bg-black bg-opacity-30  fixed'>
         <div className='flex flex-row pt-6 mx-auto justify-center gap-4 '>
           <img
             src={data.image}
@@ -132,28 +193,6 @@ const ProfileHeader = ({
             </div>
           )}
         </div>
-        {/* <div className='w-[95%] h-[1px] bg-gold/40 mx-auto' />
-        <div className='overflow-y-hidden h-[200px] pb-6'>
-          <p>FOllOWERS</p>
-          {friends.followers.map((friend) => (
-            <div className='flex flex-row py-2 ml-5 justify-start gap-4'>
-              <img
-                src={friend.image}
-                alt={friend.name}
-                className='rounded-full w-[60px] h-[60px]'
-                onClick={() => navigate(`/profile/${friend.uid}`)}
-              />
-              <div>
-                <h5 className='font-notoSansJP font-light text-lg tracking-wider text-pink mt-2'>
-                  {friend.name}
-                </h5>
-                <p className='font-notoSansJP font-light text-sm tracking-wider text-yellow mt-1'>
-                  {friend.sign}
-                </p>
-              </div>
-            </div>
-          ))}
-        </div> */}
       </div>
     </>
   );

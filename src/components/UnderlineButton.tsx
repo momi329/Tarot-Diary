@@ -23,13 +23,19 @@ function UnderlineButton({
   if (type === "header") {
     style = {
       a: "text-xl text-yellow font-NT shadowYellow",
-      b: `bg-yellow h-[1.5px] ${selected ? "w-full" : ""}`,
+      b: `bg-yellow h-[1.2px] ${selected ? "w-full" : ""}`,
     };
   }
   if (type === "meanings") {
     style = {
       a: "text-base text-yellow font-medium font-NT shadowYellow mt-2  tracking-widest  ",
       b: `bg-yellow h-[1px]`,
+    };
+  }
+  if (type === "profile") {
+    style = {
+      a: "text-2xl text-yellow font-medium font-NT shadowYellow mt-2  tracking-widest  ",
+      b: `bg-yellow h-[1px] ${selected ? "w-full" : ""}`,
     };
   }
   return (

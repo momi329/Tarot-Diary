@@ -37,16 +37,18 @@ function Member() {
             <>
               <div className=' w-full'>
                 <UnderlineInput
-                  value={"Email"}
+                  name={"Email"}
                   inputType={"text"}
                   action={() => {}}
+                  value={""}
                 />
               </div>
               <div className=' w-full'>
                 <UnderlineInput
-                  value={"Password"}
+                  name={"Password"}
                   inputType={"password"}
                   action={() => {}}
+                  value={""}
                 />
               </div>
               <UnderlineButton
@@ -73,23 +75,26 @@ function Member() {
             <>
               <div className=' w-full'>
                 <UnderlineInput
+                  name={"Name"}
+                  inputType={"text"}
+                  action={() => {}}
                   value={"Name"}
-                  inputType={"text"}
-                  action={() => {}}
                 />
               </div>
               <div className=' w-full'>
                 <UnderlineInput
-                  value={"Email"}
+                  name={"Email"}
                   inputType={"text"}
                   action={() => {}}
+                  value={"Name"}
                 />
               </div>
               <div className=' w-full'>
                 <UnderlineInput
-                  value={"Password"}
+                  name={"Password"}
                   inputType={"password"}
                   action={() => {}}
+                  value={"Password"}
                 />
               </div>
               <UnderlineButton

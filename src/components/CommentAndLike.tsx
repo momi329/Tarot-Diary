@@ -58,7 +58,6 @@ const CommentAndLike = ({
       setCommentChange({
         ...commentChange,
         user: userUID,
-
         comment: "",
       });
     }
@@ -193,7 +192,7 @@ const CommentAndLike = ({
                     </p>
                     <p
                       className='font-notoSansJP font-normal text-yellow tracking-widest 
-                  flex-grow w-[300px] break-words whitespace-normal mr-2'
+                  flex-grow w-[300px] break-words  mr-2 whitespace-pre-line'
                     >
                       {comment.comment}
                     </p>
@@ -229,21 +228,37 @@ const CommentAndLike = ({
                       />
                     )}
                   </div>
-                  <div className='w-[100%] h-[1px] bg-white opacity-40'></div>
+                  <div
+                    className='w-[100%] h-[1px] bg-white opacity-40'
+                    key={q}
+                  />
                 </>
               ))}
-            <div className='flex justify-between items-center mt-6'>
-              <input
-                type='text'
+            <div className='group relative flex justify-between items-center mt-6'>
+              <textarea
+                id='comment'
+                name='comment'
+                rows={2}
+                cols={20}
                 onChange={(e) => handleCommentChange(e)}
                 value={commentChange.comment}
-                className='bg-green opacity-60 pl-3 py-2 text-yellow mr-2 w-84 rounded-lg w-[450px]'
+                className='bg-green opacity-60 pl-3 py-2 text-yellow mr-2 w-84 rounded-lg w-[450px] outline-none'
               />
               <Button
                 type={"tiny"}
                 value={"Enter"}
+                disabled={commentChange.comment === ""}
                 action={() => comment(index)}
               />
+              <div
+                className={`${
+                  commentChange.comment === ""
+                    ? "opacity-0 group-hover:opacity-100"
+                    : "opacity-0"
+                } absolute top-[-30px] right-[-4px] bg-black/40 text-gray text-sm font-NT p-1 px-2 rounded-lg`}
+              >
+                ！請輸入文字
+              </div>
             </div>
           </>
         )}

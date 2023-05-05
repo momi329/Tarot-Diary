@@ -19,7 +19,10 @@ function Meaning() {
               {tarot.map(
                 (card, index) =>
                   index < 22 && (
-                    <div className='flex flex-col items-center w-[120px] mt-4'>
+                    <div
+                      className='flex flex-col items-center w-[120px] mt-4'
+                      key={index}
+                    >
                       <img
                         src={card.img}
                         alt={card.name}
@@ -48,7 +51,10 @@ function Meaning() {
                 (card, index) =>
                   index > 21 &&
                   index < 36 && (
-                    <div className='flex flex-col items-center w-[120px] mt-4'>
+                    <div
+                      className='flex flex-col items-center w-[120px] mt-4'
+                      key={index}
+                    >
                       <img
                         src={card.img}
                         alt={card.name}
@@ -76,7 +82,10 @@ function Meaning() {
                 (card, index) =>
                   index > 35 &&
                   index < 50 && (
-                    <div className='flex flex-col items-center w-[120px] mt-4'>
+                    <div
+                      className='flex flex-col items-center w-[120px] mt-4'
+                      key={index}
+                    >
                       <img
                         src={card.img}
                         alt={card.name}
@@ -104,7 +113,10 @@ function Meaning() {
                 (card, index) =>
                   index > 50 &&
                   index < 64 && (
-                    <div className='flex flex-col items-center w-[120px] mt-4'>
+                    <div
+                      className='flex flex-col items-center w-[120px] mt-4'
+                      key={index}
+                    >
                       <img
                         src={card.img}
                         alt={card.name}
@@ -132,7 +144,10 @@ function Meaning() {
                 (card, index) =>
                   index > 64 &&
                   index < 78 && (
-                    <div className='flex flex-col items-center w-[120px] mt-4'>
+                    <div
+                      className='flex flex-col items-center w-[120px] mt-4'
+                      key={index}
+                    >
                       <img
                         src={card.img}
                         alt={card.name}

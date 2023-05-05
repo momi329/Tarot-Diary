@@ -14,6 +14,7 @@ export interface VisitedUser {
   like?: string[];
   docId?: string;
   content?: string;
+  seeMore?: boolean;
 }
 //spread
 export interface SpreadData {
@@ -39,6 +40,7 @@ export interface SpreadData {
   like?: string[];
   docId?: string;
   content?: string;
+  seeMore?: boolean;
 }
 export interface DraggableProps {
   edit: boolean;

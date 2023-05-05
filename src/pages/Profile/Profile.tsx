@@ -24,6 +24,7 @@ import ProfileEdit from "./ProfileEdit";
 import type { VisitedUser } from "../../utils/type";
 import Member from "../Member";
 import LoadingPage from "../LoadingPage";
+import UnderlineButton from "../../components/UnderlineButton";
 
 function Profile(): JSX.Element {
   const { isLogin, user, userUID, loading, setLoading } =
@@ -31,18 +32,18 @@ function Profile(): JSX.Element {
   const [userDesign, setUserDesign] = useState<DocumentData[] | never[]>([]);
   const [userDiary, setUserDiary] = useState<DocumentData[] | never[]>([]);
   const [page, setPage] = useState<Number>(1);
-  const [visitedUser, setVisitedUser] = useState<VisitedUser | []>([]);
+  const [visitedUser, setVisitedUser] = useState<VisitedUser | {}>({});
   const { uid } = useParams();
   const [friendsPosts, setFriendsPosts] = useState<DocumentData[] | never[]>(
     []
   );
   const navigate = useNavigate();
   const friendsPostsRef = useRef<DocumentData[] | []>([]);
-  const visitedUserRef = useRef<VisitedUser | {}>({});
+  // const visitedUserRef = useRef<VisitedUser | {}>({});
 
   useEffect(() => {
     initialFollowing();
-  }, [userUID]);
+  }, [userUID, uid]);
   const initialFollowing = () => {
     if (uid) {
       setFollowing(user.following.includes(uid));
@@ -54,18 +55,19 @@ function Profile(): JSX.Element {
 
   async function getUserDesignAndDiary(userUID: string) {
     const spread = await firebase.getUserDesign(userUID);
-    const diary = await firebase.getOtherUserDiary(userUID);
+    const diary = await firebase.getOtherUserDiary(userUID, user);
     diary
       .sort(function (a, b) {
         return a.time.seconds - b.time.seconds;
       })
       .reverse();
+    console.log("UserDiary", diary);
     setUserDesign(spread);
     setUserDiary(diary);
   }
   async function getOtherUserDiaryAndSpread(uid) {
     const profile = await firebase.getProfile(uid);
-    const diary = await firebase.getOtherUserDiary(uid);
+    const diary = await firebase.getOtherUserDiary(uid, user);
     const spread = await firebase.getOtherUserSpread(uid);
     diary
       .sort(function (a, b) {
@@ -78,6 +80,7 @@ function Profile(): JSX.Element {
       userUID: uid,
       diary: diary,
       spread: spread,
+      seeMore: false,
     };
     // setVisitedUser({
     //   ...profile,
@@ -164,9 +167,10 @@ function Profile(): JSX.Element {
             getAllFollowingSnapShop(user);
           };
         } else {
-          console.log("別人");
-          const visited = getOtherUserDiaryAndSpread(uid);
-          visitedUserRef.current = visited;
+          const visited = await getOtherUserDiaryAndSpread(uid);
+          console.log("visited", visited);
+          setVisitedUser(visited);
+          // visitedUserRef.current = visited;
         }
       }
     }
@@ -205,7 +209,7 @@ function Profile(): JSX.Element {
                   friendsPosts={friendsPosts}
                   setFriendsPosts={setFriendsPosts}
                   page={page}
-                  visitedUserRef={visitedUserRef}
+                  // visitedUserRef={visitedUserRef}
                   friendsPostsRef={friendsPostsRef}
                 />
               )}
@@ -219,7 +223,7 @@ function Profile(): JSX.Element {
                   friendsPosts={friendsPosts}
                   setFriendsPosts={setFriendsPosts}
                   page={page}
-                  visitedUserRef={visitedUserRef}
+                  // visitedUserRef={visitedUserRef}
                   friendsPostsRef={friendsPostsRef}
                 />
               )}
@@ -232,10 +236,11 @@ function Profile(): JSX.Element {
                 <UserSpread userDesign={userDesign} visitedUser={visitedUser} />
               )}
             </div>
-            <div className=' h-[100%] w-3/12'>
+            <div className=' h-[100%] w-3/12 '>
               <ProfileHeader
                 uid={uid}
                 visitedUser={visitedUser}
+                setVisitedUser={setVisitedUser}
                 following={following}
                 setFollowing={setFollowing}
                 setPage={setPage}
@@ -259,11 +264,35 @@ const Buttons = ({ page, setPage }) => {
   return (
     <div
       className='flex flex-col text-left font-NT font-light  text-yellow  
-    text-2xl items-start   ml-[3%] fixed shadowYellow '
+    text-2xl items-start   ml-[3%] fixed shadowYellow gap-6'
     >
       {userUID === uid && (
         <>
-          <button
+          <UnderlineButton
+            value={"Explore"}
+            type={"profile"}
+            action={() => {
+              switchPage(1);
+            }}
+            selected={page === 1}
+          />
+          <UnderlineButton
+            value={"Diary"}
+            type={"profile"}
+            action={() => {
+              switchPage(2);
+            }}
+            selected={page === 2}
+          />
+          <UnderlineButton
+            value={"Design"}
+            type={"profile"}
+            action={() => {
+              switchPage(4);
+            }}
+            selected={page === 4}
+          />
+          {/* <button
             className={`m-4 hover:underline-offset-1 shadowYellow tracking-wider  ${
               page === 1 ? "underline" : ""
             }`}
@@ -293,7 +322,7 @@ const Buttons = ({ page, setPage }) => {
             }}
           >
             Design
-          </button>
+          </button> */}
         </>
       )}
     </div>

@@ -49,12 +49,11 @@ function Header() {
         <div className='flex flex-row gap-16 text-lg tracking-widest font-NT text-center text-yellow z-10 mr-16 '>
           {headerItems(isLogin, userUID).map((item, index) => {
             return (
-              <Link to={item.link}>
+              <Link to={item.link} key={index}>
                 <UnderlineButton
                   value={item.title}
                   icon={""}
                   type={"header"}
-                  key={index}
                   action={() => {}}
                   selected={location.pathname.includes(`${item.route}`)}
                 />

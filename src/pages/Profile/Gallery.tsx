@@ -4,6 +4,7 @@ import { Link, useNavigate } from "react-router-dom";
 
 import firebase from "../../utils/firebase";
 import cards from "../../tarotcard/tarot-images";
+import { AiOutlineArrowRight } from "react-icons/ai";
 
 import SpreadPreview from "../../components/SpreadPreview";
 import { SpreadPlace } from "../Spread/SpreadPlace";
@@ -20,9 +21,9 @@ import type { SpreadData, VisitedUser } from "../../utils/type";
 import LoadingPage from "../LoadingPage";
 import Moon from "../../images/Moon";
 import Alert from "../../components/Alert";
+import UnderlineButton from "../../components/UnderlineButton";
 
 const Gallery = ({
-  visitedUserRef,
   friendsPostsRef,
   visitedUser,
   setVisitedUser,
@@ -44,7 +45,7 @@ const Gallery = ({
   });
   const { user, loading, setLoading, alert, setAlert } =
     useContext(AuthContext);
-  const [data, setData] = useState<SpreadData[] | VisitedUser[] | []>([]);
+  const [data, setData] = useState<SpreadData[] | VisitedUser[] | null>(null);
   const tarot = cards.cards;
   const navigate = useNavigate();
   useEffect(() => {
@@ -57,28 +58,19 @@ const Gallery = ({
       console.log("friendsPostsRef.current", friendsPostsRef.current);
       post = friendsPostsRef.current.slice(0, 5);
       setData(post);
-      // post = friendsPosts.slice(0, 5);
-      // setData(post);
-      // setTimeout(() => setLoading(false), 3000);
-    } else if (visitedUser.length !== 0) {
-      if (visitedUser) {
-        post = visitedUserRef.current.diary.slice(0, 5);
+    } else if (Object.values(visitedUser).length !== 0) {
+      if (visitedUser.diary.length < 5) {
+        console.log("沒有slice");
+        setData(visitedUser.diary);
+      } else {
+        console.log("有slice");
+        post = visitedUser.diary.slice(0, 5);
         setData(post);
-        console.log("visitedUser", visitedUser);
-        // post = visitedUser.diary.slice(0, 5);
-        // setData(post);
-        // setTimeout(() => setLoading(false), 3000);
       }
     }
-  }, [
-    uid,
-    userUID,
-    userDiary,
-    friendsPostsRef.current,
-    visitedUserRef.current,
-  ]);
+  }, [uid, userUID, userDiary, friendsPostsRef.current, visitedUser]);
   useEffect(() => {
-    if (!data) return;
+    console.log("data的變化", data);
     setTimeout(() => setLoading(false), 3000);
   }, [data]);
   const handleSave = async (index) => {
@@ -100,32 +92,45 @@ const Gallery = ({
     return;
   };
   const DeletePost = async (userUID, docID, index) => {
-    console.log("userUID, docID, index", userUID, docID, index);
-
     await firebase.deleteDiary(userUID, docID);
     const newData = [...data];
     newData.splice(index, 1);
-    setData(newData);
+    console.log("刪掉文章的newData", newData, index);
+    setData(newData as SpreadData[] | VisitedUser[]);
     friendsPostsRef.current.splice(index, 1);
-    console.log(friendsPostsRef.current, " friendsPostsRef.current");
+    console.log(friendsPostsRef.current, " 更新後的friendsPostsRef.current");
     setAlert(false);
+  };
+  const seeMoreGPT = (index: number) => {
+    const newData = [...data];
+    newData[index].seeMore = !newData[index].seeMore;
+    setData(newData as SpreadData[] | VisitedUser[]);
   };
   const seeMore = () => {
     setLoading(true);
     const more = data.length + 5;
     if (uid === userUID && page === 3) {
-      setData(userDiary.slice(0, more));
-      setLoading(false);
+      setTimeout(() => {
+        setData(userDiary.slice(0, more));
+        setLoading(false);
+      }, 1500);
     }
     if (uid === userUID && page === 1) {
-      setData(friendsPostsRef.current.slice(0, more));
-      setLoading(false);
+      setTimeout(() => {
+        setData(friendsPostsRef.current.slice(0, more));
+        setLoading(false);
+      }, 1500);
     } else {
-      setData(visitedUserRef.current.diary.slice(0, more));
-      setLoading(false);
+      setTimeout(() => {
+        setData(visitedUser.diary.slice(0, more));
+        setLoading(false);
+      }, 1500);
     }
   };
-  if (data.length === 0)
+  if (visitedUser.diary && visitedUser.diary.length === 0) {
+    return <p className='text-xl text-yellow font-NT '> No Diary Yet !</p>;
+  }
+  if (!data || data.length === 0)
     return (
       <div className='flex gap-4 flex-col  w-[100%] animate-pulse'>
         <div className='bg-yellow-100 px-6 py-5 relative  bg-pink bg-opacity-30 h-[400px]'>
@@ -151,6 +156,7 @@ const Gallery = ({
         </div>
       </div>
     );
+
   return (
     <>
       <div className='flex gap-4 flex-col  w-[100%] '>
@@ -183,7 +189,18 @@ const Gallery = ({
               {/* 自己的貼文才能編輯 */}
               {userUID === item.user && item.docId && (
                 <>
-                  <div
+                  <div className='absolute top-[90px] right-8  '>
+                    <UnderlineButton
+                      type={"meanings"}
+                      action={() => {
+                        edit[index]
+                          ? handleSave(index)
+                          : handleEdit(index, item.secret);
+                      }}
+                      value={edit[index] ? "Save" : "Edit"}
+                    />
+                  </div>
+                  {/* <div
                     className='absolute top-[100px] right-6 cursor-pointer inline-flex
                   font-NT text-yellow text-xl '
                     onClick={() => {
@@ -193,16 +210,16 @@ const Gallery = ({
                     }}
                   >
                     {edit[index] ? "Save" : "Edit"}
+                  </div> */}
+
+                  <div className='absolute top-[90px] right-[90px] '>
+                    <UnderlineButton
+                      type={"meanings"}
+                      action={() => setAlert(true)}
+                      value={"Delete"}
+                    />
                   </div>
-                  <div
-                    className='absolute top-[100px] right-[75px] cursor-pointer font-NT text-gold text-xl'
-                    onClick={() => {
-                      setAlert(true);
-                      console.log(index);
-                    }}
-                  >
-                    Delete
-                  </div>
+
                   {!edit[index] && alert && (
                     <Alert
                       value={"Are you sure you want to delete?"}
@@ -216,6 +233,12 @@ const Gallery = ({
                           value: "Confirm",
                           type: "littlePink",
                           action: () => {
+                            console.log(
+                              userUID,
+                              item.docId,
+                              index,
+                              "userUID, item.docId, index"
+                            );
                             DeletePost(userUID, item.docId, index);
                           },
                         },
@@ -274,7 +297,7 @@ const Gallery = ({
                           src={tarot[q.card] && tarot[q.card].img}
                           alt={tarot[q.card] && tarot[q.card].name}
                           className={`opacity-70 z-0  ${
-                            q.card.reserve ? "rotate-180" : ""
+                            q.card.reserve ? " rotate-180 " : "  "
                           }`}
                         />
                         <p className='mt-3'>
@@ -293,10 +316,79 @@ const Gallery = ({
                     <p className='ml-3 mb-2 shadowYellow text-yellow font-NT  tracking-wider text-lg'>
                       Ask AI
                     </p>
-                    <p className='ml-3 text-sm font-notoSansJP leading-6 text-gray'>
+                    <div className='ml-3 text-sm font-notoSansJP leading-6 text-gray whitespace-pre-line '>
                       {" "}
-                      {item.askGpt}
-                    </p>
+                      {item.askGpt && item.seeMore
+                        ? item.askGpt && (
+                            <span>
+                              {item.askGpt}
+                              {item.askGpt && item.askGpt.length > 200 && (
+                                <span
+                                  className='text-pink cursor-pointer relative group font-NT shadowPink tracking-widest'
+                                  onClick={() => {
+                                    console.log(index, "index");
+                                    seeMoreGPT(index);
+                                  }}
+                                >
+                                  close
+                                  <div className='w-0 h-[1px] absolute bottom-0 left-0 bg-pink group-hover:w-full duration-300' />
+                                </span>
+                              )}
+                            </span>
+                          )
+                        : item.askGpt && (
+                            <span>
+                              {item.askGpt.length < 200
+                                ? item.askGpt
+                                : `${item.askGpt.slice(0, 200)}...`}
+
+                              {item.askGpt && item.askGpt.length > 200 && (
+                                <span
+                                  className='text-pink cursor-pointer relative group font-NT shadowPink tracking-widest'
+                                  onClick={() => {
+                                    console.log(index, "index");
+                                    seeMoreGPT(index);
+                                  }}
+                                >
+                                  see more
+                                  <div className='w-0 h-[1px] absolute bottom-0 left-0 bg-pink group-hover:w-full duration-300' />
+                                </span>
+                              )}
+                            </span>
+                          )}
+                      {/* {item.askGpt && !item.askGpt.seeMore ? (
+                        <span>
+                          {item.askGpt.slice(0, 240)}...
+                          {item.askGpt && item.askGpt.length > 240 && (
+                            <span
+                              className='text-pink cursor-pointer relative group font-NT shadowPink tracking-widest'
+                              onClick={() => {
+                                console.log(index, "index");
+                                seeMoreGPT(index);
+                              }}
+                            >
+                              see more
+                              <div className='w-0 h-[1px] absolute bottom-0 left-0 bg-pink group-hover:w-full duration-300' />
+                            </span>
+                          )}
+                        </span>
+                      ) : (
+                        <span>
+                          {item.askGpt}
+                          {item.askGpt && item.askGpt.length > 240 && (
+                            <span
+                              className='text-pink cursor-pointer relative group font-NT shadowPink tracking-widest'
+                              onClick={() => {
+                                seeMoreGPT(index);
+                              }}
+                            >
+                              close
+                              <div className='w-0 h-[1px] absolute bottom-0 left-0 bg-pink group-hover:w-full duration-300' />
+                            </span>
+                          )}
+                        </span>
+                      )} */}
+                    </div>
                   </div>
                   <div className='flex flex-col gap-2 justify-between items-center '>
                     <Star color={"#E18EA5"} />
@@ -338,21 +430,51 @@ const Gallery = ({
                   <div className='flex flex-row m-2 align-center  '>
                     <SpreadPreview type={"personal"} spread={item} index={0} />
 
-                    <p className='flex-end w-[60%] flex-grow-1 m-2 text-yellow  ml-5'>
-                      <p className='text-lg mb-2'>
-                        我新增了一個 {item.title}牌陣<br></br>趕快來占卜喔！
-                      </p>
-                      <span className='text-gray'>
+                    <div className='flex-end w-[60%] flex-grow-1 m-2 text-gray  ml-5'>
+                      <div className='mb-2 text-base font-normal tracking-widest'>
+                        我新增了一個
+                        <span
+                          className='text-yellow font-normal hover:underline-offset-2 duration-200 cursor-pointer'
+                          onClick={() => {
+                            navigate(`/spread/${item.spreadId}`);
+                          }}
+                        >
+                          {" "}
+                          {item.title}{" "}
+                        </span>
+                        {/* <UnderlineButton
+                          value={item.title}
+                          type={"profile"}
+                          action={() => {
+                            navigate(`/spread/${item.spreadId}`);
+                          }}
+                        /> */}
+                        牌陣<br></br>趕快來占卜喔！
+                      </div>
+                      <span className='text-gray text-sm mt-2'>
                         {" "}
                         {item.description && item.description.slice(0, 60)}...
                       </span>
+                      {/* <span className='w-[50px]'>
+                        <UnderlineButton
+                          value={"GO TAROT"}
+                          icon={
+                            <AiOutlineArrowRight className='text-pink scale-100 cursor-pointer' />
+                          }
+                          type={"meanings"}
+                          action={() => {
+                            navigate(`/spread/${item.spreadId}`);
+                          }}
+                        />
+                      </span> */}
                       <span
-                        className='hover:underline text-pink cursor-pointer'
+                        className='text-pink cursor-pointer relative group font-NT shadowPink tracking-widest'
                         onClick={() => navigate(`/spread/${item.spreadId}`)}
                       >
-                        See more
+                        Go Tarot
+                        <div className='w-0 h-[1px] absolute bottom-0 left-0 bg-pink group-hover:w-full duration-300'></div>
                       </span>
-                    </p>
+                    </div>
                   </div>
                 )}
                 <CommentAndLike
@@ -375,15 +497,17 @@ const Gallery = ({
         ))}
         <div className='w-full flex items-center justify-center mt-7 mb-10'>
           {loading ? (
-            <Loading text={"Loading"} />
+            <Loading text={""} />
           ) : (
-            <Button
-              type={"big"}
-              value={"See More"}
-              action={() => {
-                seeMore();
-              }}
-            />
+            <div className='w-[250px]'>
+              <Button
+                type={"big"}
+                value={"See More"}
+                action={() => {
+                  seeMore();
+                }}
+              />
+            </div>
           )}
         </div>
       </div>

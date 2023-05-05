@@ -153,7 +153,7 @@ const firebase = {
       docData
     );
     await updateDoc(docRef, {
-      time: serverTimestamp(),
+      // time: serverTimestamp(),
       docId: docRef.id,
     });
     return docRef.id;
@@ -178,14 +178,25 @@ const firebase = {
     }
   },
   //參訪其他人頁面
-  async getOtherUserDiary(uid) {
-    const diaryRef = collection(db, "users", uid, "diary");
-    // const q = query(diaryRef, where("secret", "==", false));
-    const querySnapshot = await getDocs(diaryRef);
+  async getOtherUserDiary(uid, user) {
+    const docRef = doc(db, "users", uid);
+    const data = await getDoc(docRef);
     const diary: DocumentData[] = [];
-    querySnapshot.forEach((doc) => {
-      diary.push(doc.data());
-    });
+    if (data.exists()) {
+      const userData = data.data();
+      const diaryRef = collection(db, "users", uid, "diary");
+      const q = query(diaryRef, where("secret", "==", false));
+      const querySnapshot = await getDocs(q);
+      querySnapshot.forEach((doc) => {
+        const data = doc.data();
+        diary.push({
+          ...data,
+          user: uid,
+          userImg: userData.image,
+          userName: userData.name,
+        });
+      });
+    }
     return diary;
   },
 
@@ -220,6 +231,7 @@ const firebase = {
             user: followingUser.userUID,
             userImg: followingUser.image,
             userName: followingUser.name,
+            seeMore: false,
           };
           diary.push(newDocData);
         });
@@ -234,9 +246,11 @@ const firebase = {
         userImg: user.image,
         userName: user.name,
         addComment: false,
+        seeMore: false,
       };
       diary.push(newDocData);
     });
+    console.log("diary", diary);
     diary.sort(function (a, b) {
       return a.time.seconds - b.time.seconds;
     });
@@ -455,6 +469,14 @@ const firebase = {
       });
       //alert("成功");
     }
+  },
+  async getAllUsers() {
+    const users: DocumentData[] = [];
+    const querySnapshot = await getDocs(collection(db, "users"));
+    await querySnapshot.forEach((doc) => {
+      users.push(doc.data());
+    });
+    return users;
   },
 };
 export default firebase;
