@@ -88,9 +88,9 @@ body {
   box-sizing: border-box;
   /* background-color: black; */
   /* height: 100%; */
-  ::-webkit-scrollbar {
-    display: none;
-  }
+}
+::-webkit-scrollbar {
+  display: none;
 }
 .shadowself {
   text-shadow: 0px 0px 8px black;
@@ -124,20 +124,24 @@ input {
   outline: none;
 }
 .ql-toolbar {
-  border: none;
+ 
+ 
   background: white;
 }
-.ql-formats {
-  color: white;
-}
-.ql-editor .ql-container .ql-snow {
+/* 
+
+.ql-container {
+  z-index: -1;
+} */
+/* .ql-editor .ql-container .ql-snow {
   border: 0px solid #e18ea5;
   padding-bottom: 40px;
-  opacity: 0.2;
+  opacity: 1;
+  z-index: 1;
 }
 
 .ql-formats {
-  opacity: 0.6;
+  opacity: 0.9;
 }
 
 .container {
@@ -145,6 +149,10 @@ input {
   margin-top: auto;
   margin-bottom: auto;
 }
+.ql-picker-item {
+  z-index: 10;
+  cursor: pointer;
+} */
 
 .block {
   position: relative;

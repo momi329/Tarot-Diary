@@ -27,7 +27,7 @@ const TOOLBAR_OPTIONS = [
   //[{ list: "ordered" }, { list: "bullet" }],
   //[{ indent: "-1" }, { indent: "+1" }],
   // ["link", "image"],
-  ["emoji"],
+  //["emoji"],
 ];
 
 export default function Editor(props: EditorProps) {
@@ -49,7 +49,7 @@ export default function Editor(props: EditorProps) {
     <>
       <ReactQuill
         ref={reactQuillRef}
-        theme='snow'
+        theme="snow"
         modules={{
           toolbar: {
             container: TOOLBAR_OPTIONS,
@@ -63,7 +63,7 @@ export default function Editor(props: EditorProps) {
         }}
         value={value}
         onChange={onChange}
-        className='min-h-[130px] w-[95%] text-yellow  mr-4'
+        className="min-h-[130px] w-[95%] text-yellow  mr-4"
       />
     </>
   );

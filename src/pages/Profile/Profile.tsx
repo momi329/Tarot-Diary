@@ -10,6 +10,7 @@ import {
   onSnapshot,
   doc,
   getDoc,
+  orderBy,
   DocumentData,
 } from "firebase/firestore";
 import { db } from "../../utils/firebase";
@@ -25,7 +26,7 @@ import type { VisitedUser } from "../../utils/type";
 import Member from "../Member";
 import LoadingPage from "../LoadingPage";
 import UnderlineButton from "../../components/UnderlineButton";
-
+import type { TarotData } from "../../utils/type";
 function Profile(): JSX.Element {
   const { isLogin, user, userUID, loading, setLoading } =
     useContext(AuthContext);
@@ -52,7 +53,7 @@ function Profile(): JSX.Element {
     }
   };
   const [following, setFollowing] = useState<boolean>(false);
-
+  const [newpose, setNewPost] = useState([]);
   async function getUserDesignAndDiary(userUID: string) {
     const spread = await firebase.getUserDesign(userUID);
     const diary = await firebase.getOtherUserDiary(userUID, user);
@@ -61,7 +62,7 @@ function Profile(): JSX.Element {
         return a.time.seconds - b.time.seconds;
       })
       .reverse();
-    console.log("UserDiary", diary);
+    // console.log("UserDiary", diary);
     setUserDesign(spread);
     setUserDiary(diary);
   }
@@ -82,12 +83,6 @@ function Profile(): JSX.Element {
       spread: spread,
       seeMore: false,
     };
-    // setVisitedUser({
-    //   ...profile,
-    //   userUID: uid,
-    //   diary: diary,
-    //   spread: spread,
-    // });
   }
   async function getAllFollowingDiaryAndSpread(user) {
     const allDiary = await firebase.getAllFollowingDiary(user);
@@ -99,7 +94,6 @@ function Profile(): JSX.Element {
           return a.time.seconds - b.time.seconds;
         })
         .reverse());
-    // setFriendsPosts(allDiaryAndSpread);
     return allDiaryAndSpread;
   }
   async function getAllFollowingSnapShop(user) {
@@ -110,48 +104,55 @@ function Profile(): JSX.Element {
       const followingUser: any = getFollowingUser.data();
       const q = query(
         collection(db, "users", person, "diary"),
+
         where("secret", "==", false)
       );
+      // friendsPostsRef.current
       onSnapshot(q, (querySnapshot) => {
         querySnapshot.docChanges().forEach((change) => {
-          if (change.type === "added" && change.doc.data().time) {
-            const newDocData = {
+          if (change.type === "added") {
+            const newDocData: any = {
               ...change.doc.data(),
               user: followingUser.userUID,
               userImg: followingUser.image,
               userName: followingUser.name,
             };
-            setFriendsPosts((prev) => [newDocData, ...prev]);
-            // friendsPostsRef.current((prev) => [newDocData, ...prev])
+            if (newDocData.docId === undefined) {
+              console.log("監聽新資料", newDocData);
+              setFriendsPosts((prev) => [newDocData, ...prev]);
+            }
           }
         });
       });
     });
-    allPerson.map(async (person) => {
-      const docRef = doc(db, "users", person);
-      const getFollowingUser = await getDoc(docRef);
-      const followingUser: any = getFollowingUser.data();
-      const q = query(
-        collection(db, "spreads"),
-        where("userUID", "==", person)
-      );
-      onSnapshot(q, (querySnapshot) => {
-        querySnapshot.docChanges().forEach((change) => {
-          if (change.type === "added" && change.doc.data().time) {
-            const newDocData = {
-              ...change.doc.data(),
-              user: person,
-              userImg: followingUser.image,
-              userName: followingUser.name,
-            };
-            setFriendsPosts((prev) => [newDocData, ...prev]);
-            //allData.push(newDocData);
-          }
-        });
-      });
-    });
+    // allPerson.map(async (person) => {
+    //   const docRef = doc(db, "users", person);
+    //   const getFollowingUser = await getDoc(docRef);
+    //   const followingUser: any = getFollowingUser.data();
+    //   const q = query(
+    //     collection(db, "spreads"),
+    //     where("userUID", "==", person)
+    //   );
+    //   onSnapshot(q, (querySnapshot) => {
+    //     querySnapshot.docChanges().forEach((change) => {
+    //       if (change.type === "added" && change.doc.data().time) {
+    //         const newDocData = {
+    //           ...change.doc.data(),
+    //           user: person,
+    //           userImg: followingUser.image,
+    //           userName: followingUser.name,
+    //         };
+    //         setFriendsPosts((prev) => [newDocData, ...prev]);
+    //         //allData.push(newDocData);
+    //       }
+    //     });
+    //   });
+    // });
   }
-
+  useEffect(
+    () => console.log("friendsPosts的變化", friendsPosts),
+    [friendsPosts]
+  );
   useEffect(() => {
     async function getAllData() {
       if (uid) {
@@ -160,7 +161,8 @@ function Profile(): JSX.Element {
           console.log("本人");
           getUserDesignAndDiary(userUID); //抓自己的
           const friendsPost = await getAllFollowingDiaryAndSpread(user); //抓自己和別人的
-          friendsPostsRef.current = friendsPost;
+          setFriendsPosts(friendsPost);
+          console.log("setFriendsPosts", friendsPost);
           getAllFollowingSnapShop(user); //監聽別人的
 
           return () => {
@@ -182,18 +184,18 @@ function Profile(): JSX.Element {
 
   return (
     <>
-      {uid && <div className='w-screen h-[110px] mx-auto' />}
-      <div className='mx-auto w-screen'>
+      {uid && <div className="w-screen h-[110px] mx-auto" />}
+      <div className="mx-auto w-screen">
         {!uid ? (
           <>
             <Member />
           </>
         ) : (
-          <div className='flex flex-row w-[1180px] z-20 h-[300px] justify-center gap-[2%] mx-auto '>
-            <div className='h-[100%] w-2/12'>
+          <div className="flex flex-row w-[1180px] z-20 h-[300px] justify-center gap-[2%] mx-auto ">
+            <div className="h-[100%] w-2/12">
               {userUID && <Buttons setPage={setPage} page={page} />}
             </div>
-            <div className=' h-[100%] w-6/12'>
+            <div className=" h-[100%] w-6/12">
               {page === 2 || page === 3 ? (
                 <Toggle page={page} setPage={setPage} />
               ) : (
@@ -236,7 +238,7 @@ function Profile(): JSX.Element {
                 <UserSpread userDesign={userDesign} visitedUser={visitedUser} />
               )}
             </div>
-            <div className=' h-[100%] w-3/12 '>
+            <div className=" h-[100%] w-3/12 ">
               <ProfileHeader
                 uid={uid}
                 visitedUser={visitedUser}
@@ -263,8 +265,8 @@ const Buttons = ({ page, setPage }) => {
   };
   return (
     <div
-      className='flex flex-col text-left font-NT font-light  text-yellow  
-    text-2xl items-start   ml-[3%] fixed shadowYellow gap-6'
+      className="flex flex-col text-left font-NT font-light  text-yellow  
+    text-2xl items-start   ml-[3%] fixed shadowYellow gap-6"
     >
       {userUID === uid && (
         <>

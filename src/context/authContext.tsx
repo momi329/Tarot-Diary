@@ -102,14 +102,10 @@ export const AuthContextProvider: React.FC = ({ children }: any) => {
     }
   }
   useEffect(() => {
-    // console.log("有嗎");
     getAllSpread();
   }, []);
 
-  console.log("context", isLoading);
   useEffect(() => {
-    // console.log("有進來嗎");
-
     const auth = getAuth();
     onAuthStateChanged(auth, async (user) => {
       if (user) {
@@ -176,7 +172,8 @@ export const AuthContextProvider: React.FC = ({ children }: any) => {
       setUserUID(data.userUID);
       setIsLogin(true);
       setOpenSignIn(false);
-      if (location.pathname.includes("signin")) {
+      if (location.pathname.includes("sign")) {
+        console.log("navigatehere");
         navigate(`/profile/${data.userUID}`, { replace: true });
       }
     } else {

@@ -11,6 +11,7 @@ import { doc, updateDoc, Timestamp, setDoc } from "firebase/firestore";
 import { AuthContext } from "../context/authContext";
 import Button from "../components/Button";
 import lightCard from "../images/card-light.png";
+import UnderlineInput from "../components/UnderlineInput";
 function Draggable({ edit, setEdit, spreadData, id }) {
   const [onSave, setOnSave] = useState({
     spreadId: "",
@@ -118,13 +119,17 @@ function Draggable({ edit, setEdit, spreadData, id }) {
     return;
   };
   const createNewCard = () => {
+    const cards = onSave.spread.reduce((acc, curr) => {
+      return curr !== 0 ? acc + 1 : acc;
+    }, 0);
+    if (cards > 15) return;
     const zeroIndex = onSave.spread.findIndex((item) => item === 0);
     let newState = { ...onSave }.spread;
     newState[zeroIndex] = {
       name: uuidv4(),
       value: "",
       disabled: true,
-      order: cardNumber + 1,
+      order: cards + 1,
     };
     setOnSave({ ...onSave, spread: newState });
     setCardNumber((prev) => prev + 1);
@@ -272,65 +277,132 @@ function Draggable({ edit, setEdit, spreadData, id }) {
     });
     setEdit(false);
   };
+  function checkUniqueOrder(arr) {
+    const orders = [];
+    for (let i = 0; i < arr.length; i++) {
+      const order = Number(arr[i].order);
+      if (orders.includes(order)) {
+        return false; // 發現重複的 order，返回 false
+      }
+      orders.push(order);
+    }
+    return true; // 所有的 order 都是唯一的
+  }
+  const validationWarn = () => {
+    return onSave.title === ""
+      ? "!請填寫標題"
+      : onSave.description === ""
+      ? "!請填寫說明"
+      : onSave.image === ""
+      ? "!請選擇主要圖片"
+      : onSave.spread.reduce((acc, curr) => {
+          return curr !== 0 ? acc + 1 : acc;
+        }, 0) === 0
+      ? "!至少需要一張卡片"
+      : checkUniqueOrder(onSave.spread.filter((item) => item !== 0))
+      ? ""
+      : "!抽排順序不能重複";
+  };
+  const validation = () => {
+    return (
+      onSave.title === "" ||
+      onSave.description === "" ||
+      onSave.image === "" ||
+      onSave.spread.reduce((acc, curr) => {
+        return curr !== 0 ? acc + 1 : acc;
+      }, 0) === 0 ||
+      !checkUniqueOrder(onSave.spread.filter((item) => item !== 0))
+    );
+  };
   return (
     <>
-      <div className='w-screen h-[80px]' />
-      <div className='w-ml max-w-screen-md mx-auto mt-16 mb-8'>
-        <h1 className='font-NT text-8xl text-yellow  tracking-wide mb-6'>
+      <div className="w-screen h-[80px]" />
+      <div className="w-ml max-w-screen-md mx-auto mt-16 mb-8">
+        <h1 className="font-NT text-8xl text-yellow  tracking-wide mb-6">
           Design Your Spread!
         </h1>
-        <p className='font-base tracking-wider mb-10 text-yellow'>
+        <p className="font-base tracking-wider mb-10 text-yellow">
           設計你自己的牌陣，問自己想問的問題！
         </p>
-        <div className='flex flex-row gap-9 mb-14'>
-          <form className='flex flex-col gap-2 w-2/5 justify-between'>
-            <h1 className='font-NTalt text-yellow text-4xl mt-10 mb-10 tracking-wide font-medium'>
+        <div className="flex flex-row gap-9 mb-14">
+          <form className="flex flex-col gap-2 w-2/5 justify-between">
+            <h1 className="font-NTalt text-yellow text-4xl mt-10 mb-10 tracking-wide font-medium">
               Pick {cardNumber} {cardNumber === 1 ? "Card" : "Cards"}
             </h1>
-            <input
-              className='w-[100%] pl-2 pb-4 border-b-[1px] border-yellow  text-yellow
-              tracking-wider placeholder:text-gray placeholder:opacity-75'
-              type='text'
-              name='title'
-              placeholder='請輸入你的標題'
-              value={onSave.title}
-              onChange={(e) => inputChange(e, "title")}
-              disabled={saved}
-            />
-            <input
-              className='w-[100%] h-[130px] pl-2 pb-16 border-b-[1px] text-yellow
-               border-yellow  tracking-wider placeholder:text-gray placeholder:opacity-75'
-              type='text'
-              name='description'
-              placeholder='請描述一下此牌陣的用法'
-              value={onSave.description}
-              onChange={(e) => inputChange(e, "description")}
-              disabled={saved}
-            />
+            <div className="relative group">
+              <div className="absolute bottom-0 h-[2px] bg-yellow/50 w-0 group-hover:w-full duration-500"></div>
+              <input
+                className="w-[100%] pl-2 pb-4  border-yellow  text-yellow bg-pink/40 pt-1
+              tracking-wider placeholder:text-gray placeholder:opacity-75  hover:bg-pink/0 duration-500  "
+                type="text"
+                name="title"
+                placeholder="請輸入你的標題"
+                value={onSave.title}
+                onChange={(e) => inputChange(e, "title")}
+                disabled={saved}
+              />
+            </div>
+            <div className="relative group">
+              <div className="absolute bottom-0 h-[2px] bg-yellow/50 w-0 group-hover:w-full duration-500"></div>
+              <textarea
+                className="w-[100%] h-[130px] pl-2 pb-14 text-yellow bg-pink/40 pt-1 outline outline-0
+               border-yellow  tracking-wider placeholder:text-gray placeholder:opacity-75 hover:bg-pink/0 duration-500"
+                type="text"
+                name="description"
+                placeholder="請描述一下此牌陣的用法"
+                value={onSave.description}
+                onChange={(e) => inputChange(e, "description")}
+                disabled={saved}
+              />
+            </div>
           </form>
           <MyImages
-            className='order-2 w-3/5'
+            className="order-2 w-3/5"
             onSave={onSave}
             setOnSave={setOnSave}
           />
         </div>
-        <div className='flex gap-9'>
-          <Button
-            action={() => createNewCard()}
-            type={"small"}
-            value={"NEW CARD"}
-          />
-          <Button action={() => saveIt()} type={"small"} value={"SAVE"} />
+        <div className="flex gap-9 ">
+          <div className="group relative">
+            <div
+              className="group-hover:opacity-100 duration-200 opacity-0 bg-pink/30 text-yellow text-sm p-1 w-[100px]
+         font-notoSansJP text-center rounded-lg m-1 tracking-widest absolute top-[-35px] left-9 z-1"
+            >
+              !上限16張
+            </div>
+            <Button
+              action={() => createNewCard()}
+              type={"small"}
+              value={"NEW CARD"}
+            />
+          </div>
+          <div className="group relative">
+            <div
+              className={`${
+                validationWarn() === "" ? "group-hover:opacity-0 bg-none" : ""
+              }
+              group-hover:opacity-100 duration-200 opacity-0 bg-pink/30 text-yellow text-sm p-1 
+         font-notoSansJP text-center rounded-lg m-1 tracking-widest absolute top-[-35px] left-9 z-1 `}
+            >
+              {validationWarn()}
+            </div>
+            <Button
+              action={() => saveIt()}
+              type={"small"}
+              value={"SAVE"}
+              disabled={validation()}
+            />
+          </div>
         </div>
       </div>
       <div
-        className='flex flex-wrap justify-center max-w-screen-md border border-yellow z-1 
-      mx-auto  border-opacity-50 mb-14 p-[30px] pb-[133px] backdrop-blur-sm bg-white/10 '
+        className="flex flex-wrap justify-center max-w-screen-md border border-yellow z-1 
+      mx-auto  border-opacity-50 mb-14 p-[30px] pb-[133px] backdrop-blur-sm bg-white/10 "
       >
         {onSave.spread.map((item, i) => {
           return (
             <div
-              className={`flex justify-center box-border w-[144px] h-[113px] ${
+              className={`flex justify-center box-border w-[144px] h-[113px]  ${
                 shine[i] ? "bg-pink opacity-60" : ""
               }`}
               key={i}
@@ -342,7 +414,7 @@ function Draggable({ edit, setEdit, spreadData, id }) {
               {item !== 0 && (
                 <div
                   style={{ background: `center/contain url(${lightCard})` }}
-                  className={` rounded-xl w-[138px] h-[220px] cursor-pointer relative box-border 
+                  className={` rounded-xl w-[138px] h-[220px] cursor-pointer relative box-border cursor-grab
                   flex items-center justify-center flex-col bg-slate-800 text-yellow z-10 gap-2 bg-opacity-80`}
                   draggable={true} //TODO
                   onDragStart={(e) => {
@@ -369,7 +441,7 @@ function Draggable({ edit, setEdit, spreadData, id }) {
                     ${
                       item.disabled ? " text-green bg-opacity-40 bg-white " : ""
                     }`}
-                        type='text'
+                        type="text"
                         disabled={item.disabled}
                         onKeyDown={(e) => change(e, item, i)}
                         onChange={(e) => change(e, item, i)}
@@ -377,15 +449,15 @@ function Draggable({ edit, setEdit, spreadData, id }) {
                         readOnly={item.disabled}
                       />
                       <RxCross1
-                        className='material-symbols-outlined text-green order-2 top-[6px]
-                        left-2 absolute w-[17px] h-[25px] m-1 z-40'
+                        className="material-symbols-outlined text-green order-2 top-[6px]
+                        left-2 absolute w-[17px] h-[25px] m-1 z-40 cursor-pointer"
                         onClick={() => {
                           deleteCard(item);
                         }}
                       />
 
                       <div
-                        className={`material-symbols-outlined  text-green  m-1  text-base font-NT shadowGreen
+                        className={`material-symbols-outlined  text-green cursor-pointer m-1  text-base font-NT shadowGreen
                     absolute z-40 top-[8px] right-2 tracking-wider ${
                       item.disabled ? "" : "opacity-0"
                     }`}
@@ -398,8 +470,8 @@ function Draggable({ edit, setEdit, spreadData, id }) {
                       <select
                         defaultValue={item.order}
                         onChange={(e) => handleOptionChange(e, item, i)}
-                        className='text-green border-b-green bg-white outline-none bottom-2 shadowBlack
-                        rignt-[10px] pl-7 pr-6 pt-[5px] pb-[4px] rounded-sm bg-opacity-30 absolute font-NT text-base'
+                        className="text-green border-b-green bg-white cursor-pointer outline-none bottom-2 shadowBlack
+                         pl-7 pr-6 pt-[5px] pb-[4px] rounded-sm bg-opacity-30 absolute font-NT text-base"
                       >
                         {onSave.spread
                           .filter((item) => item !== 0)
@@ -417,28 +489,26 @@ function Draggable({ edit, setEdit, spreadData, id }) {
           );
         })}
       </div>
-      <div className='flex flex-row gap-5 w-[300px] mx-auto mb-40'>
+      <div className="flex flex-row gap-5 w-[300px] mx-auto mb-40">
         <div
-          className='w-20 h-20 rounded-full  border-[2px] border-pink mx-auto justify-center items-center flex 
+          className="w-20 h-20 rounded-full  border-[2px] border-pink mx-auto justify-center items-center flex 
          hover:bg-pink hover:bg-opacity-60 hover:text-yellow hover:border-yellow hover:shadowYellow
-        font-NT shadowPink text-8xl text-pink leading-4 text-center opacity-90 z-[2]'
+        font-NT shadowPink text-8xl text-pink leading-4 text-center opacity-90 z-[2]"
           onClick={() => {
             const newOnsave = { ...onSave };
             const newLine = [0, 0, 0, 0, 0, 0, 0];
             newOnsave.spread.push(...newLine);
-            // console.log(newOnsave);
-            console.log(newOnsave);
             setOnSave(newOnsave);
           }}
         >
-          <VscAdd className='w-10 h-10 self-center' />
+          <VscAdd className="w-10 h-10 self-center" />
           <div></div>
         </div>
 
         <div
-          className='w-20 h-20 rounded-full  border-[2px] border-pink mx-auto justify-center items-center flex 
+          className="w-20 h-20 rounded-full  border-[2px] border-pink mx-auto justify-center items-center flex 
          hover:bg-pink hover:bg-opacity-60 hover:text-yellow hover:border-yellow hover:shadowYellow
-        font-NT shadowPink text-8xl text-pink leading-4 text-center opacity-90 z-[2]'
+        font-NT shadowPink text-8xl text-pink leading-4 text-center opacity-90 z-[2]"
           onClick={() => {
             const newOnsave = { ...onSave };
             if (newOnsave.spread.length > 28) {
@@ -450,7 +520,7 @@ function Draggable({ edit, setEdit, spreadData, id }) {
             }
           }}
         >
-          <AiOutlineMinus className='w-10 h-10 self-center' />
+          <AiOutlineMinus className="w-10 h-10 self-center" />
         </div>
       </div>
     </>

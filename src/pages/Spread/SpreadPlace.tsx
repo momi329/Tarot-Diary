@@ -5,7 +5,7 @@ export const SpreadPlace = ({ type, tarot, size }) => {
   if (size === "large") {
     widthAndHeight = {
       a: " max-w-screen-md mb-12 p-[30px]",
-      b: " w-[144px] h-[113px] ",
+      b: " w-[144px] h-[113px] cursor-default",
       c: " w-[138px] h-[220px] gap-2 ",
       scale: "",
     };
@@ -36,8 +36,8 @@ export const SpreadPlace = ({ type, tarot, size }) => {
               <div
                 className={` rounded-xl ${
                   widthAndHeight.c
-                } cursor-pointer relative box-border  hover:scale-110 hover:z-10 hover:shadow-lg hover:shadow-green/60 hover:duration-200
-               flex items-center justify-center flex-col bg-slate-800 text-yellow z-0  bg-opacity-80
+                } cursor-default relative box-border  hover:scale-110 hover:shadow-lg hover:shadow-green/60 hover:duration-200
+               flex items-center justify-center flex-col bg-slate-800 text-yellow z-0 over:z-10  bg-opacity-80
                ${widthAndHeight.scale}  ${
                   type.userUID === "all" ? "scale-110" : ""
                 }`}
@@ -54,13 +54,13 @@ export const SpreadPlace = ({ type, tarot, size }) => {
                   </Link>
                 ) : (
                   <>
-                    <div className='absolute top-3 left-2 z-10'>
-                      <p className='text-5xl font-NT text-green ml-2'>
+                    <div className="absolute top-3 left-2 z-10 cursor-default">
+                      <p className="text-5xl font-NT text-green ml-2">
                         {item.order}
                       </p>
                       <p
-                        className='text-sm font-notoSansJP text-green mt-[70px] w-[100%] bg-cream/20 backdrop-blur-sm
-                      tracking-widest px-2 py-2 bg-cream bg-opacity-30 '
+                        className="text-sm font-notoSansJP text-green mt-[70px] w-[100%] bg-cream/20 backdrop-blur-sm
+                      tracking-widest px-2 py-2 bg-cream bg-opacity-30 "
                       >
                         {item.value}
                       </p>
@@ -84,46 +84,46 @@ export const SpreadPlace = ({ type, tarot, size }) => {
                     {item.card !== undefined && size === "large" ? (
                       <>
                         <p
-                          className='absolute top-1 left-2 z-8 font-NT text-8xl w-[10%] text-green
-                      shadowGreen text-center tracking-wide leading-tight'
+                          className="absolute top-1 left-2 z-8 font-NT text-8xl w-[10%] text-green
+                      shadowGreen text-center tracking-wide leading-tight"
                         >
                           {item.order}
                         </p>
                         <p
-                          className='absolute top-[100px] left-2 leading-tight 
-                     text-sm  w-[90%] tracking-wide text-green'
+                          className="absolute top-[100px] left-2 leading-tight 
+                     text-sm  w-[90%] tracking-wide text-green"
                         >
                           {item.value}
                         </p>
 
-                        <div className='text-lg font-NT bottom-7 absolute leading-none text-green shadowGreen'>
+                        <div className="text-lg font-NT bottom-7 absolute leading-none text-green shadowGreen">
                           {tarot[item.card].name}{" "}
                         </div>
                         {""}
-                        <div className='z-10 text-sm mt-[1px] leading-none text-gray bottom-2 absolute text-green'>
+                        <div className="z-10 text-sm mt-[1px] leading-none text-gray bottom-2 absolute text-green">
                           {item.reverse ? "正位" : "逆位"}
                         </div>
                       </>
                     ) : (
                       <>
                         <p
-                          className='absolute top-1 left-2 z-8 font-NT text-2xl w-[10%] text-green
-                      shadowGreen text-center tracking-wide leading-tight'
+                          className="absolute top-1 left-2 z-8 font-NT text-2xl w-[10%] text-green
+                      shadowGreen text-center tracking-wide leading-tight"
                         >
                           {item.order}
                         </p>
                         <p
-                          className='absolute bottom-2 left-2 leading-none
-                     text-[6px]  w-[80%] tracking-wide text-green'
+                          className="absolute bottom-2 left-2 leading-none
+                     text-[6px]  w-[80%] tracking-wide text-green"
                         >
                           {item.value}
                         </p>
 
-                        <div className='text-[9px] font-NT top-8 left-2 absolute leading-none text-green shadowGreen'>
+                        <div className="text-[9px] font-NT top-8 left-2 absolute leading-none text-green shadowGreen">
                           {tarot[item.card].name}{" "}
                         </div>
                         {""}
-                        <span className='z-10 text-[6px] font-notoSansJP mt-[1px] leading-none text-gray top-2 right-1 absolute text-green'>
+                        <span className="z-10 text-[6px] font-notoSansJP mt-[1px] leading-none text-gray top-2 right-1 absolute text-green">
                           {item.reverse ? "正位" : "逆位"}
                         </span>
                       </>

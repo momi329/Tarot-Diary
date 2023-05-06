@@ -25,7 +25,7 @@ export default function Quill({
   };
   async function createDivinedData(data, userUID) {
     const docId = await firebase.newDivinedData(data, userUID);
-    console.log(docId, "docId");
+    // console.log(docId, "docId");
     if (docId) {
       setDivinedData({ ...data, docId: docId });
     } else {
@@ -43,8 +43,8 @@ export default function Quill({
   };
 
   return (
-    <div className='w-[100%]  flex flex-col justify-center items-center'>
-      <p className='text-gray text-sm tracking-widest  self-start  mb-3'>
+    <div className="w-[100%]  flex flex-col justify-center items-center">
+      <p className="text-gray text-sm tracking-widest  self-start ml-2 mb-3">
         記得按下儲存，才能紀錄占卜結果喔！
       </p>
       <Editor
@@ -52,7 +52,7 @@ export default function Quill({
         onChange={onEditorContentChanged}
       />
 
-      <div className='self-end mt-2 animate-bounce '>
+      <div className="self-end mt-2 animate-bounce ">
         <Button action={handleSave} type={"small"} value={"Save"} />
       </div>
     </div>

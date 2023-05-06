@@ -1,6 +1,45 @@
 import { DocumentData, Timestamp } from "firebase/firestore";
 
 //profile
+export interface Comment {
+  comment: string;
+  userImage: string;
+  userName: string;
+  user: string;
+}
+
+export interface SpreadItem {
+  reverse: boolean;
+  disabled: boolean;
+  value: string;
+  order: number;
+  card: number;
+}
+
+export interface TarotData {
+  description: string;
+  title: string;
+  like: string[];
+  userUID: string;
+  spread: SpreadItem[];
+  comment: Comment[];
+  image: string;
+  spreadId: string;
+  secret: boolean;
+  content: string;
+  askGpt: string;
+  time: {
+    seconds: number;
+    nanoseconds: number;
+  };
+  docId: string;
+  question: string;
+  user: string;
+  userImg: string;
+  userName: string;
+  addComment: false;
+  seeMore: false;
+}
 export interface VisitedUser {
   name?: string;
   image?: string;
@@ -18,6 +57,7 @@ export interface VisitedUser {
 }
 //spread
 export interface SpreadData {
+  author?: string;
   userUID: string;
   title: string;
   image: string;

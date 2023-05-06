@@ -1,4 +1,4 @@
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useState, useEffect, useContext, useReducer } from "react";
 import { AuthContext } from "../../context/authContext";
 import Divine from "./Divine";
@@ -15,6 +15,8 @@ import type {
   DraggableProps,
   DesignSpreadData,
 } from "../../utils/type";
+import UnderlineButton from "../../components/UnderlineButton";
+import CommentAndLike from "../../components/CommentAndLike";
 
 const initialDivinedData: DesignSpreadData = {
   userUID: "",
@@ -65,6 +67,7 @@ function Spread() {
   async function getDesign(id: string): Promise<void> {
     const newData = await firebase.getDesign(id);
     if (newData) {
+      console.log(newData, "抓回來的");
       setSpreadData(newData[0]);
       setDivinedData({
         userUID: newData[0].userUID,
@@ -85,6 +88,7 @@ function Spread() {
       ]);
     }
   }
+  const navigate = useNavigate();
   useEffect(() => {
     const divine = localStorage.getItem("myResult");
     if (divine) {
@@ -108,31 +112,31 @@ function Spread() {
     <>
       <div
         // style={{ backgroundImage: `url(${spreadData.image})` }}
-        className='w-screen h-[100%] bg-cover 
-         flex justify-center  bg-center '
+        className="w-screen h-[100%] bg-cover 
+         flex justify-center  bg-center "
       >
-        <div className='bg-black bg-opacity-50 fixed w-full h-full'></div>
+        <div className="bg-black bg-opacity-50 fixed w-full h-full"></div>
         <div
-          className='fixed w-full h-full bg-cover bg-center  p-[40px]'
+          className="fixed w-full h-full bg-cover bg-center  p-[40px]"
           style={{ backgroundImage: `url(${spreadData.image})` }}
         />
-        <div className='fixed w-full h-full bg-cover bg-center  bg-black/20 p-[40px]' />
+        <div className="fixed w-full h-full bg-cover bg-center  bg-black/20 p-[40px]" />
         <div
           className={`mx-auto text-yellow w-[1180px]  relative mb-20 mt-40 m-[10px] 
           backdrop-blur-sm bg-black/30 `}
         >
-          <div className='flex flex-row justify-between mx-8 mt-8'>
-            <span className='flex flex-col'>
+          <div className="flex flex-row justify-between mx-8 mt-8">
+            <span className="flex flex-col">
               <h1
                 className={`text-3xl font-NT  tracking-widest mt-4 
             ${spreadData.userUID === "all" ? "shadowYellow text-5xl" : ""}`}
               >
                 {spreadData.title}
               </h1>
-              <p className='w-[60%] leading-7 text-sm mt-5 '>
+              <p className="w-[60%] leading-7 text-sm mt-5 ">
                 {spreadData.description}
               </p>
-              <div className='font-NT text-yellow text-2xl mt-8 mb-5 tracking-widest shadowYellow '>
+              <div className="font-NT text-yellow text-2xl mt-8 mb-5 tracking-widest shadowYellow ">
                 PICK{" "}
                 {spreadData.spread.reduce(
                   (acc: any, crr) => (crr !== 0 ? acc + 1 : acc),
@@ -141,8 +145,8 @@ function Spread() {
                 CARDS
               </div>
             </span>
-            {/* 編輯 here */}
-            {/* {spreadData.userUID !== "all" && divining === 0 && (
+
+            {divining === 0 && userUID === spreadData.userUID ? (
               <Button
                 action={() => {
                   setEdit(true);
@@ -150,20 +154,22 @@ function Spread() {
                 value={"Edit"}
                 type={"little"}
               />
-            )} */}
-            {divining === 0 && (
-              <Button
-                action={() => {
-                  setEdit(true);
-                }}
-                value={"Edit"}
-                type={"little"}
-              />
+            ) : (
+              spreadData.author && (
+                <div>
+                  <div>Author</div>
+                  <UnderlineButton
+                    value={spreadData.author}
+                    type={"memberPage"}
+                    action={() => navigate(`/profile/${spreadData.userUID}`)}
+                  />
+                </div>
+              )
             )}
           </div>
           {/* 開始選牌 */}
           {divining === 0 && (
-            <div className='flex gap-3 mb-8 ml-8'>
+            <div className="flex gap-3 mb-8 ml-8 w-[280px]">
               <Button
                 action={() => dispatch({ type: "start" })}
                 value={"Start"}
@@ -174,14 +180,14 @@ function Spread() {
           {/* 寫下問題 */}
           {divining !== 0 && (
             <input
-              type='text'
+              type="text"
               value={divinedData.question}
               disabled={divining !== 1 ? true : false}
               onChange={(e) => {
                 setDivinedData({ ...divinedData, question: e.target.value });
               }}
-              className='bg-pink bg-opacity-20 p-2 ml-8 w-[25%] tracking-wider placeholder:text-yellow mb-4'
-              placeholder='請寫下你的問題'
+              className="bg-pink bg-opacity-20 p-2 ml-8 w-[25%] tracking-wider placeholder:text-yellow mb-4"
+              placeholder="請寫下你的問題"
             />
           )}
           {/* -----更換狀態----- */}
@@ -193,8 +199,8 @@ function Spread() {
           {/* 可編輯 */}
           {spreadData.userUID === userUID && edit && (
             <div
-              className='w-[110%] h-[100%] overflow-y-scroll p-16 bg-darkPink z-20 mx-auto fixed top-1/2 left-1/2 
-          transform -translate-x-1/2 -translate-y-1/2'
+              className="w-[110%] h-[100%] overflow-y-scroll p-16 bg-darkPink z-20 mx-auto fixed top-1/2 left-1/2 
+          transform -translate-x-1/2 -translate-y-1/2"
             >
               <Draggable
                 setEdit={setEdit}
@@ -211,13 +217,13 @@ function Spread() {
 
           {/* 選牌占卜 */}
           {divining === 1 && (
-            <div className='flex flex-col gap-6 justify-center mb-18 mt-5 items-center'>
+            <div className="flex flex-col gap-6 justify-center mb-18 mt-5 items-center">
               <SelectCard pickCard={pickCard} setPickCard={setPickCard} />
-              <span className='flex flex-row items-end'>
-                <span className='text-5xl text-pink font-NT shadowPink tracking-widest'>
+              <span className="flex flex-row items-end">
+                <span className="text-5xl text-pink font-NT shadowPink tracking-widest">
                   {pickCard[0] + ""}
                 </span>
-                <p className='text-3xl text-pink font-NT shadowPink tracking-widest mb-1'>
+                <p className="text-3xl text-pink font-NT shadowPink tracking-widest mb-1">
                   {`/` + pickCard[1]}
                 </p>
               </span>
@@ -230,7 +236,7 @@ function Spread() {
                 dispatch={dispatch}
                 pickCard={pickCard}
               />
-              <div className='w-[100%] h-16'></div>
+              <div className="w-[100%] h-16"></div>
             </div>
           )}
 
@@ -248,7 +254,7 @@ function Spread() {
           )}
           {/* 詢問AI */}
           {divining === 3 && (
-            <div className=' w-[100%] px-16 group relative pb-16'>
+            <div className=" w-[100%] px-16 group relative pb-16">
               <AskGPT
                 divinedData={divinedData}
                 setDivinedData={setDivinedData}
@@ -290,7 +296,7 @@ export const SelectCard = ({ setPickCard, pickCard }) => {
   const [cardArr, setCardArr] = useState(new Array(24).fill(false));
 
   return (
-    <div className='flex flex-row w-[90%] h-[350px] justify-center relative mt-5 '>
+    <div className="flex flex-row w-[90%] h-[350px] justify-center relative mt-5 ">
       {cardArr.map((card, index) => {
         return (
           <div
@@ -327,7 +333,7 @@ export const SelectCard = ({ setPickCard, pickCard }) => {
               }
             }}
           >
-            <img src={lightCard} alt='card' className='w-[100%]' />
+            <img src={lightCard} alt="card" className="w-[100%]" />
           </div>
         );
       })}

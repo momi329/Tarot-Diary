@@ -123,12 +123,18 @@ const firebase = {
       await querySnapshot.forEach((doc) => {
         data.push(doc.data());
       });
-      if (id.length < 10) {
-        const newData: any[] = data.filter((i) => i.spreadId === id);
-        return newData;
-      }
       const newData: any[] = data.filter((i) => i.spreadId === id);
-      return newData;
+      const spreadData = [...newData];
+      if (!spreadData[0].userUID) {
+        spreadData[0].author = "預設";
+      } else {
+        const docRef = doc(db, "users", `${spreadData[0].userUID}`);
+        const docSnap = await getDoc(docRef);
+        if (docSnap.exists()) {
+          spreadData[0].author = docSnap.data().name;
+        }
+        return spreadData;
+      }
     } catch (e) {
       console.error("error", e);
     }
@@ -250,7 +256,7 @@ const firebase = {
       };
       diary.push(newDocData);
     });
-    console.log("diary", diary);
+    // console.log("diary", diary);
     diary.sort(function (a, b) {
       return a.time.seconds - b.time.seconds;
     });

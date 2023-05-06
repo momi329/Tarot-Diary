@@ -90,8 +90,8 @@ const AskGPT = ({
       });
   }
   return (
-    <div className='flex flex-row '>
-      <div className='flex flex-col w-[48%] '>
+    <div className="flex flex-row ">
+      <div className="flex flex-col w-[48%] ">
         <button
           className={`text-xl font-NT text-pink tracking-[1px] 
           flex flex-row gap-4  duration-1000 ${
@@ -109,8 +109,8 @@ const AskGPT = ({
             <Loading text={"Asking AI "} />
           ) : (
             <div>
-              <p className='shadowPink'> Ask AI Get Your Tarot Reading!</p>
-              <p className='text-base text-gray font-notoSansJP text-start'>
+              <p className="shadowPink"> Ask AI Get Your Tarot Reading!</p>
+              <p className="text-base text-gray font-notoSansJP text-start">
                 點擊按紐等待AI智慧塔羅解牌
               </p>
             </div>
@@ -128,28 +128,30 @@ const AskGPT = ({
         </button> */}
         {divining === 3 && askAI && (
           <>
-            <div className=' text-sm leading-6 text-yellow my-2'>
-              <p>{res}</p>
+            <div className="mt-2 ">
+              <p className="whitespace-pre-wrap break-all text-sm leading-6 text-yellow my-2">
+                {res}
+              </p>
             </div>
           </>
         )}
       </div>
-      <div className='flex flex-col gap-2 justify-between items-center '>
+      <div className="flex flex-col gap-2 justify-between items-center ">
         <Star color={"#E18EA5"} />
-        <div className='my-3 w-[1px] bg-pink h-[100%]' />
+        <div className="my-3 w-[1px] bg-pink h-[100%]" />
         <Star color={"#E18EA5"} />
       </div>
       {divining === 3 && (
-        <div className='w-[48%] '>
+        <div className="w-[48%] ">
           <button
-            className='text-xl font-NT text-pink tracking-[1px] mb-7 mx-auto
+            className="text-xl font-NT text-pink tracking-[1px] mb-7 mx-auto
           flex flex-row gap-4 hover:animate-bounce hover:animate-pulse cursor-auto
-               group-hover:opacity-1  p-4 bg-black/40 w-[80%] items-center justify-start'
+               group-hover:opacity-1  p-4 bg-black/40 w-[80%] items-center justify-start"
           >
             <Star color={"#F4E4C3"} />
             <div>
-              <p className='shadowPink'> Write Your Diary!</p>
-              <p className='text-base text-gray font-notoSansJP text-start'>
+              <p className="shadowPink"> Write Your Diary!</p>
+              <p className="text-base text-gray font-notoSansJP text-start">
                 寫下一些筆記心得吧！
               </p>
             </div>

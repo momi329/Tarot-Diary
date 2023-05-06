@@ -79,6 +79,20 @@ const CommentAndLike = ({
       await firebase.updateLike(newFriendPost[index]);
       setFriendsPosts(newFriendPost);
     } else {
+      const newFriendPost = [...visitedUser.diary];
+      let likes = newFriendPost[index].like;
+      if (likes && likes.includes(user.userUID)) {
+        //取消喜歡
+        const remove = (i) => i === user.userUID;
+        const removeIndex = likes.findIndex(remove);
+        likes.splice(removeIndex);
+      } else {
+        //喜歡
+        likes = likes ? [...likes, user.userUID] : [user.userUID];
+      }
+      newFriendPost[index].like = likes;
+      await firebase.updateLike(newFriendPost[index]);
+      setVisitedUser({ ...visitedUser, diary: newFriendPost });
     }
   };
   const deleteComment = async (index, q) => {
@@ -95,14 +109,23 @@ const CommentAndLike = ({
     }
   };
   const commentStatusChange = async (item, index) => {
+    let newData;
+    if (uid === userUID) {
+      newData = [...friendsPosts];
+    } else {
+      newData = [...visitedUser.diary];
+    }
     if (item.addComment === true) {
-      const newData = [...friendsPosts];
       item.addComment = false;
       newData[index] = item;
-      setFriendsPosts(newData);
+      uid === userUID
+        ? setFriendsPosts(newData)
+        : setVisitedUser({ ...visitedUser, diary: newData });
+      // setFriendsPosts(newData);
     } else {
-      const newData = [...friendsPosts];
-      if (!friendsPosts[index].comment) {
+      //todo
+      if (!newData[index].comment) {
+        console.log("1");
         newData.forEach((data) => {
           if (data.addComment) {
             data.addComment = false;
@@ -110,8 +133,13 @@ const CommentAndLike = ({
         });
         item.addComment = !item.addComment;
         newData[index] = item;
-        setFriendsPosts(newData);
-      } else if (friendsPosts[index].comment.length === 0) {
+        uid === userUID
+          ? setFriendsPosts(newData)
+          : setVisitedUser({ ...visitedUser, diary: newData });
+
+        // setFriendsPosts(newData);
+      } else if (newData[index].comment.length === 0) {
+        console.log("2");
         newData.forEach((data) => {
           if (data.addComment) {
             data.addComment = false;
@@ -119,8 +147,14 @@ const CommentAndLike = ({
         });
         item.addComment = !item.addComment;
         newData[index] = item;
-        setFriendsPosts(newData);
+        uid === userUID
+          ? setFriendsPosts(newData)
+          : setVisitedUser({ ...visitedUser, diary: newData });
+
+        // setFriendsPosts(newData);
       } else {
+        console.log("3");
+
         const comments = await firebase.getCommentsProfile(item.comment);
         newData.forEach((data) => {
           if (data.addComment) {
@@ -130,14 +164,18 @@ const CommentAndLike = ({
         item.addComment = !item.addComment;
         item.comment = comments;
         newData[index] = item;
-        setFriendsPosts(newData);
+        uid === userUID
+          ? setFriendsPosts(newData)
+          : setVisitedUser({ ...visitedUser, diary: newData });
+
+        // setFriendsPosts(newData);
       }
     }
   };
   return (
     <>
-      <div className='ml-1 mt-5'>
-        <div className='flex items-center mb-2  text-pink'>
+      <div className="ml-1 mt-5" key="index">
+        <div className="flex items-center mb-2  text-pink">
           {/* 按讚 */}
           <button
             className={`p-1 mr-2 flex-row flex items-center`}
@@ -147,24 +185,24 @@ const CommentAndLike = ({
           >
             <img
               src={item.like && item.like.includes(user.userUID) ? fill : like}
-              alt='like'
-              className='w-6 h-6'
+              alt="like"
+              className="w-6 h-6"
             />
-            <p className=' p-1 ml-1'>{item.like ? item.like.length : 0}</p>
+            <p className=" p-1 ml-1">{item.like ? item.like.length : 0}</p>
           </button>
           {/* 留言 編寫 瀏覽 */}
           <button
-            className='pl-3 p-1  mr-2 flex-row flex items-center'
+            className="pl-3 p-1  mr-2 flex-row flex items-center"
             onClick={() => {
               commentStatusChange(item, index);
             }}
           >
             <img
               src={item.addComment ? commenting : commentIt}
-              alt='comment'
-              className='w-[22px] h-[21px] pb-[2px]'
+              alt="comment"
+              className="w-[22px] h-[21px] pb-[2px]"
             />
-            <p className=' p-1 ml-1'>
+            <p className=" p-1 ml-1">
               {item.comment ? item.comment.length : 0}
             </p>
           </button>
@@ -175,24 +213,24 @@ const CommentAndLike = ({
               item.comment.map((comment, q) => (
                 <>
                   <div
-                    className='flex flex-row items-center ml-2 my-3 text-sm'
-                    key={q}
+                    className="flex flex-row items-center ml-2 my-3 text-sm"
+                    key={`${q}+1`}
                   >
                     <img
                       src={comment.userImage}
                       alt={comment.user}
-                      className='w-8 h-8 rounded-full cursor-pointer'
+                      className="w-8 h-8 rounded-full cursor-pointer"
                       onClick={() => navigate(`/profile/${comment.user}`)}
                     />
                     <p
-                      className='font-notoSansJP font-normal  ml-4 text-yellow tracking-widest
-                    whitespace-normal w-28 mr-2'
+                      className="font-notoSansJP font-normal  ml-4 text-yellow tracking-widest
+                    whitespace-normal w-28 mr-2"
                     >
                       {comment.userName}
                     </p>
                     <p
-                      className='font-notoSansJP font-normal text-yellow tracking-widest 
-                  flex-grow w-[300px] break-words  mr-2 whitespace-pre-line'
+                      className="font-notoSansJP font-normal text-yellow tracking-widest 
+                  flex-grow w-[300px] break-words  mr-2 whitespace-pre-line"
                     >
                       {comment.comment}
                     </p>
@@ -202,7 +240,7 @@ const CommentAndLike = ({
                           setAlert(true);
                           // deleteComment(index, q);
                         }}
-                        className='font-NT text-yellow shadowYellow hover:underline tracking-widest mt-[6px]'
+                        className="font-NT text-yellow shadowYellow hover:underline tracking-widest mt-[6px]"
                       >
                         Delete
                       </button>
@@ -229,20 +267,20 @@ const CommentAndLike = ({
                     )}
                   </div>
                   <div
-                    className='w-[100%] h-[1px] bg-white opacity-40'
-                    key={q}
+                    className="w-[100%] h-[1px] bg-white opacity-40"
+                    key={Math.floor(Math.random() * 900) + 100}
                   />
                 </>
               ))}
-            <div className='group relative flex justify-between items-center mt-6'>
+            <div className="group relative flex justify-between items-center mt-6">
               <textarea
-                id='comment'
-                name='comment'
+                id="comment"
+                name="comment"
                 rows={2}
                 cols={20}
                 onChange={(e) => handleCommentChange(e)}
                 value={commentChange.comment}
-                className='bg-green opacity-60 pl-3 py-2 text-yellow mr-2 w-84 rounded-lg w-[450px] outline-none'
+                className="bg-green opacity-60 pl-3 py-2 text-yellow mr-2 w-84 rounded-lg w-[450px] outline-none"
               />
               <Button
                 type={"tiny"}
@@ -266,4 +304,5 @@ const CommentAndLike = ({
     </>
   );
 };
+
 export default CommentAndLike;

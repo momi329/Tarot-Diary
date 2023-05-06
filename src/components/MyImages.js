@@ -4,6 +4,7 @@ import { FiX } from "react-icons/fi";
 import { FiChevronLeft } from "react-icons/fi";
 import { FiImage } from "react-icons/fi";
 import { FiSearch } from "react-icons/fi";
+import { AiOutlinePlus } from "react-icons/ai";
 const Key = process.env.REACT_APP_UNSPLASH_API_KEY;
 function MyImages({ onSave, setOnSave }) {
   const [photos, setPhotos] = useState();
@@ -47,32 +48,45 @@ function MyImages({ onSave, setOnSave }) {
   return (
     <>
       <div
-        className='w-[100%] h-[316px] border-[1px] border-yellow relative z-10 bg-cover bg-center opacity-70'
+        className="w-[100%] h-[316px] bg-backdrop-blur-sm bg-white/20 z-40
+         border-[1px] border-yellow relative bg-cover bg-center  "
         style={{ backgroundImage: `url(${onSave.image})` }}
       >
+        <AiOutlinePlus
+          className="text-yellow top-1 absolute  w-[30px] h-[30px]"
+          onClick={() => setIsOpen(!isOpen)}
+        />
+        <span className="absolute left-6 top-[6px] tracking-widest ml-2 font-NT text-lg text-yellow shadowYellow">
+          Choose Your Main Picture
+        </span>
         {isOpen ? (
           <div
-            className='w-[350px]  flex flex-wrap flex-col  text-yellow
-          p-4 pt-1 bg-darkPink bg-opacity-60 absolute top-0 right-0 '
+            className="w-[350px]  flex flex-wrap flex-col  text-yellow
+          p-4 pt-1 bg-darkPink bg-opacity-90 absolute top-0 right-0 z-40 "
           >
             <div
-              className='w-[100%] flex flex-wrap  flex-row items-center 
-            justify-between p-3 mb-3 border-b-[1px] border-slate-300'
+              className="w-[100%] flex flex-wrap  flex-row items-center 
+            justify-between p-3 mb-3 border-b-[1px] border-slate-300"
             >
-              <FiChevronLeft className='w-5 h-5' />
-              <div className='tracking-widest'>更換背景</div>
+              {/* <FiChevronLeft className="w-5 h-5" /> */}
+              <div className="tracking-widest ml-2 font-NT text-lg shadowYellow">
+                Change Main Picture
+              </div>
               <FiX
-                className='w-5 h-5'
+                className="w-5 h-5 cursor-pointer"
                 onClick={() => {
+                  console.log("點到");
                   setIsOpen(false);
                 }}
               />
             </div>
-            <div className='w-[100%] relative'>
-              <FiSearch className='absolute top-3 left-2 text-slate-400' />
+            <div className="w-[100%] h-[60px] relative group  mb-3 ">
+              <FiSearch className="absolute top-4 left-2 text-yellow" />
+              <div className="absolute bottom-3 h-[2px]  bg-yellow/50 w-0 group-hover:w-full duration-500"></div>
               <input
-                className='w-[100%] p-2  mb-3 pl-9'
-                placeholder='Search'
+                className="w-[100%] pl-9  text-yellow bg-pink/40 pt-3 outline outline-0 pb-3
+               border-yellow  tracking-wider placeholder:text-gray placeholder:opacity-75 hover:bg-pink/0 duration-500"
+                placeholder="Search"
                 onChange={(e) => {
                   setInput(e.target.value);
                 }}
@@ -82,20 +96,20 @@ function MyImages({ onSave, setOnSave }) {
               />
             </div>
 
-            <div className='h-[400px] flex flex-wrap justify-center gap-2  overflow-auto '>
+            <div className="h-[400px] flex flex-wrap justify-center gap-2  overflow-auto ">
               {photos &&
                 photos.map((photo) => (
                   <>
                     <div
                       key={photo.id}
-                      className='w-[140px] h-[100px] object-contain rounded-ms hover:opacity-80 bg-cover bg-center relative cursor-pointer'
+                      className="w-[140px] h-[100px] object-contain rounded-ms hover:scale-110 bg-cover bg-center relative cursor-pointer"
                       style={{ backgroundImage: `url(${photo.urls.regular})` }}
                       onClick={() => {
                         chooseImg(photo.urls.regular);
                       }}
                     >
-                      <div className='w-[100%] absolute bottom-0 p-[4px] pl-2 bg-darkPink text-white  underline-offset-1 opacity-0 hover:opacity-90'>
-                        <a href={photo.links.html} className=' text-xs'>
+                      <div className="w-[100%] absolute bottom-0 p-[4px] pl-2 bg-darkPink text-white  underline-offset-1 opacity-0 hover:scale-110">
+                        <a href={photo.links.html} className=" text-xs">
                           {photo.user.name}
                         </a>
                       </div>
@@ -106,7 +120,7 @@ function MyImages({ onSave, setOnSave }) {
           </div>
         ) : (
           <FiImage
-            className='w-5 h-5 absolute top-1 right-1 text-yellow opacity-90'
+            className="w-5 h-5 absolute top-1 right-1 text-yellow opacity-90 cursor-pointer"
             onClick={() => {
               setIsOpen(true);
             }}

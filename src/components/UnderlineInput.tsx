@@ -5,6 +5,7 @@ type UnderlineInputProps = {
   action: (e?: any) => void | {};
   keyAction?: (e?: any) => void | {};
   placeholder?: string;
+  disabled?: boolean;
 };
 
 function UnderlineInput({
@@ -14,22 +15,24 @@ function UnderlineInput({
   action,
   keyAction,
   placeholder,
+  disabled,
 }: UnderlineInputProps) {
   return (
     <>
-      <p className='font-NT text-yellow tracking-widest shadowYellow mb-1'>
+      <p className="font-NT text-yellow tracking-widest shadowYellow mb-1">
         {name}
       </p>
-      <div className='relative group'>
-        <div className='absolute bottom-0 h-[2px] bg-yellow/50 w-0 group-hover:w-full duration-500'></div>
+      <div className="relative group">
+        <div className="absolute bottom-0 h-[2px] bg-yellow/50 w-0 group-hover:w-full duration-500"></div>
         <input
           type={inputType}
           name={name}
           value={value}
-          className='bg-pink/40  w-full font-NT text-yellow tracking-widest shadowYellow  pl-2 p-2  py-3 hover:bg-pink/0 duration-500'
+          className="bg-pink/40  w-full font-NT text-yellow tracking-widest shadowYellow  pl-2 p-2  py-3 hover:bg-pink/0 duration-500"
           onChange={action}
           onKeyDown={keyAction}
           placeholder={placeholder}
+          disabled={disabled}
         />
       </div>
     </>
