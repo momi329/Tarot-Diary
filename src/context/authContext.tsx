@@ -172,8 +172,10 @@ export const AuthContextProvider: React.FC = ({ children }: any) => {
       setUserUID(data.userUID);
       setIsLogin(true);
       setOpenSignIn(false);
-      if (location.pathname.includes("sign")) {
-        console.log("navigatehere");
+      if (
+        location.pathname.includes("sign") ||
+        location.pathname.includes("profile")
+      ) {
         navigate(`/profile/${data.userUID}`, { replace: true });
       }
     } else {

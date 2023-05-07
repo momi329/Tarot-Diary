@@ -826,7 +826,7 @@ const cards = {
       number: "19",
       arcana: "Major Arcana",
       suit: "Trump",
-      img: "https://firebasestorage.googleapis.com/v0/b/tarot-diary.appspot.com/o/m18.jpg?alt=media&token=cc20d399-7c06-4e63-906a-a3d2e20dfe2dhttps://firebasestorage.googleapis.com/v0/b/tarot-diary.appspot.com/o/m19.jpg?alt=media&token=f4ec0454-37cc-4886-8a38-e9648052397e",
+      img: "https://firebasestorage.googleapis.com/v0/b/tarot-diary.appspot.com/o/m19.jpg?alt=media&token=f4ec0454-37cc-4886-8a38-e9648052397e",
       fortune_telling: [
         "Everything's coming up roses (or sunflowers, whatever the case may be)",
         "Whatever's on your mind, go for it because you can't lose today",

@@ -18,9 +18,9 @@ function SpreadPreview({ spread, index, type }: SpreadPreviewProps) {
 
   return (
     <div
-      id='spread'
+      id="spread"
       className={`${style.a} bg-cover duration-200 cursor-pointer ${
-        type === "personal" ? "hover:scale-110" : ""
+        type === "personal" ? "hover:scale-110 z-10" : ""
       } `}
       key={index}
       onClick={() => navigate(`/spread/${spread.spreadId}`)}
@@ -29,7 +29,7 @@ function SpreadPreview({ spread, index, type }: SpreadPreviewProps) {
         <img
           src={spread.image}
           alt={spread.title}
-          className='opacity-90 absolute top-0 object-cover left-0 w-[100%] h-[100%]'
+          className="opacity-90 absolute top-0 object-cover left-0 w-[100%] h-[100%]"
         />
       )}
       <p
@@ -38,13 +38,18 @@ function SpreadPreview({ spread, index, type }: SpreadPreviewProps) {
         PICK A CARD
       </p>
       <div
-        className='min-h-[25%] w-[100%]  bg-darkPink bg-opacity-40
-p-3 pl-4 absolute bottom-0 tracking-widest font-NT text-base text-yellow'
+        className="min-h-[25%] w-[100%]  bg-darkPink bg-opacity-40
+p-3 pl-4 absolute bottom-0 tracking-widest font-NT text-base text-yellow"
       >
         {" "}
         <p>{spread.title}</p>
         {spread.name && (
-          <p className='text-sm text-gray'>Author/{spread.name}</p>
+          <p
+            className="text-sm text-gray"
+            onClick={() => navigate(`/profile/${spread.userUID}`)}
+          >
+            Author/{spread.name}
+          </p>
         )}
       </div>
     </div>

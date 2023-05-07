@@ -54,28 +54,28 @@ function TarotCard() {
   } else {
     return (
       <>
-        <div className='w-screen  mx-auto flex items-center flex-col justify-center mb-[120px] h-auto'>
-          <div className='w-screen h-[110px] mx-auto' />
+        <div className="w-screen  mx-auto flex items-center flex-col justify-center mb-[120px] h-auto">
+          <div className="w-screen h-[110px] mx-auto" />
 
           <div
-            className='w-[1200px] flex mx-auto mb-10
-       items-center flex-row justify-center text-yellow'
+            className="w-[1200px] flex mx-auto mb-10
+       items-center flex-row justify-center text-yellow"
           >
             {/* 上半部 */}
-            <div className='flex flex-row gap-5 '>
+            <div className="flex flex-row gap-5 ">
               <img
                 src={tarot.img}
                 alt={tarot.name}
-                className='w-[260px] rounded-xl opacity-85'
+                className="w-[260px] rounded-xl opacity-85"
               />
             </div>
-            <div className='flex flex-col justify-betweem h-[100%] ml-10'>
-              <p className='text-4xl text-yellow font-NT shadowYellow mt-18'>
+            <div className="flex flex-col justify-betweem h-[100%] ml-10">
+              <p className="text-4xl text-yellow font-NT shadowYellow mt-18">
                 {convertToRomanNumeral(Number(id))}
               </p>
               <h2
-                className='text-4xl text-pink font-NT 
-          shadowPink  mt-10 mb-4'
+                className="text-4xl text-pink font-NT 
+          shadowPink  mt-10 mb-4"
               >
                 {tarot.name}
               </h2>
@@ -85,12 +85,12 @@ function TarotCard() {
           {/* 下半部 */}
           <div>
             {/* 關鍵字 */}
-            <div className='flex items-center flex-col gap-4'>
+            <div className="flex items-center flex-col gap-4">
               <h3 className={subTitle}>Keywords</h3>
-              <div className='flex flex-row gap-8'>
+              <div className="flex flex-row gap-8">
                 {tarot.keywords.map((keyword) => (
                   <p
-                    className=' text-2xl text-yellow tracking-wider mt-3 font-NT shadowYellow capitalize'
+                    className=" text-2xl text-yellow tracking-wider mt-3 font-NT shadowYellow capitalize"
                     key={keyword}
                   >
                     {keyword}
@@ -100,38 +100,38 @@ function TarotCard() {
             </div>
             {/* 明亮面 */}
             <span>
-              <div className='flex flex-row items-center gap-2 mt-10'>
-                <Sun /> <p className={subTitle}>Lignt Meanings</p>
+              <div className="flex flex-row items-center gap-2 mt-10">
+                <Sun /> <p className={subTitle}>Light Meanings</p>
               </div>
-              <div className='flex flex-col gap-2 mt-2 ml-[50px]'>
+              <div className="flex flex-col gap-2 mt-2 ml-[50px]">
                 {tarot.meanings.light.map((light) => (
-                  <p className='text-gray font-poppins font-light tracking-wider'>
+                  <p className="text-gray font-poppins font-light tracking-wider">
                     {light}
                   </p>
                 ))}
               </div>
             </span>
             <span>
-              <div className='flex flex-row items-center gap-2 mt-10'>
+              <div className="flex flex-row items-center gap-2 mt-10">
                 <Moon color={"#9F8761"} width={"38px"} height={"42px"} />{" "}
                 <p className={subTitle}>Shadow Meanings</p>
               </div>
-              <div className='flex flex-col gap-2 mt-2 ml-[50px]'>
+              <div className="flex flex-col gap-2 mt-2 ml-[50px]">
                 {tarot.meanings.shadow.map((shadow) => (
-                  <p className='text-gray font-poppins font-light tracking-wider'>
+                  <p className="text-gray font-poppins font-light tracking-wider">
                     {shadow}
                   </p>
                 ))}
               </div>
             </span>
             <span>
-              <div className='flex flex-row items-center gap-2 mt-10 '>
+              <div className="flex flex-row items-center gap-2 mt-10 ">
                 <Star color={"#9F8761"} />{" "}
                 <p className={subTitle}>Question To Ask</p>
               </div>
-              <div className='flex flex-col gap-2 mt-2 ml-[50px]'>
+              <div className="flex flex-col gap-2 mt-2 ml-[50px]">
                 {tarot.Questions_to_Ask.map((ask) => (
-                  <p className='text-gray font-poppins font-light tracking-wider'>
+                  <p className="text-gray font-poppins font-light tracking-wider">
                     {ask}
                   </p>
                 ))}

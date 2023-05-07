@@ -51,6 +51,7 @@ function reducer(state, action) {
 }
 
 function Spread() {
+  const { isLogin } = useContext(AuthContext);
   const { userUID } = useContext(AuthContext);
   const [spreadData, setSpreadData] = useState<SpreadData | undefined>(
     undefined
@@ -133,7 +134,7 @@ function Spread() {
               >
                 {spreadData.title}
               </h1>
-              <p className="w-[60%] leading-7 text-sm mt-5 ">
+              <p className="w-[60%] leading-7 text-sm mt-5 whitespace-pre-wrap">
                 {spreadData.description}
               </p>
               <div className="font-NT text-yellow text-2xl mt-8 mb-5 tracking-widest shadowYellow ">
@@ -171,7 +172,12 @@ function Spread() {
           {divining === 0 && (
             <div className="flex gap-3 mb-8 ml-8 w-[280px]">
               <Button
-                action={() => dispatch({ type: "start" })}
+                action={() => {
+                  if (!isLogin) {
+                    navigate(`/signin`);
+                  }
+                  dispatch({ type: "start" });
+                }}
                 value={"Start"}
                 type={"big"}
               />

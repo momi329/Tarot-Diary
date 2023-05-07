@@ -446,7 +446,7 @@ const firebase = {
           comment: data.comment,
           time: Timestamp.fromDate(new Date()),
         });
-        //alert("成功");
+        console.log("留言成功");
       } else {
         //牌陣
         const spreadRef = doc(db, "spreads", data.spreadId);

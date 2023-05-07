@@ -10,8 +10,8 @@ import {
   onSnapshot,
   doc,
   getDoc,
-  orderBy,
   DocumentData,
+  getDocs,
 } from "firebase/firestore";
 import { db } from "../../utils/firebase";
 //components
@@ -38,6 +38,7 @@ function Profile(): JSX.Element {
   const [friendsPosts, setFriendsPosts] = useState<DocumentData[] | never[]>(
     []
   );
+  const [getNewPosts, setGetNewPosts] = useState(false);
   const navigate = useNavigate();
   const friendsPostsRef = useRef<DocumentData[] | []>([]);
   // const visitedUserRef = useRef<VisitedUser | {}>({});
@@ -96,6 +97,7 @@ function Profile(): JSX.Element {
         .reverse());
     return allDiaryAndSpread;
   }
+
   async function getAllFollowingSnapShop(user) {
     const allPerson = [...user.following, user.userUID];
     allPerson.map(async (person) => {
@@ -104,7 +106,6 @@ function Profile(): JSX.Element {
       const followingUser: any = getFollowingUser.data();
       const q = query(
         collection(db, "users", person, "diary"),
-
         where("secret", "==", false)
       );
       // friendsPostsRef.current
@@ -120,6 +121,7 @@ function Profile(): JSX.Element {
             if (newDocData.docId === undefined) {
               console.log("監聽新資料", newDocData);
               setFriendsPosts((prev) => [newDocData, ...prev]);
+              setTimeout(() => setGetNewPosts(true), 1000);
             }
           }
         });
@@ -149,10 +151,7 @@ function Profile(): JSX.Element {
     //   });
     // });
   }
-  useEffect(
-    () => console.log("friendsPosts的變化", friendsPosts),
-    [friendsPosts]
-  );
+
   useEffect(() => {
     async function getAllData() {
       if (uid) {
@@ -196,7 +195,7 @@ function Profile(): JSX.Element {
               {userUID && <Buttons setPage={setPage} page={page} />}
             </div>
             <div className=" h-[100%] w-6/12">
-              {page === 2 || page === 3 ? (
+              {isLogin && (page === 2 || page === 3) ? (
                 <Toggle page={page} setPage={setPage} />
               ) : (
                 <></>
@@ -213,6 +212,8 @@ function Profile(): JSX.Element {
                   page={page}
                   // visitedUserRef={visitedUserRef}
                   friendsPostsRef={friendsPostsRef}
+                  setGetNewPosts={setGetNewPosts}
+                  getNewPosts={getNewPosts}
                 />
               )}
               {page === 3 && (
@@ -226,6 +227,8 @@ function Profile(): JSX.Element {
                   setFriendsPosts={setFriendsPosts}
                   page={page}
                   // visitedUserRef={visitedUserRef}
+                  setGetNewPosts={setGetNewPosts}
+                  getNewPosts={getNewPosts}
                   friendsPostsRef={friendsPostsRef}
                 />
               )}

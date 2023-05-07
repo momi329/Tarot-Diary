@@ -36,7 +36,7 @@ export const SpreadPlace = ({ type, tarot, size }) => {
               <div
                 className={` rounded-xl ${
                   widthAndHeight.c
-                } cursor-default relative box-border  hover:scale-110 hover:shadow-lg hover:shadow-green/60 hover:duration-200
+                } cursor-default relative box-border  hover:scale-1 10 hover:shadow-lg hover:shadow-green/60 hover:duration-200
                flex items-center justify-center flex-col bg-slate-800 text-yellow z-0 over:z-10  bg-opacity-80
                ${widthAndHeight.scale}  ${
                   type.userUID === "all" ? "scale-110" : ""

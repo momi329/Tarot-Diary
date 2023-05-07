@@ -106,6 +106,7 @@ function MyImages({ onSave, setOnSave }) {
                       style={{ backgroundImage: `url(${photo.urls.regular})` }}
                       onClick={() => {
                         chooseImg(photo.urls.regular);
+                        setIsOpen(false);
                       }}
                     >
                       <div className="w-[100%] absolute bottom-0 p-[4px] pl-2 bg-darkPink text-white  underline-offset-1 opacity-0 hover:scale-110">

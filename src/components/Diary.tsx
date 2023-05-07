@@ -64,7 +64,7 @@ function Diary() {
   }, []);
 
   return (
-    <div className='w-[100%] rounded-xl font-NT bg-opacity-60'>
+    <div className="w-[100%] rounded-xl font-NT bg-opacity-60">
       <CalendarHeader
         selectedDate={selectedDate}
         setSelectedDate={setSelectedDate}
@@ -126,18 +126,18 @@ function CalendarHeader({
 
   return (
     <div
-      className='flex justify-between items-center 
-    p-1 bg-black rounded-sm text-yellow pt-2 rounde-t-lg '
+      className="flex justify-between items-center 
+    p-1 bg-black rounded-sm text-yellow pt-2 rounde-t-lg "
     >
       <button
-        className='cursor-pointer text-notoSansJP shadowYellow text-yellow p-2'
+        className="cursor-pointer text-notoSansJP shadowYellow text-yellow p-2"
         onClick={prevMonth}
       >
         &lt;
       </button>
-      <div className='text-lg yellowShadow'>{monthYear}</div>
+      <div className="text-lg yellowShadow">{monthYear}</div>
       <button
-        className='cursor-pointer text-notoSansJP shadowYellow text-yellow p-2'
+        className="cursor-pointer text-notoSansJP shadowYellow text-yellow p-2"
         onClick={nextMonth}
       >
         &gt;
@@ -151,13 +151,13 @@ function CalendarWeekdays() {
 
   return (
     <div
-      className=' bg-black p-2 flex 
-     text-yellow shadowYellow'
+      className=" bg-black p-2 flex 
+     text-yellow shadowYellow"
     >
       {weekdays.map((weekday) => (
         <div
           key={weekday}
-          className='w-[17%]  flex cursor-pointer pl-1  justify-center'
+          className="w-[17%]  flex cursor-auto pl-1  justify-center"
         >
           {weekday}
         </div>
@@ -201,7 +201,7 @@ function CalendarDays({
     days.push(
       <div
         key={`empty-${i}`}
-        className='w-[100%] h-[60px] flex cursor-pointer'
+        className="w-[100%] h-[60px] flex cursor-default"
       />
     );
   }
@@ -224,14 +224,13 @@ function CalendarDays({
       <>
         <div
           key={`day-${i}`}
-          className={`w-[100%] h-[60px] flex cursor-pointer pl-1 pt-1 rounded-b-lg ${
+          className={`w-[100%] h-[60px] flex  pl-1 pt-1 rounded-b-lg ${
             isToday ? "calendar__day--today" : ""
           } ${isSelected ? "" : ""}`}
           onClick={handleClick}
-          style={{ cursor: "pointer" }}
         >
           {i}
-          <div className='flex flex-wrap gap-[2px] ml-2 flex-start'>
+          <div className="flex flex-wrap gap-[2px] ml-2 flex-start">
             {diaryData.map((day, i) => {
               const daySeconds = day.time.seconds;
               if (
@@ -243,12 +242,12 @@ function CalendarDays({
                     onClick={() => clickedDiary(day, i)}
                     key={i}
                     title={day.question}
-                    className='group w-4 h-4 p-[2px] rounded-full bg-pink 
-                    bg-opacity-60 z-10 relative'
+                    className="group w-4 h-4 p-[2px] rounded-full bg-pink 
+                    bg-opacity-60 z-10 relative cursor-pointer"
                   >
                     <div
-                      className='group-hover:opacity-100 absolute text-sm top-4 left-4 p-2 text-start
-                    opacity-0  min-w-[150px] min-h-[20px] text-yellow bg-pink/60  rounded-xl tracking-widest'
+                      className="group-hover:opacity-100 absolute text-sm top-4 left-4 p-2 text-start
+                    opacity-0  min-w-[150px] min-h-[20px] text-yellow bg-pink/80  rounded-xl tracking-widest"
                     >
                       ・{day.question}
                     </div>
@@ -266,9 +265,9 @@ function CalendarDays({
 
   return (
     <div
-      className='grid grid-cols-7  gap-4 p-2 text-yellow
-     bg-black bg-opacity-40 rounded-b-sm mb-10'
-      key='days'
+      className="grid grid-cols-7  gap-4 p-2 text-yellow
+     bg-black bg-opacity-40 rounded-b-sm mb-10"
+      key="days"
     >
       {days}
     </div>

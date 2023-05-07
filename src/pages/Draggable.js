@@ -336,6 +336,7 @@ function Draggable({ edit, setEdit, spreadData, id }) {
               tracking-wider placeholder:text-gray placeholder:opacity-75  hover:bg-pink/0 duration-500  "
                 type="text"
                 name="title"
+                maxLength={30}
                 placeholder="請輸入你的標題"
                 value={onSave.title}
                 onChange={(e) => inputChange(e, "title")}
@@ -414,7 +415,7 @@ function Draggable({ edit, setEdit, spreadData, id }) {
               {item !== 0 && (
                 <div
                   style={{ background: `center/contain url(${lightCard})` }}
-                  className={` rounded-xl w-[138px] h-[220px] cursor-pointer relative box-border cursor-grab
+                  className={` rounded-xl w-[138px] h-[220px]  relative box-border cursor-grab
                   flex items-center justify-center flex-col bg-slate-800 text-yellow z-10 gap-2 bg-opacity-80`}
                   draggable={true} //TODO
                   onDragStart={(e) => {

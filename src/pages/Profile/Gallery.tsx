@@ -3,6 +3,16 @@ import { AuthContext } from "../../context/authContext";
 import { Link, useNavigate } from "react-router-dom";
 
 import firebase from "../../utils/firebase";
+import {
+  collection,
+  query,
+  where,
+  getDocs,
+  orderBy,
+  limit,
+  DocumentData,
+} from "firebase/firestore";
+import { db } from "../../utils/firebase";
 import cards from "../../tarotcard/tarot-images";
 import { AiOutlineArrowRight } from "react-icons/ai";
 
@@ -34,6 +44,8 @@ const Gallery = ({
   friendsPosts,
   setFriendsPosts,
   page,
+  setGetNewPosts,
+  getNewPosts,
 }) => {
   const postsLength = [...friendsPosts];
   const [edit, setEdit] = useState(postsLength.fill(false));
@@ -87,11 +99,38 @@ const Gallery = ({
     setTimeout(() => setLoading(false), 3000);
   }, [data]);
   //監聽
+  async function getDocID(data) {
+    console.log("來", data);
+    const newFriendsPosts = [...friendsPosts];
+    let newData: SpreadData[] = [];
+    const q = query(
+      collection(db, "users", data.user, "diary"),
+      orderBy("time", "desc"),
+      limit(1)
+    );
+    const querySnapshot = await getDocs(q);
+    console.log("querySnapshot", querySnapshot);
+    querySnapshot.forEach((doc) => {
+      console.log("有嗎！", doc.data());
+      newData.push(doc.data() as SpreadData);
+    });
+    if (newData[0]) {
+      newFriendsPosts[0].docId = newData[0].docId;
+      setData(newFriendsPosts);
+      console.log("改變完的", newFriendsPosts);
+    }
+  }
   useEffect(() => {
     if (!data) return;
+    if (!getNewPosts) return;
+    console.log("friendsPosts改變");
     const newData = [...friendsPosts];
-    setData([newData[0], ...data]);
-  }, [friendsPosts]);
+    // if (newData[0].docId === undefined) {
+    // console.log("docId === undefined");
+    getDocID(newData[0]);
+    // }
+    //setData([newData[0], ...data]);
+  }, [friendsPosts, getNewPosts]);
   const handleSave = async (index) => {
     if (!data) return;
     await firebase.updateDiary(userUID, data[index].docId, newEdit);
@@ -160,7 +199,7 @@ const Gallery = ({
     }
   };
 
-  if (!data || data.length === 0)
+  if (!data)
     return (
       <div className="flex gap-4 flex-col  w-[100%] animate-pulse">
         <div className="bg-yellow-100 px-6 py-5 relative  bg-pink bg-opacity-30 h-[400px]">
@@ -189,8 +228,66 @@ const Gallery = ({
 
   if (userUID === uid) {
     if (friendsPosts.length === 0 || userDiary.length === 0) {
-      console.log("!");
-      return <p className="text-xl text-yellow font-NT "> No Diary Yet !</p>;
+      return (
+        <>
+          <p className="text-5xl text-yellow font-NT shadowYellow mt-2">
+            No Diary Yet {" : ("}
+          </p>
+          <div className="text-xl text-yellow font-NT shadowYellow mt-9 flex flex-col gap-3 tracking-widest">
+            {" "}
+            Maybe You Can Try this:
+            <div className="w-[127px]">
+              <UnderlineButton
+                value={"Daily Tarot"}
+                type={"memberPage"}
+                action={() => {
+                  navigate("/spread/common-1");
+                }}
+              />
+            </div>
+            <div className="w-[227px]">
+              <UnderlineButton
+                value={"Three Card Spread"}
+                type={"memberPage"}
+                action={() => {
+                  navigate("/spread/common-3");
+                }}
+              />
+            </div>
+            <div className="w-[150px]">
+              <UnderlineButton
+                value={"Yes/No Tarot"}
+                type={"memberPage"}
+                action={() => {
+                  navigate("/spread/common-2");
+                }}
+              />
+            </div>
+            <div className="flex flex-row gap-2 items-end mt-2">
+              {" "}
+              or{" "}
+              <UnderlineButton
+                value={"More..."}
+                type={"memberPage"}
+                action={() => navigate("/divination")}
+              />
+            </div>
+            <div className="flex flex-row gap-2 items-end">
+              {" "}
+              or{" "}
+              <UnderlineButton
+                value={"Design By Yourself..."}
+                type={"memberPage"}
+                action={() => navigate("/divination")}
+              />
+            </div>
+            <div className="flex flex-row gap-2 items-end">
+              {" "}
+              or Search Your Friends!
+            </div>
+          </div>
+        </>
+      );
     }
   } else {
     if (
@@ -199,7 +296,11 @@ const Gallery = ({
       visitedUser.diary.length === 0
     ) {
       console.log("!!");
-      return <p className="text-xl text-yellow font-NT "> No Diary Yet !</p>;
+      return (
+        <p className="text-5xl text-yellow font-NT shadowYellow mt-2">
+          No Diary Yet {" : ("}
+        </p>
+      );
     }
   }
 
@@ -511,9 +612,11 @@ const Gallery = ({
         ))}
         <div className="w-full flex items-center justify-center mt-7 mb-10">
           {loading ? (
-            <Loading text={""} />
+            <div className="mx-auto">
+              <Loading text={""} />
+            </div>
           ) : ifMore ? (
-            <div className="w-[250px]">
+            <div className="w-[250px] mx-auto">
               <Button
                 type={"big"}
                 value={"See More"}
