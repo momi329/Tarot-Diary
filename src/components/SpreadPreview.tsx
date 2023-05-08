@@ -11,7 +11,7 @@ function SpreadPreview({ spread, index, type }: SpreadPreviewProps) {
   }
   if (type === "index") {
     style = {
-      a: `w-[350px] h-0 pt-[32%] inline-block shrink-0 relative mb-[50px]`,
+      a: `w-[350px] h-0 pt-[32%] inline-block shrink-0 relative mb-[50px] `,
       b: "top-8 left-5",
     };
   }
@@ -19,8 +19,8 @@ function SpreadPreview({ spread, index, type }: SpreadPreviewProps) {
   return (
     <div
       id="spread"
-      className={`${style.a} bg-cover duration-200 cursor-pointer z-0 ${
-        type === "personal" ? "hover:scale-110 hover:z-10 bg-black/10" : ""
+      className={`${style.a} bg-cover duration-200  z-0 ${
+        type === "personal" ? "hover:scale-110 hover:z-10 " : ""
       } `}
       key={index}
       onClick={() => navigate(`/spread/${spread.spreadId}`)}
@@ -29,7 +29,7 @@ function SpreadPreview({ spread, index, type }: SpreadPreviewProps) {
         <img
           src={spread.image}
           alt={spread.title}
-          className="opacity-90 absolute top-0 object-cover left-0 w-[100%] h-[100%]"
+          className="opacity-90 absolute top-0 object-cover left-0 w-[100%] h-[100%] cursor-pointer"
         />
       )}
       <p
@@ -38,14 +38,14 @@ function SpreadPreview({ spread, index, type }: SpreadPreviewProps) {
         PICK A CARD
       </p>
       <div
-        className="min-h-[25%] w-[100%]  bg-darkPink bg-opacity-40
+        className="min-h-[25%] w-[100%]  bg-darkPink bg-opacity-40 cursor-pointer 
 p-3 pl-4 absolute bottom-0 tracking-widest font-NT text-base text-yellow"
       >
         {" "}
-        <p>{spread.title}</p>
+        <p className="cursor-pointer">{spread.title}</p>
         {spread.name && (
           <p
-            className="text-sm text-gray"
+            className="text-sm text-gray cursor-pointer "
             onClick={() => navigate(`/profile/${spread.userUID}`)}
           >
             Author/{spread.name}

@@ -48,7 +48,7 @@ function MyImages({ onSave, setOnSave }) {
   return (
     <>
       <div
-        className="w-[100%] h-[316px] bg-backdrop-blur-sm bg-white/20 z-40
+        className="w-[100%] h-[316px] bg-backdrop-blur-sm bg-white/20 z-10
          border-[1px] border-yellow relative bg-cover bg-center  "
         style={{ backgroundImage: `url(${onSave.image})` }}
       >

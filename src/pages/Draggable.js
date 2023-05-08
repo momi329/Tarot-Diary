@@ -299,9 +299,8 @@ function Draggable({ edit, setEdit, spreadData, id }) {
           return curr !== 0 ? acc + 1 : acc;
         }, 0) === 0
       ? "!至少需要一張卡片"
-      : checkUniqueOrder(onSave.spread.filter((item) => item !== 0))
-      ? ""
-      : "!抽排順序不能重複";
+      : !checkUniqueOrder(onSave.spread.filter((item) => item !== 0)) &&
+        "!抽排順序不能重複";
   };
   const validation = () => {
     return (
@@ -380,9 +379,11 @@ function Draggable({ edit, setEdit, spreadData, id }) {
           <div className="group relative">
             <div
               className={`${
-                validationWarn() === "" ? "group-hover:opacity-0 bg-none" : ""
+                validationWarn() === false
+                  ? "group-hover:opacity-0 bg-none"
+                  : "group-hover:opacity-100"
               }
-              group-hover:opacity-100 duration-200 opacity-0 bg-pink/30 text-yellow text-sm p-1 
+               duration-200 opacity-0 bg-pink/30 text-yellow text-sm p-1 
          font-notoSansJP text-center rounded-lg m-1 tracking-widest absolute top-[-35px] left-9 z-1 `}
             >
               {validationWarn()}

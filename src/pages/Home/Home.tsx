@@ -279,11 +279,11 @@ function Home() {
               </p>
               <p
                 className={`leading-loose ml-20 text-yellow font-notoSansJP
-              text-lg tracking-wider  mt-10  text-end ${
-                animated[1]
-                  ? "opacity-0 animate-[slideUp_1s_forwards_800ms]"
-                  : ""
-              }`}
+                text-base  tracking-wider  mt-10  text-end ${
+                  animated[1]
+                    ? "opacity-0 animate-[slideUp_1s_forwards_800ms]"
+                    : ""
+                }`}
               >
                 一般的牌陣是不是無法滿足你呢？<br></br>
                 客製化的設計讓你可以隨時問自己想問的<br></br> 更能客製化需求喔！
@@ -338,8 +338,8 @@ function Home() {
                 Divine & Diary
               </p>
               <p
-                className={`leading-loose  text-yellow font-notoSansJP text-start
-              text-lg tracking-wider  mt-10 ${
+                className={`leading-loose  text-yellow font-notoSansJP text-start text-base 
+              tracking-wider  mt-10 ${
                 animated[2]
                   ? "opacity-0 animate-[slideUp_1s_forwards_2000ms]"
                   : ""

@@ -427,7 +427,7 @@ const Gallery = ({
             )}
             {item.question ? (
               <>
-                <h1 className="ml-4 mt-4 mb-4 h-4 pb-10 font-notoSansJP text-base text-yellow font-normal tracking-widest">
+                <h1 className="ml-4 mt-4 mb-4 h-4 pb-10 font-notoSansJP cursor-default  text-base text-yellow font-normal tracking-widest">
                   {item.question === "" ? "" : item.question}
                 </h1>
 
