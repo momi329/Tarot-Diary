@@ -92,6 +92,12 @@ body {
 ::-webkit-scrollbar {
   display: none;
 }
+p {
+  cursor: default;
+}
+span {
+  cursor: default;
+}
 .shadowself {
   text-shadow: 0px 0px 8px black;
 }
@@ -124,8 +130,6 @@ input {
   outline: none;
 }
 .ql-toolbar {
- 
- 
   background: white;
 }
 /* 

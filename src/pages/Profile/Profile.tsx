@@ -100,6 +100,7 @@ function Profile(): JSX.Element {
 
   async function getAllFollowingSnapShop(user) {
     const allPerson = [...user.following, user.userUID];
+    const data = [];
     allPerson.map(async (person) => {
       const docRef = doc(db, "users", person);
       const getFollowingUser = await getDoc(docRef);
@@ -109,6 +110,7 @@ function Profile(): JSX.Element {
         where("secret", "==", false)
       );
       // friendsPostsRef.current
+
       onSnapshot(q, (querySnapshot) => {
         querySnapshot.docChanges().forEach((change) => {
           if (change.type === "added") {
@@ -118,6 +120,8 @@ function Profile(): JSX.Element {
               userImg: followingUser.image,
               userName: followingUser.name,
             };
+            // data.push(newDocData);
+
             if (newDocData.docId === undefined) {
               console.log("監聽新資料", newDocData);
               setFriendsPosts((prev) => [newDocData, ...prev]);
@@ -126,6 +130,12 @@ function Profile(): JSX.Element {
           }
         });
       });
+      // data
+      //   .sort(function (a, b) {
+      //     return a.time.seconds - b.time.seconds;
+      //   })
+      //   .reverse();
+      // console.log("排序", data);
     });
     // allPerson.map(async (person) => {
     //   const docRef = doc(db, "users", person);
@@ -171,10 +181,10 @@ function Profile(): JSX.Element {
           const visited = await getOtherUserDiaryAndSpread(uid);
           console.log("visited", visited);
           setVisitedUser(visited);
-          // visitedUserRef.current = visited;
         }
       }
     }
+    console.log("isLogin, uid, user, page, userUID改變");
     getAllData();
   }, [isLogin, uid, user, page, userUID]);
   if (!user || !visitedUser) {

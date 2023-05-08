@@ -106,7 +106,7 @@ const AskGPT = ({
         >
           <Star color={"#F4E4C3"} />
           {loading ? (
-            <Loading text={"Asking AI "} />
+            <Loading text={"Asking AI"} />
           ) : (
             <div>
               <p className="shadowPink"> Ask AI Get Your Tarot Reading!</p>

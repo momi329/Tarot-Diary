@@ -35,18 +35,18 @@ function Header() {
           ]}
         />
       )}
-      <div className='h-[70px] w-screen flex flex-row items-center  justify-between fixed z-10'>
-        <div className='h-[70px] w-screen fixed top-0 right-0 bg-black opacity-20 tracking-widest'></div>
+      <div className="h-[70px] w-screen flex flex-row items-center  justify-between fixed z-20">
+        <div className="h-[70px] w-screen fixed top-0 right-0 bg-black opacity-20 tracking-widest"></div>
         <div
-          className='w-[105px] h-[60px] text-yellow text-2xl font-NT text-center 
-      tracking-wider z-10 ml-16 '
+          className="w-[105px] h-[60px] text-yellow text-2xl font-NT text-center 
+      tracking-wider z-10 ml-16 cursor-pointer"
         >
           <Link to={"/"}>
-            <p className='shadowYellow'>TAROT</p>
-            <p className=' shadowYellow'>DIARY</p>
+            <p className="shadowYellow cursor-pointer">TAROT</p>
+            <p className=" shadowYellow cursor-pointer">DIARY</p>
           </Link>
         </div>
-        <div className='flex flex-row gap-16 text-lg tracking-widest font-NT text-center text-yellow z-10 mr-16 '>
+        <div className="flex flex-row gap-16 text-lg tracking-widest font-NT text-center text-yellow z-10 mr-16 ">
           {headerItems(isLogin, userUID).map((item, index) => {
             return (
               <Link to={item.link} key={index}>

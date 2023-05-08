@@ -19,8 +19,8 @@ function SpreadPreview({ spread, index, type }: SpreadPreviewProps) {
   return (
     <div
       id="spread"
-      className={`${style.a} bg-cover duration-200 cursor-pointer ${
-        type === "personal" ? "hover:scale-110 z-10" : ""
+      className={`${style.a} bg-cover duration-200 cursor-pointer z-0 ${
+        type === "personal" ? "hover:scale-110 hover:z-10 bg-black/10" : ""
       } `}
       key={index}
       onClick={() => navigate(`/spread/${spread.spreadId}`)}

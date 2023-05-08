@@ -33,7 +33,7 @@ function Friends({ openFriends, friends, setOpenFriends }) {
   return (
     <>
       <div
-        className="w-screen h-screen bg-pink/20 backdrop-blur-sm fixed top-0 left-0 z-[9]"
+        className="w-screen h-screen bg-pink/20 backdrop-blur-sm fixed top-0 left-0 z-10"
         onClick={() => {
           setOpenFriends({ following: false, followers: false });
         }}

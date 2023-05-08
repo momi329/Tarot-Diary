@@ -32,25 +32,23 @@ function Home() {
   const scrollRef2 = useRef<HTMLDivElement | null>(null);
   const scrollRef3 = useRef<HTMLDivElement | null>(null);
   const scrollRef4 = useRef<HTMLDivElement | null>(null);
-
   const scrollRef5 = useRef<HTMLDivElement | null>(null);
-
-  // function isElementInViewport(el) {
-  //   const rect = el.getBoundingClientRect();
-  //   return (
-  //     rect.top >= 0 &&
-  //     rect.bottom <=
-  //       (window.innerHeight || document.documentElement.clientHeight)
-  //   );
-  // }
 
   useEffect(() => {
     function handleScroll() {
-      if (!scrollRef1.current || !scrollRef2.current || !scrollRef3.current)
+      if (
+        !scrollRef1.current ||
+        !scrollRef2.current ||
+        !scrollRef3.current ||
+        !scrollRef4.current ||
+        !scrollRef5.current
+      )
         return;
       const inToView1 = scrollRef1.current.getBoundingClientRect();
       const inToView2 = scrollRef2.current.getBoundingClientRect();
       const inToView3 = scrollRef3.current.getBoundingClientRect();
+      const inToView4 = scrollRef4.current.getBoundingClientRect();
+      const inToView5 = scrollRef5.current.getBoundingClientRect();
 
       const windowHeight = window.innerHeight;
       if (
@@ -69,9 +67,25 @@ function Home() {
         const newAnimated = [...animated];
         newAnimated[1] = true;
         setAnimated(newAnimated);
-      } else if (scrollRef3.current && inToView3.top < windowHeight) {
+      } else if (
+        scrollRef3.current &&
+        inToView3.top < windowHeight &&
+        inToView4.top > windowHeight
+      ) {
         const newAnimated = [...animated];
         newAnimated[2] = true;
+        setAnimated(newAnimated);
+      } else if (
+        scrollRef4.current &&
+        inToView4.top < windowHeight &&
+        inToView5.top > windowHeight
+      ) {
+        const newAnimated = [...animated];
+        newAnimated[3] = true;
+        setAnimated(newAnimated);
+      } else if (scrollRef5.current && inToView5.top < windowHeight) {
+        const newAnimated = [...animated];
+        newAnimated[4] = true;
         setAnimated(newAnimated);
       }
     }
@@ -111,95 +125,98 @@ function Home() {
   return (
     <>
       {openSignIn && (
-        <div className='w-screen h-screen fixed z-50'>
+        <div className="w-screen h-screen fixed z-50">
           <div
             className={`w-0 opacity-0 h-screen fixed transition bg-black/90 duration-700 ease-in-out ${
               openSignIn ? "w-screen opacity-100" : ""
             }`}
           />
           <div
-            className='relative left-[95%] top-[5%] cursor-pointer'
+            className="relative left-[95%] top-[5%] cursor-pointer"
             onClick={() => setOpenSignIn(false)}
           >
-            <div className='absolute top-0 w-10 h-[1px] bg-white rotate-[-45deg]' />
-            <div className='absolute top-0 w-10 h-[1px] bg-white rotate-[45deg]' />
+            <div className="absolute top-0 w-10 h-[1px] bg-white rotate-[-45deg]" />
+            <div className="absolute top-0 w-10 h-[1px] bg-white rotate-[45deg]" />
           </div>
-          <div className='w-full mx-auto mt-20 fixed z-[51]'>
+          <div className="w-full mx-auto mt-20 fixed z-[51]">
             <Member />
           </div>
         </div>
       )}
       <div>
+        {/* part1 */}
         <div
-          className='h-[880px] overflow-hidden bg-black  
-       w-screen  relative bg-clip-content  flex justify-center items-center'
+          className="h-[880px] overflow-hidden bg-black  cursor-auto
+       w-screen  relative bg-clip-content  flex justify-center items-center"
         >
           <img
             src={pinkFlower1}
-            alt='pinkflower1'
-            className='opacity-60  rounded-3xl transform  w-[900px] absolute left-[-30px] 
-          top-[-150px] z-[2] rotate-[10deg] blur-sm hover:blur-none transition duration-700 ease-in-out upanddown'
+            alt="pinkflower1"
+            className="opacity-60  rounded-3xl transform  w-[900px] absolute left-[-30px] 
+          top-[-150px] z-[2] rotate-[10deg] blur-sm hover:blur-none transition duration-700 ease-in-out upanddown"
           />
           <img
             src={pinkFlower1}
-            alt='pinkflower1'
-            className='opacity-60  rounded-3xl transform  w-[750px] absolute right-[-30px] 
-          top-[100px] z-[2] rotate-[-40deg] blur-sm hover:blur-none transition duration-700 ease-in-out tracking-[0.02em] downThenUp'
+            alt="pinkflower1"
+            className="opacity-60  rounded-3xl transform  w-[750px] absolute right-[-30px] 
+          top-[100px] z-[2] rotate-[-40deg] blur-sm hover:blur-none transition duration-700 ease-in-out tracking-[0.02em] downThenUp"
           />
           <p
-            className='capitalize font-sygma text-9xl text-white z-[3]  text-start
-           leading-normal mb-14  opacity-90'
+            className="capitalize font-sygma text-9xl text-white z-[3]  text-start
+           leading-normal mb-14  opacity-90"
           >
-            <p className=' animate-[slideIn_2s_forwards_500ms] opacity-0'>
+            <p className=" animate-[slideIn_2s_forwards_500ms] opacity-0">
               PICK YOUR CARD
             </p>
 
-            <div className='flex flex-row gap-4 items-center shadowWhite animate-[slideIn_2s_forwards_1200ms] opacity-0'>
+            <div className="flex flex-row gap-4 items-center shadowWhite animate-[slideIn_2s_forwards_1200ms] opacity-0">
               TAROT&LIFE
-              <div className='h-[1px] w-1/3 flex-grow bg-white mb-[10px] opacity-80'></div>
+              <div className="h-[1px] w-1/3 flex-grow bg-white mb-[10px] opacity-80"></div>
             </div>
-            <div className='flex flex-row gap-4 items-center shadowWhite'>
-              <span className='animate-[slideIn_1s_forwards_1500ms] opacity-0'>
+            <div className="flex flex-row gap-4 items-center shadowWhite">
+              <span className="animate-[slideIn_1s_forwards_1500ms] opacity-0">
                 TAROT
               </span>
-              <div className='h-[1px] w-[20px] flex-grow bg-white mb-[10px] animate-[slideIn_1s_forwards_1500ms] opacity-0'></div>
-              <span className='text-end ml-auto animate-[slideIn_1s_forwards_1500ms] opacity-0'>
+              <div className="h-[1px] w-[20px] flex-grow bg-white mb-[10px] animate-[slideIn_1s_forwards_1500ms] opacity-0"></div>
+              <span className="text-end ml-auto animate-[slideIn_1s_forwards_1500ms] opacity-0">
                 DIARY
               </span>
             </div>
             {showFourthParagraph && (
               <p
-                className='absolute text-pink font-maintelas text-[180px] top-[28%] right-[18%] 
-              rotate-[-15deg] font-thin animate-fadeInAnimate '
+                className="absolute text-pink font-maintelas text-[180px] top-[28%] right-[18%] 
+              rotate-[-15deg] font-thin animate-fadeInAnimate "
               >
                 Life
               </p>
             )}
           </p>
           <div
-            className='w-28 h-28 rounded-full  border-[1px] border-white bottom-[70px] left-[100px] absolute cursor-pointer
-        font-NT shadowWhite text-xl text-white leading-[112px] text-center opacity-90 z-[2] animate-pulse animate-fadeInAnimate opacity-0'
+            className="w-28 h-28 rounded-full  border-[1px] border-white bottom-[70px] left-[100px] absolute cursor-pointer
+        font-NT shadowWhite text-xl text-white leading-[112px] text-center opacity-90 z-[2] animate-pulse animate-fadeInAnimate opacity-0"
             onClick={scroll}
           >
             Scroll
           </div>
           <p
-            className='underline underline-offset-2 text-2xl tracking-widest flex flex-row gap-1 cursor-pointer
-           text-white z-[2] bottom-[100px] right-[100px] absolute font-NT shadowWhite'
+            className="underline underline-offset-2 text-2xl tracking-widest flex flex-row gap-1 cursor-pointer
+           text-white z-[2] bottom-[100px] right-[100px] absolute font-NT shadowWhite"
             onClick={() => (isLogin ? "" : setOpenSignIn(true))}
           >
             Log In To Start{" "}
-            <MdKeyboardArrowRight className='underline underline-offset-2 mt-1' />
+            <MdKeyboardArrowRight className="underline underline-offset-2 mt-1" />
           </p>
         </div>
       </div>
       {/* part2 */}
-      <div className=' w-screen  relative bg-clip-content  flex justify-center items-center'>
-        <div className='min-h-[2050px] w-[70%] mt-36'>
+      <div className=" w-screen  relative bg-clip-content  flex justify-center items-center">
+        <div className="min-h-[2050px] w-[70%] mt-36">
           <div ref={scrollRef1}>
             <div
               className={`text-yellow font-NT text-4xl tracker-wider flex flex-row shadowYellow items-center gap-2 ${
-                animated ? "opacity-0 animate-[slideUp_1s_forwards_700ms]" : ""
+                animated[0]
+                  ? "opacity-0 animate-[slideUp_1s_forwards_300ms]"
+                  : ""
               } `}
             >
               <Moon color={"#E18EA5"} width={"56px"} height={"62px"} />
@@ -210,7 +227,7 @@ function Home() {
                 className={`ml-20 text-pink text-2xl tracking-widest font-normal mt-20 
               ${
                 animated[0]
-                  ? "opacity-0 animate-[slideUp_1s_forwards_1200ms]"
+                  ? "opacity-0 animate-[slideUp_1s_forwards_600ms]"
                   : ""
               }`}
               >
@@ -220,7 +237,7 @@ function Home() {
                 className={`ml-20 text-5xl  text-pink tracking-widest mt-2 font-normal leading-normal
               ${
                 animated[0]
-                  ? "opacity-0 animate-[slideUp_1s_forwards_1700ms]"
+                  ? "opacity-0 animate-[slideUp_1s_forwards_900ms]"
                   : ""
               }`}
               >
@@ -230,7 +247,7 @@ function Home() {
                 className={`leading-loose ml-20 text-yellow font-notoSansJP text-base tracking-wider  mt-16 w-[60%] 
               ${
                 animated[0]
-                  ? "opacity-0 animate-[slideUp_1s_forwards_2000ms]"
+                  ? "opacity-0 animate-[slideUp_1s_forwards_1300ms]"
                   : ""
               }`}
               >
@@ -244,116 +261,134 @@ function Home() {
               </p>
             </div>
           </div>
-          <div className='flex items-end flex-col relative' ref={scrollRef2}>
-            <p
-              className={`ml-20 text-4xl mt-[200px] text-pink tracking-widest mt-2 font-normal leading-normal text-start
-             ${
-               animated ? "opacity-0 animate-[slideUp_1s_forwards_1000ms]" : ""
-             }`}
-            >
-              享受占卜X自由設計
-            </p>
 
-            <video
-              width='50%'
-              loop
-              playsInline
-              autoPlay
-              muted
-              className={`hover:scale-110 absolute left-0 top-[200px] ${
+          <div
+            className="flex items-end flex-row relative mt-[200px] gap-[8%]"
+            ref={scrollRef2}
+          >
+            <div className="flex flex-col w-[40%] mr-10">
+              <p
+                className={`ml- 20 text-6xl  text-pink tracking-widest mt-2 font-normal leading-normal text-end font-NT shadowPink
+              ${
                 animated[1]
-                  ? "opacity-0 animate-[slideUp_1s_forwards_1500ms]"
+                  ? "opacity-0 animate-[slideUp_1s_forwards_400ms]"
                   : ""
               }`}
-            >
-              <source src={DesignVideo} type='video/mp4' />
-            </video>
-            <p
-              className={`leading-loose ml-20 text-yellow font-notoSansJP
-             text-lg tracking-wider  mt-20 w-[60%] text-end ${
-               animated[1]
-                 ? "opacity-0 animate-[slideUp_1s_forwards_2000ms]"
-                 : ""
-             }`}
-            >
-              一般的牌陣是不是無法滿足你呢？<br></br>
-              客製化的設計讓你可以隨時問自己想問的<br></br> 更能客製化需求喔！
-            </p>
-            <video
-              width='50%'
-              loop
-              playsInline
-              autoPlay
-              muted
-              className={`hover:scale-110 absolute right-0 top-[850px]  ${
+              >
+                Enjoy & Design
+              </p>
+              <p
+                className={`leading-loose ml-20 text-yellow font-notoSansJP
+              text-lg tracking-wider  mt-10  text-end ${
                 animated[1]
-                  ? "opacity-0 animate-[slideUp_1s_forwards_2500ms]"
+                  ? "opacity-0 animate-[slideUp_1s_forwards_800ms]"
                   : ""
               }`}
-            >
-              <source src={DivineVideo} type='video/mp4' />
-            </video>
-            <p
-              className={`left-0 text-4xl absolute top-[850px] text-pink tracking-widest  font-normal leading-normal text-start
-             ${
-               animated[1]
-                 ? "opacity-0 animate-[slideUp_1s_forwards_3000ms]"
-                 : ""
-             }`}
-            >
-              隨時隨地X占卜紀錄
-            </p>
-            <p
-              className={` leading-loose absolute left-0 top-[950px] text-yellow 
-            ont-notoSansJP text-lg tracking-wider  mt-5 w-[60%] text-start ${
-              animated[1]
-                ? "opacity-0 animate-[slideUp_1s_forwards_3500ms]"
-                : ""
-            }`}
-            >
-              隨時遇到狀況都可以問問題占卜<br></br> 占卜結果詢問AI不怕看不懂！
-            </p>
+              >
+                一般的牌陣是不是無法滿足你呢？<br></br>
+                客製化的設計讓你可以隨時問自己想問的<br></br> 更能客製化需求喔！
+              </p>
+            </div>
+            <div className="w-[45%]">
+              <video
+                width="100%"
+                loop
+                playsInline
+                autoPlay
+                muted
+                className={` hover:scale-110  ${
+                  animated[1]
+                    ? "opacity-0 animate-[slideUp_1s_forwards_1100ms]"
+                    : ""
+                }`}
+              >
+                <source src={DesignVideo} type="video/mp4" />
+              </video>
+            </div>
+          </div>
+          <div
+            className="flex items-end flex-row relative mt-[200px] gap-[8%]"
+            ref={scrollRef3}
+          >
+            <div className="flex flex-col w-[45%] mr-10">
+              <video
+                width="100%"
+                loop
+                playsInline
+                autoPlay
+                muted
+                className={` hover:scale-110  ${
+                  animated[2]
+                    ? "opacity-0 animate-[slideUp_1s_forwards_1500ms]"
+                    : ""
+                }`}
+              >
+                <source src={DivineVideo} type="video/mp4" />
+              </video>
+            </div>
+            <div className="w-[40%]">
+              <p
+                className={`ml- 20 text-6xl  text-pink tracking-widest mt-2 font-normal leading-normal text-start font-NT shadowPink
+              ${
+                animated[2]
+                  ? "opacity-0 animate-[slideUp_1s_forwards_1000ms]"
+                  : ""
+              }`}
+              >
+                Divine & Diary
+              </p>
+              <p
+                className={`leading-loose  text-yellow font-notoSansJP text-start
+              text-lg tracking-wider  mt-10 ${
+                animated[2]
+                  ? "opacity-0 animate-[slideUp_1s_forwards_2000ms]"
+                  : ""
+              }`}
+              >
+                隨時遇到狀況都可以問問題占卜<br></br> 占卜結果詢問AI不怕看不懂！
+              </p>
+            </div>
           </div>
         </div>
       </div>
       {/* 圓 */}
       <div
-        ref={scrollRef3}
-        className='relative min-h-[1000px] flex flex-col w-screen justify-center items-center overflow-hidden'
+        ref={scrollRef4}
+        className="relative min-h-[1000px] flex flex-col w-screen justify-center items-center overflow-hidden"
       >
         <div
-          className='w-[2300px] h-[2300px] rounded-t-full  bg-black absolute  top-[0px]
-          bg-clip-content  flex justify-center items-center  overflow-hidden'
+          className="w-[2300px] h-[2300px] rounded-t-full  bg-black absolute  top-0
+          bg-clip-content  flex justify-center items-center  overflow-hidden"
         >
           <img
             src={pinkFlower1}
-            alt='pinkflower1'
-            className='opacity-60  rounded-3xl transform  w-[900px] absolute right-[300px] 
-          top-[-100px] z-[2] rotate-[-10deg] blur-sm hover:blur-none downThenUp transition duration-700 ease-in-out'
+            alt="pinkflower1"
+            className="opacity-60  rounded-3xl transform  w-[900px] absolute right-[300px] 
+          top-[-100px] z-[2] rotate-[-10deg] blur-sm hover:blur-none downThenUp transition duration-700 ease-in-out"
           />
         </div>
         <p
           className={`font-sygma text-[120px] text-white shadowWhite z-[2] text-center 
         leading-snug tracking-wider mt-36 ${
-          animated[2] ? "opacity-0 animate-[slideUp_1s_forwards_800ms]" : ""
+          animated[3] ? "opacity-0 animate-[slideUp_1s_forwards_800ms]" : ""
         }`}
         >
           PICK YOUR <br></br> DAILY <br></br> TAROT
         </p>
         <p
           className={`font-notoSansJP tracking-widest text-2xl text-pink z-[2] mb-24 ${
-            animated[2] ? "opacity-0 animate-[slideUp_1s_forwards_1200ms]" : ""
+            animated[3] ? "opacity-0 animate-[slideUp_1s_forwards_1200ms]" : ""
           }`}
         >
           靜心冥想，選擇一張牌...
         </p>
         <div
           className={`z-[3] w-100% flex flex-col justify-center items-center ${
-            animated[2] ? "opacity-0 animate-[slideUp_1s_forwards_1400ms]" : ""
+            animated[3] ? "opacity-0 animate-[slideUp_1s_forwards_1400ms]" : ""
           }`}
         >
           <SelectCardHomePage number={1} />
-          <div className='w-[250px]'>
+          <div className="w-[250px]">
             <Button
               type={"big"}
               action={async () => {
@@ -391,28 +426,34 @@ function Home() {
           </div>
         </div>
       </div>
-      <div className='w-screen h-[300px] z-[1] relative'>
+      <div className="w-screen h-[300px] z-[1] relative">
         <div
-          className='blur-lg  w-screen h-80 bg-gradient-to-b
-          from-black to-green absolute top-[-160px] z-1'
+          className="blur-lg  w-screen h-80 bg-gradient-to-b
+          from-black to-green absolute top-[-160px] z-1"
         ></div>
       </div>
       {/* 牌陣 */}
 
-      <div className='w-screen h-6 z-[2] relative'>
-        <div className='min-h-[80px] w-[80%] left-[20%]  top-[-50px] absolute'>
+      <div className="w-screen h-6 z-[2] relative" ref={scrollRef5}>
+        <div className="min-h-[80px] w-[80%] left-[20%]  top-[-50px] absolute">
           <div
-            className='text-yellow z-[4] font-NT 
-          text-4xl tracker-wider flex flex-row shadowYellow items-center gap-2'
+            className={`text-yellow z-[4] font-NT  ${
+              animated[4] ? "opacity-0 animate-[slideUp_1s_forwards_300ms]" : ""
+            }
+          text-4xl tracker-wider flex flex-row shadowYellow items-center gap-2`}
           >
             <Star color={"#E18EA5"} />
             <p>TAROT SPREADS</p>
           </div>
         </div>
       </div>
-      <div className='w-screen h-[600px] z-[2] mt-16 relative flex  justify-end'>
+      <div
+        className={`w-screen h-[600px] z-[2] mt-16 relative flex  justify-end ${
+          animated[5] ? "opacity-0 animate-[slideUp_1s_forwards_900ms]" : ""
+        }`}
+      >
         <div
-          className='w-[80%]  mb-24 overflow-x-auto flex flex-row gap-16 '
+          className="w-[80%]  mb-24 overflow-x-auto flex flex-row gap-16 "
           onWheel={wheelHandler}
         >
           {spreads &&
@@ -421,8 +462,8 @@ function Home() {
             ))}
         </div>
         <div
-          className='w-28 h-28 rounded-full  border-[1px] border-white bottom-[100px] left-[100px] absolute cursor-pointer
-        font-NT shadowWhite text-xl text-white leading-[112px] text-center opacity-90 z-[2] animate-pulse animate-fadeInAnimate opacity-0'
+          className="w-28 h-28 rounded-full  border-[1px] border-white bottom-[100px] left-[100px] absolute cursor-pointer
+        font-NT shadowWhite text-xl text-white leading-[112px] text-center opacity-90 z-[2] animate-pulse animate-fadeInAnimate opacity-0"
           onClick={() => navigate("/divination")}
         >
           More

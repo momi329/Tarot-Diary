@@ -164,7 +164,7 @@ const ProfileHeader = ({
                 });
               }}
             >
-              <h3 className="text-3xl font-NT text-yellow">
+              <h3 className="text-3xl font-NT text-yellow cursor-pointer">
                 {data.following && data.following.length}
               </h3>
               <p className="text-lg font-NT text-gold uppercase shadowGold tracking-wider cursor-pointer tracking-wider">
