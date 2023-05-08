@@ -59,21 +59,26 @@ function Draggable({ edit, setEdit, spreadData, id }) {
   });
   const { userUID } = useContext(AuthContext);
   const navigate = useNavigate();
+  //可以拿onSave換算 todo
   const [cardNumber, setCardNumber] = useState(() =>
     onSave.spread.reduce((acc, curr) => {
       return curr !== 0 ? acc + 1 : acc;
     }, 0)
   );
+
+  //整合這三個state todo
   const [pastIndex, setPastIndex] = useState(null);
   const [target, setTarget] = useState(0);
   const [shine, setShine] = useState(
     new Array(onSave.spread.length).fill(false)
   );
-  const [saved, setSaved] = useState(false);
+  // const [saved, setSaved] = useState(false);
 
   useEffect(() => {
+    //todo 記得刪掉
     const userUID = localStorage.getItem("userUID");
     if (edit) {
+      //todo 可以在onsave裡判斷即可
       setOnSave(spreadData);
       return;
     }
@@ -81,6 +86,7 @@ function Draggable({ edit, setEdit, spreadData, id }) {
       const spreadId = uuidv4();
       setOnSave({ ...onSave, userUID: userUID, spreadId: spreadId });
     } else {
+      //改成無訪問權限
       alert("請先登入");
     }
   }, []);
@@ -288,32 +294,52 @@ function Draggable({ edit, setEdit, spreadData, id }) {
     }
     return true; // 所有的 order 都是唯一的
   }
+
   const validationWarn = () => {
-    return onSave.title === ""
-      ? "!請填寫標題"
-      : onSave.description === ""
-      ? "!請填寫說明"
-      : onSave.image === ""
-      ? "!請選擇主要圖片"
-      : onSave.spread.reduce((acc, curr) => {
-          return curr !== 0 ? acc + 1 : acc;
-        }, 0) === 0
-      ? "!至少需要一張卡片"
-      : checkUniqueOrder(onSave.spread.filter((item) => item !== 0))
-      ? ""
-      : "!抽排順序不能重複";
+    switch (true) {
+      case onSave.title === "":
+        return "!請填寫標題";
+      case onSave.description === "":
+        return "!請填寫說明";
+      case onSave.image === "":
+        return "!請選擇主要圖片";
+      case onSave.spread.reduce(
+        (acc, curr) => (curr !== 0 ? acc + 1 : acc),
+        0
+      ) === 0:
+        return "!至少需要一張卡片";
+      case !checkUniqueOrder(onSave.spread.filter((item) => item !== 0)):
+        return "!抽排順序不能重複";
+      default:
+        return "";
+    }
   };
+
+  // const validationWarn = () => {
+  //   return onSave.title === ""
+  //     ? "!請填寫標題"
+  //     : onSave.description === ""
+  //     ? "!請填寫說明"
+  //     : onSave.image === ""
+  //     ? "!請選擇主要圖片"
+  //     : onSave.spread.reduce((acc, curr) => {
+  //         return curr !== 0 ? acc + 1 : acc;
+  //       }, 0) === 0
+  //     ? "!至少需要一張卡片"
+  //     : checkUniqueOrder(onSave.spread.filter((item) => item !== 0))
+  //     ? ""
+  //     : "!抽排順序不能重複";
+  // };
   const validation = () => {
     return (
       onSave.title === "" ||
       onSave.description === "" ||
       onSave.image === "" ||
-      onSave.spread.reduce((acc, curr) => {
-        return curr !== 0 ? acc + 1 : acc;
-      }, 0) === 0 ||
+      onSave.spread.filter((item) => item !== 0).length === 0 ||
       !checkUniqueOrder(onSave.spread.filter((item) => item !== 0))
     );
   };
+  //onSave.spread.filter((item) => item !== 0).length === 0 可以變成一個function
   return (
     <>
       <div className="w-screen h-[80px]" />
@@ -340,7 +366,7 @@ function Draggable({ edit, setEdit, spreadData, id }) {
                 placeholder="請輸入你的標題"
                 value={onSave.title}
                 onChange={(e) => inputChange(e, "title")}
-                disabled={saved}
+                // disabled={saved}
               />
             </div>
             <div className="relative group">
@@ -353,7 +379,7 @@ function Draggable({ edit, setEdit, spreadData, id }) {
                 placeholder="請描述一下此牌陣的用法"
                 value={onSave.description}
                 onChange={(e) => inputChange(e, "description")}
-                disabled={saved}
+                // disabled={saved}
               />
             </div>
           </form>
@@ -413,12 +439,14 @@ function Draggable({ edit, setEdit, spreadData, id }) {
               onDrop={(e) => drop(e, i)}
             >
               {item !== 0 && (
+                //todo background
                 <div
                   style={{ background: `center/contain url(${lightCard})` }}
                   className={` rounded-xl w-[138px] h-[220px]  relative box-border cursor-grab
                   flex items-center justify-center flex-col bg-slate-800 text-yellow z-10 gap-2 bg-opacity-80`}
                   draggable={true} //TODO
                   onDragStart={(e) => {
+                    //問谷哥  有沒有更好的辦法
                     e.target.style.opacity = "0.01";
                     setTarget(item);
                     setPastIndex(i);
@@ -429,61 +457,61 @@ function Draggable({ edit, setEdit, spreadData, id }) {
                     e.target.style.opacity = "1";
                   }}
                 >
-                  {saved ? (
+                  {/* {saved ? (
                     <div>
                       <p>{item.value}</p>
                       <p>{item.order}</p>
                     </div>
-                  ) : (
-                    <>
-                      <textarea
-                        className={`p-2 outline-none opacity-100 absolute top-9 text-green rounded-lg text-center 
+                  ) : ( */}
+                  <>
+                    <textarea
+                      className={`p-2 outline-none opacity-100 absolute top-9 text-green rounded-lg text-center 
                     w-[100px] h-[130px] resize-none  z-20 text-base text-slate-700 font-normal font-notoSansJP tracking-widest
                     ${
                       item.disabled ? " text-green bg-opacity-40 bg-white " : ""
                     }`}
-                        type="text"
-                        disabled={item.disabled}
-                        onKeyDown={(e) => change(e, item, i)}
-                        onChange={(e) => change(e, item, i)}
-                        value={item.value}
-                        readOnly={item.disabled}
-                      />
-                      <RxCross1
-                        className="material-symbols-outlined text-green order-2 top-[6px]
+                      type="text"
+                      disabled={item.disabled}
+                      onKeyDown={(e) => change(e, item, i)}
+                      onChange={(e) => change(e, item, i)}
+                      value={item.value}
+                      readOnly={item.disabled}
+                    />
+                    <RxCross1
+                      className="material-symbols-outlined text-green order-2 top-[6px]
                         left-2 absolute w-[17px] h-[25px] m-1 z-40 cursor-pointer"
-                        onClick={() => {
-                          deleteCard(item);
-                        }}
-                      />
+                      onClick={() => {
+                        deleteCard(item);
+                      }}
+                    />
 
-                      <div
-                        className={`material-symbols-outlined  text-green cursor-pointer m-1  text-base font-NT shadowGreen
+                    <div
+                      className={`material-symbols-outlined  text-green cursor-pointer m-1  text-base font-NT shadowGreen
                     absolute z-40 top-[8px] right-2 tracking-wider ${
                       item.disabled ? "" : "opacity-0"
                     }`}
-                        onClick={() => {
-                          editCard(item, i);
-                        }}
-                      >
-                        EDIT
-                      </div>
-                      <select
-                        defaultValue={item.order}
-                        onChange={(e) => handleOptionChange(e, item, i)}
-                        className="text-green border-b-green bg-white cursor-pointer outline-none bottom-2 shadowBlack
+                      onClick={() => {
+                        editCard(item, i);
+                      }}
+                    >
+                      EDIT
+                    </div>
+                    <select
+                      value={item.order}
+                      onChange={(e) => handleOptionChange(e, item, i)}
+                      className="text-green border-b-green bg-white cursor-pointer outline-none bottom-2 shadowBlack
                          pl-7 pr-6 pt-[5px] pb-[4px] rounded-sm bg-opacity-30 absolute font-NT text-base"
-                      >
-                        {onSave.spread
-                          .filter((item) => item !== 0)
-                          .map((_, i) => (
-                            <option key={i + 1} value={i + 1}>
-                              {i + 1}
-                            </option>
-                          ))}
-                      </select>
-                    </>
-                  )}
+                    >
+                      {onSave.spread
+                        .filter((item) => item !== 0)
+                        .map((_, i) => (
+                          <option key={i + 1} value={i + 1}>
+                            {i + 1}
+                          </option>
+                        ))}
+                    </select>
+                  </>
+                  {/* )} */}
                 </div>
               )}
             </div>
@@ -496,10 +524,10 @@ function Draggable({ edit, setEdit, spreadData, id }) {
          hover:bg-pink hover:bg-opacity-60 hover:text-yellow hover:border-yellow hover:shadowYellow
         font-NT shadowPink text-8xl text-pink leading-4 text-center opacity-90 z-[2]"
           onClick={() => {
-            const newOnsave = { ...onSave };
-            const newLine = [0, 0, 0, 0, 0, 0, 0];
-            newOnsave.spread.push(...newLine);
-            setOnSave(newOnsave);
+            setOnSave((prevState) => ({
+              ...prevState,
+              spread: [...prevState.spread, 0, 0, 0, 0, 0, 0, 0],
+            }));
           }}
         >
           <VscAdd className="w-10 h-10 self-center" />
@@ -511,14 +539,25 @@ function Draggable({ edit, setEdit, spreadData, id }) {
          hover:bg-pink hover:bg-opacity-60 hover:text-yellow hover:border-yellow hover:shadowYellow
         font-NT shadowPink text-8xl text-pink leading-4 text-center opacity-90 z-[2]"
           onClick={() => {
-            const newOnsave = { ...onSave };
-            if (newOnsave.spread.length > 28) {
-              const newArray = newOnsave.spread.slice(
-                0,
-                newOnsave.spread.length - 7
-              );
-              setOnSave({ ...newOnsave, spread: newArray });
-            }
+            // const newOnsave = { ...onSave };
+            // if (newOnsave.spread.length > 28) {
+            //   const newArray = newOnsave.spread.slice(
+            //     0,
+            //     newOnsave.spread.length - 7
+            //   );
+            //   setOnSave({ ...newOnsave, spread: newArray });
+            // }
+            setOnSave((prevState) =>
+              prevState.spread.length > 28
+                ? {
+                    ...prevState,
+                    spread: prevState.spread.slice(
+                      0,
+                      prevState.spread.length - 7
+                    ),
+                  }
+                : prevState
+            );
           }}
         >
           <AiOutlineMinus className="w-10 h-10 self-center" />

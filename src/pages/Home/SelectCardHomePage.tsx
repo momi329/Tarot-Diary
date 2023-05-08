@@ -6,7 +6,7 @@ const SelectCardHomePage = ({ number }) => {
 
   return (
     <>
-      <div className='flex flex-row h-[420px] w-[1100px] justify-center items-center relative mt-5 '>
+      <div className="flex flex-row h-[420px] w-[1100px] justify-center items-center relative mt-5 ">
         {cardArr.map((card, index) => {
           return (
             <div
@@ -28,7 +28,7 @@ const SelectCardHomePage = ({ number }) => {
                 setCardArr(newCardArr);
               }}
             >
-              <img src={lightCard} alt='card' className='w-[100%]' />
+              <img src={lightCard} alt="card" className="w-[100%]" />
             </div>
           );
         })}

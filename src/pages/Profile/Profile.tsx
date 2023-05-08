@@ -27,6 +27,9 @@ import Member from "../Member";
 import LoadingPage from "../LoadingPage";
 import UnderlineButton from "../../components/UnderlineButton";
 import type { TarotData } from "../../utils/type";
+import useGetUserProfile from "./hooks/useGetUserProfile.tsx";
+import useGetUserDiary from "./hooks/useGetUserDiary";
+import NewGallery from "./NewGallery";
 function Profile(): JSX.Element {
   const { isLogin, user, userUID, loading, setLoading } =
     useContext(AuthContext);
@@ -42,10 +45,14 @@ function Profile(): JSX.Element {
   const navigate = useNavigate();
   const friendsPostsRef = useRef<DocumentData[] | []>([]);
   // const visitedUserRef = useRef<VisitedUser | {}>({});
-
+  const { userProfile, getUserProfile } = useGetUserProfile();
+  const { diary, getDiary } = useGetUserDiary();
   useEffect(() => {
     initialFollowing();
   }, [userUID, uid]);
+  useEffect(() => {
+    console.log(diary, "diary");
+  }, [diary]);
   const initialFollowing = () => {
     if (uid) {
       setFollowing(user.following.includes(uid));
@@ -202,7 +209,9 @@ function Profile(): JSX.Element {
         ) : (
           <div className="flex flex-row w-[1180px] z-20 h-[300px] justify-center gap-[2%] mx-auto ">
             <div className="h-[100%] w-2/12">
-              {userUID && <Buttons setPage={setPage} page={page} />}
+              {userUID && (
+                <Buttons setPage={setPage} page={page} getDiary={getDiary} />
+              )}
             </div>
             <div className=" h-[100%] w-6/12">
               {isLogin && (page === 2 || page === 3) ? (
@@ -210,7 +219,7 @@ function Profile(): JSX.Element {
               ) : (
                 <></>
               )}
-              {page === 1 && (
+              {/* {page === 1 && (
                 <Gallery
                   visitedUser={visitedUser}
                   setVisitedUser={setVisitedUser}
@@ -225,8 +234,9 @@ function Profile(): JSX.Element {
                   setGetNewPosts={setGetNewPosts}
                   getNewPosts={getNewPosts}
                 />
-              )}
-              {page === 3 && (
+              )} */}
+              {page === 3 && <NewGallery data={diary} />}
+              {/* {page === 3 && (
                 <Gallery
                   visitedUser={visitedUser}
                   setVisitedUser={setVisitedUser}
@@ -241,7 +251,7 @@ function Profile(): JSX.Element {
                   getNewPosts={getNewPosts}
                   friendsPostsRef={friendsPostsRef}
                 />
-              )}
+              )} */}
               {/* 編輯個人檔案 */}
               {userUID === uid && page === 6 && <ProfileEdit />}
               {/* 日記 */}
@@ -269,9 +279,10 @@ function Profile(): JSX.Element {
 }
 export default Profile;
 
-const Buttons = ({ page, setPage }) => {
+const Buttons = ({ page, setPage, getDiary }) => {
   const { userUID } = useContext(AuthContext);
   const { uid } = useParams();
+
   const switchPage = (num: Number) => {
     setPage(num);
     return;
@@ -295,6 +306,7 @@ const Buttons = ({ page, setPage }) => {
             value={"Diary"}
             type={"profile"}
             action={() => {
+              getDiary();
               switchPage(2);
             }}
             selected={page === 2}

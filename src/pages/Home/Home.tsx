@@ -95,15 +95,6 @@ function Home() {
     };
   }, []);
 
-  function scroll() {
-    const scrollNode: HTMLDivElement | null = scrollRef1.current;
-    if (scrollNode) {
-      scrollNode.scrollIntoView({
-        behavior: "smooth",
-      });
-    }
-  }
-
   function wheelHandler(event) {
     event.preventDefault();
     const element = event.currentTarget;
@@ -128,7 +119,7 @@ function Home() {
         <div className="w-screen h-screen fixed z-50">
           <div
             className={`w-0 opacity-0 h-screen fixed transition bg-black/90 duration-700 ease-in-out ${
-              openSignIn ? "w-screen opacity-100" : ""
+              openSignIn && "w-screen opacity-100"
             }`}
           />
           <div
@@ -147,17 +138,17 @@ function Home() {
         {/* part1 */}
         <div
           className="h-[880px] overflow-hidden bg-black  cursor-auto
-       w-screen  relative bg-clip-content  flex justify-center items-center"
+         w-screen  relative bg-clip-content  flex justify-center items-center"
         >
           <img
             src={pinkFlower1}
-            alt="pinkflower1"
+            alt="pinkFlower1"
             className="opacity-60  rounded-3xl transform  w-[900px] absolute left-[-30px] 
           top-[-150px] z-[2] rotate-[10deg] blur-sm hover:blur-none transition duration-700 ease-in-out upanddown"
           />
           <img
             src={pinkFlower1}
-            alt="pinkflower1"
+            alt="pinkFlower1"
             className="opacity-60  rounded-3xl transform  w-[750px] absolute right-[-30px] 
           top-[100px] z-[2] rotate-[-40deg] blur-sm hover:blur-none transition duration-700 ease-in-out tracking-[0.02em] downThenUp"
           />
@@ -194,7 +185,12 @@ function Home() {
           <div
             className="w-28 h-28 rounded-full  border-[1px] border-white bottom-[70px] left-[100px] absolute cursor-pointer
         font-NT shadowWhite text-xl text-white leading-[112px] text-center opacity-90 z-[2] animate-pulse animate-fadeInAnimate opacity-0"
-            onClick={scroll}
+            onClick={() => {
+              scrollRef1.current &&
+                scrollRef1.current.scrollIntoView({
+                  behavior: "smooth",
+                });
+            }}
           >
             Scroll
           </div>
