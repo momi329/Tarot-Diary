@@ -68,7 +68,6 @@ function Spread() {
   async function getDesign(id: string): Promise<void> {
     const newData = await firebase.getDesign(id);
     if (newData) {
-      console.log(newData, "抓回來的");
       setSpreadData(newData[0]);
       setDivinedData({
         userUID: newData[0].userUID,

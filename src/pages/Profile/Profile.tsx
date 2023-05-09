@@ -63,7 +63,6 @@ function Profile(): JSX.Element {
         return a.time.seconds - b.time.seconds;
       })
       .reverse();
-    // console.log("UserDiary", diary);
     setUserDesign(spread);
     setUserDiary(diary);
   }
@@ -123,7 +122,6 @@ function Profile(): JSX.Element {
             // data.push(newDocData);
 
             if (newDocData.docId === undefined) {
-              console.log("監聽新資料", newDocData);
               setFriendsPosts((prev) => [newDocData, ...prev]);
               setTimeout(() => setGetNewPosts(true), 1000);
             }
@@ -167,11 +165,9 @@ function Profile(): JSX.Element {
       if (uid) {
         if (uid === userUID) {
           //本人
-          console.log("本人");
           getUserDesignAndDiary(userUID); //抓自己的
           const friendsPost = await getAllFollowingDiaryAndSpread(user); //抓自己和別人的
           setFriendsPosts(friendsPost);
-          console.log("setFriendsPosts", friendsPost);
           getAllFollowingSnapShop(user); //監聽別人的
 
           return () => {
@@ -179,12 +175,10 @@ function Profile(): JSX.Element {
           };
         } else {
           const visited = await getOtherUserDiaryAndSpread(uid);
-          console.log("visited", visited);
           setVisitedUser(visited);
         }
       }
     }
-    console.log("isLogin, uid, user, page, userUID改變");
     getAllData();
   }, [isLogin, uid, user, page, userUID]);
   if (!user || !visitedUser) {

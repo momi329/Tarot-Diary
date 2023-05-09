@@ -12,13 +12,6 @@ import LoadingPage from "./pages/LoadingPage";
 function App() {
   const { isLoading, setIsLoading } = useContext(LoadingContext);
 
-  // useEffect(() => {
-  //   console.log("loading", isLoading);
-  //   setTimeout(() => {
-  //     setIsLoading(false);
-  //   }, 5000);
-  // }, []);
-
   return (
     <>
       <Background />

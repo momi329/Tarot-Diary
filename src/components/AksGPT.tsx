@@ -36,8 +36,6 @@ const AskGPT = ({
   }, [divinedData.spread]);
 
   const handleAsk = async () => {
-    console.log("messages", messages);
-    console.log("openAiKey", openAiKey);
     setLoading(true);
     const message = `我問塔羅牌${divinedData.question}，我在${messages.map(
       (mes) =>
@@ -79,9 +77,7 @@ const AskGPT = ({
         return data.json();
       })
       .then((data) => {
-        console.log("data", data);
         const content = data.choices[0].message.content;
-        console.log(content);
         setRes(content);
         setDivinedData({ ...divinedData, askGpt: content, content: "" });
       })

@@ -39,7 +39,6 @@ function Divination() {
 
   useEffect(() => {
     if (spreads) {
-      console.log("?");
       scrollToIndex(0);
     }
   }, [spreads]);
@@ -49,7 +48,6 @@ function Divination() {
       let addPage;
       if (newPage < 5) {
         addPage = newPage + 1;
-        console.log(addPage, spreads.length, "newnewPage");
       } else {
         addPage = 0;
       }
