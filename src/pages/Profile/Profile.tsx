@@ -319,37 +319,6 @@ const Buttons = ({ page, setPage, getDiary }) => {
             }}
             selected={page === 4}
           />
-          {/* <button
-            className={`m-4 hover:underline-offset-1 shadowYellow tracking-wider  ${
-              page === 1 ? "underline" : ""
-            }`}
-            onClick={() => {
-              switchPage(1);
-            }}
-          >
-            Explore
-          </button>
-          <button
-            className={`m-4 hover:underline-offset-1 shadowYellow tracking-wider  ${
-              page === 2 ? "underline" : ""
-            }`}
-            onClick={() => {
-              switchPage(2);
-            }}
-          >
-            Diary
-          </button>
-
-          <button
-            className={`m-4 hover:underline-offset-1 shadowYellow tracking-wider ${
-              page === 4 ? "underline" : ""
-            }`}
-            onClick={() => {
-              switchPage(4);
-            }}
-          >
-            Design
-          </button> */}
         </>
       )}
     </div>

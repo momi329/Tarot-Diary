@@ -32,10 +32,9 @@ import LoadingPage from "../LoadingPage";
 import Moon from "../../images/Moon";
 import Alert from "../../components/Alert";
 import UnderlineButton from "../../components/UnderlineButton";
-import e from "express";
+
 
 const Gallery = ({
-  friendsPostsRef,
   visitedUser,
   setVisitedUser,
   userDiary,
