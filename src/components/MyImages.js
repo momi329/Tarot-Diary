@@ -23,7 +23,6 @@ function MyImages({ onSave, setOnSave }) {
       .then((result) => {
         if (result.errors) {
           // handle error here
-          console.log("error occurred: ", result.errors[0]);
         } else {
           // handle success here
           const photo = result.response;
@@ -75,7 +74,6 @@ function MyImages({ onSave, setOnSave }) {
               <FiX
                 className="w-5 h-5 cursor-pointer"
                 onClick={() => {
-                  console.log("點到");
                   setIsOpen(false);
                 }}
               />

@@ -25,11 +25,9 @@ export default function Quill({
   };
   async function createDivinedData(data, userUID) {
     const docId = await firebase.newDivinedData(data, userUID);
-    // console.log(docId, "docId");
     if (docId) {
       setDivinedData({ ...data, docId: docId });
     } else {
-      console.log("error no docId");
     }
   }
   const handleSave = () => {

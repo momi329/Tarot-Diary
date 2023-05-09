@@ -190,7 +190,6 @@ function CalendarDays({
   const daysInMonth = endOfMonth.getDate();
   const days: React.ReactNode[] = [];
   const clickedDiary = (day: Day | {}, i) => {
-    console.log("click", diaryData[i]);
     if (day !== undefined) {
       setDayDiary(day);
       setTargetDiary && setTargetDiary(diaryData[i]);
