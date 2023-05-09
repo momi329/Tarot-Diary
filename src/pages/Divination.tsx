@@ -3,8 +3,6 @@ import { useEffect, useState, useRef, useContext } from "react";
 import SpreadPreview from "../components/SpreadPreview";
 import Arrow from "../images/Arrow";
 import Star from "../images/Star";
-import firebase from "../utils/firebase";
-import type { SpreadData } from "../utils/type";
 import { AuthContext } from "../context/authContext";
 function Divination() {
   const [page, setPage] = useState(0);
@@ -33,15 +31,13 @@ function Divination() {
       imgNode.classList.add("selected");
     }
   }
-  // useEffect(() => {
-  //   getAllSpread();
-  // }, []);
 
   useEffect(() => {
     if (spreads) {
       scrollToIndex(0);
     }
   }, [spreads]);
+
   const addPage = () => {
     if (spreads) {
       const newPage = page;
