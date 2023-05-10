@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import SelectCardHomePage from "./SelectCardHomePage";
 import Button from "../../components/Button";
 import { AuthContext } from "../../context/authContext";
-import { getRandomBool, getRandomCards } from "../Spread/Divine";
+import { getRandomBool, getRandomCards } from "../../utils/function";
 
 import pinkFlower1 from "../../images/pinkflower1.jpeg";
 

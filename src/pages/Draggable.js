@@ -11,7 +11,7 @@ import { doc, updateDoc, Timestamp, setDoc } from "firebase/firestore";
 import { AuthContext } from "../context/authContext";
 import Button from "../components/Button";
 import lightCard from "../images/card-light.png";
-import UnderlineInput from "../components/UnderlineInput";
+
 function Draggable({ edit, setEdit, spreadData, id }) {
   const [onSave, setOnSave] = useState({
     spreadId: "",
@@ -315,41 +315,41 @@ function Draggable({ edit, setEdit, spreadData, id }) {
   };
   return (
     <>
-      <div className="w-screen h-[80px]" />
-      <div className="w-ml max-w-screen-md mx-auto mt-16 mb-8">
-        <h1 className="font-NT text-8xl text-yellow  tracking-wide mb-6">
+      <div className='w-screen h-[80px]' />
+      <div className='w-ml max-w-screen-md mx-auto mt-16 mb-8'>
+        <h1 className='font-NT text-8xl text-yellow  tracking-wide mb-6'>
           Design Your Spread!
         </h1>
-        <p className="font-base tracking-wider mb-10 text-yellow">
+        <p className='font-base tracking-wider mb-10 text-yellow'>
           設計你自己的牌陣，問自己想問的問題！
         </p>
-        <div className="flex flex-row gap-9 mb-14">
-          <form className="flex flex-col gap-2 w-2/5 justify-between">
-            <h1 className="font-NTalt text-yellow text-4xl mt-10 mb-10 tracking-wide font-medium">
+        <div className='flex flex-row gap-9 mb-14'>
+          <form className='flex flex-col gap-2 w-2/5 justify-between'>
+            <h1 className='font-NTalt text-yellow text-4xl mt-10 mb-10 tracking-wide font-medium'>
               Pick {cardNumber} {cardNumber === 1 ? "Card" : "Cards"}
             </h1>
-            <div className="relative group">
-              <div className="absolute bottom-0 h-[2px] bg-yellow/50 w-0 group-hover:w-full duration-500"></div>
+            <div className='relative group'>
+              <div className='absolute bottom-0 h-[2px] bg-yellow/50 w-0 group-hover:w-full duration-500'></div>
               <input
-                className="w-[100%] pl-2 pb-4  border-yellow  text-yellow bg-pink/40 pt-1
-              tracking-wider placeholder:text-gray placeholder:opacity-75  hover:bg-pink/0 duration-500  "
-                type="text"
-                name="title"
+                className='w-[100%] pl-2 pb-4  border-yellow  text-yellow bg-pink/40 pt-1
+              tracking-wider placeholder:text-gray placeholder:opacity-75  hover:bg-pink/0 duration-500  '
+                type='text'
+                name='title'
                 maxLength={30}
-                placeholder="請輸入你的標題"
+                placeholder='請輸入你的標題'
                 value={onSave.title}
                 onChange={(e) => inputChange(e, "title")}
                 disabled={saved}
               />
             </div>
-            <div className="relative group">
-              <div className="absolute bottom-0 h-[2px] bg-yellow/50 w-0 group-hover:w-full duration-500"></div>
+            <div className='relative group'>
+              <div className='absolute bottom-0 h-[2px] bg-yellow/50 w-0 group-hover:w-full duration-500'></div>
               <textarea
-                className="w-[100%] h-[130px] pl-2 pb-14 text-yellow bg-pink/40 pt-1 outline outline-0
-               border-yellow  tracking-wider placeholder:text-gray placeholder:opacity-75 hover:bg-pink/0 duration-500"
-                type="text"
-                name="description"
-                placeholder="請描述一下此牌陣的用法"
+                className='w-[100%] h-[130px] pl-2 pb-14 text-yellow bg-pink/40 pt-1 outline outline-0
+               border-yellow  tracking-wider placeholder:text-gray placeholder:opacity-75 hover:bg-pink/0 duration-500'
+                type='text'
+                name='description'
+                placeholder='請描述一下此牌陣的用法'
                 value={onSave.description}
                 onChange={(e) => inputChange(e, "description")}
                 disabled={saved}
@@ -357,16 +357,16 @@ function Draggable({ edit, setEdit, spreadData, id }) {
             </div>
           </form>
           <MyImages
-            className="order-2 w-3/5"
+            className='order-2 w-3/5'
             onSave={onSave}
             setOnSave={setOnSave}
           />
         </div>
-        <div className="flex gap-9 ">
-          <div className="group relative">
+        <div className='flex gap-9 '>
+          <div className='group relative'>
             <div
-              className="group-hover:opacity-100 duration-200 opacity-0 bg-pink/30 text-yellow text-sm p-1 w-[100px]
-         font-notoSansJP text-center rounded-lg m-1 tracking-widest absolute top-[-35px] left-9 z-1"
+              className='group-hover:opacity-100 duration-200 opacity-0 bg-pink/30 text-yellow text-sm p-1 w-[100px]
+         font-notoSansJP text-center rounded-lg m-1 tracking-widest absolute top-[-35px] left-9 z-1'
             >
               !上限16張
             </div>
@@ -376,7 +376,7 @@ function Draggable({ edit, setEdit, spreadData, id }) {
               value={"NEW CARD"}
             />
           </div>
-          <div className="group relative">
+          <div className='group relative'>
             <div
               className={`${
                 validationWarn() === false
@@ -398,8 +398,8 @@ function Draggable({ edit, setEdit, spreadData, id }) {
         </div>
       </div>
       <div
-        className="flex flex-wrap justify-center max-w-screen-md border border-yellow z-1 
-      mx-auto  border-opacity-50 mb-14 p-[30px] pb-[133px] backdrop-blur-sm bg-white/10 "
+        className='flex flex-wrap justify-center max-w-screen-md border border-yellow z-1 
+      mx-auto  border-opacity-50 mb-14 p-[30px] pb-[133px] backdrop-blur-sm bg-white/10 '
       >
         {onSave.spread.map((item, i) => {
           return (
@@ -443,7 +443,7 @@ function Draggable({ edit, setEdit, spreadData, id }) {
                     ${
                       item.disabled ? " text-green bg-opacity-40 bg-white " : ""
                     }`}
-                        type="text"
+                        type='text'
                         disabled={item.disabled}
                         onKeyDown={(e) => change(e, item, i)}
                         onChange={(e) => change(e, item, i)}
@@ -451,8 +451,8 @@ function Draggable({ edit, setEdit, spreadData, id }) {
                         readOnly={item.disabled}
                       />
                       <RxCross1
-                        className="material-symbols-outlined text-green order-2 top-[6px]
-                        left-2 absolute w-[17px] h-[25px] m-1 z-40 cursor-pointer"
+                        className='material-symbols-outlined text-green order-2 top-[6px]
+                        left-2 absolute w-[17px] h-[25px] m-1 z-40 cursor-pointer'
                         onClick={() => {
                           deleteCard(item);
                         }}
@@ -472,8 +472,8 @@ function Draggable({ edit, setEdit, spreadData, id }) {
                       <select
                         defaultValue={item.order}
                         onChange={(e) => handleOptionChange(e, item, i)}
-                        className="text-green border-b-green bg-white cursor-pointer outline-none bottom-2 shadowBlack
-                         pl-7 pr-6 pt-[5px] pb-[4px] rounded-sm bg-opacity-30 absolute font-NT text-base"
+                        className='text-green border-b-green bg-white cursor-pointer outline-none bottom-2 shadowBlack
+                         pl-7 pr-6 pt-[5px] pb-[4px] rounded-sm bg-opacity-30 absolute font-NT text-base'
                       >
                         {onSave.spread
                           .filter((item) => item !== 0)
@@ -491,11 +491,11 @@ function Draggable({ edit, setEdit, spreadData, id }) {
           );
         })}
       </div>
-      <div className="flex flex-row gap-5 w-[300px] mx-auto mb-40">
+      <div className='flex flex-row gap-5 w-[300px] mx-auto mb-40'>
         <div
-          className="w-20 h-20 rounded-full  border-[2px] border-pink mx-auto justify-center items-center flex 
+          className='w-20 h-20 rounded-full  border-[2px] border-pink mx-auto justify-center items-center flex 
          hover:bg-pink hover:bg-opacity-60 hover:text-yellow hover:border-yellow hover:shadowYellow
-        font-NT shadowPink text-8xl text-pink leading-4 text-center opacity-90 z-[2]"
+        font-NT shadowPink text-8xl text-pink leading-4 text-center opacity-90 z-[2]'
           onClick={() => {
             const newOnsave = { ...onSave };
             const newLine = [0, 0, 0, 0, 0, 0, 0];
@@ -503,14 +503,14 @@ function Draggable({ edit, setEdit, spreadData, id }) {
             setOnSave(newOnsave);
           }}
         >
-          <VscAdd className="w-10 h-10 self-center" />
+          <VscAdd className='w-10 h-10 self-center' />
           <div></div>
         </div>
 
         <div
-          className="w-20 h-20 rounded-full  border-[2px] border-pink mx-auto justify-center items-center flex 
+          className='w-20 h-20 rounded-full  border-[2px] border-pink mx-auto justify-center items-center flex 
          hover:bg-pink hover:bg-opacity-60 hover:text-yellow hover:border-yellow hover:shadowYellow
-        font-NT shadowPink text-8xl text-pink leading-4 text-center opacity-90 z-[2]"
+        font-NT shadowPink text-8xl text-pink leading-4 text-center opacity-90 z-[2]'
           onClick={() => {
             const newOnsave = { ...onSave };
             if (newOnsave.spread.length > 28) {
@@ -522,7 +522,7 @@ function Draggable({ edit, setEdit, spreadData, id }) {
             }
           }}
         >
-          <AiOutlineMinus className="w-10 h-10 self-center" />
+          <AiOutlineMinus className='w-10 h-10 self-center' />
         </div>
       </div>
     </>
