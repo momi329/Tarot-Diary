@@ -50,9 +50,7 @@ function Profile(): JSX.Element {
   useEffect(() => {
     initialFollowing();
   }, [userUID, uid]);
-  useEffect(() => {
-    console.log(diary, "diary");
-  }, [diary]);
+
   const initialFollowing = () => {
     if (uid) {
       setFollowing(user.following.includes(uid));

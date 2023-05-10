@@ -513,7 +513,6 @@ function Draggable({ edit, setEdit, spreadData, id }) {
                         ))}
                     </select>
                   </>
-                  )}
                 </div>
               )}
             </div>
