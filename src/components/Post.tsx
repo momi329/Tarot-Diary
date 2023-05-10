@@ -24,7 +24,6 @@ export function Post({ targetDiary, setTargetDiary, setDiaryData }) {
   }, [edit]);
 
   const handleSave = async () => {
-    console.log(targetDiary);
     await firebase.updateDiary(userUID, targetDiary.docId, {
       ...targetDiary,
       content: newEdit,
@@ -34,7 +33,6 @@ export function Post({ targetDiary, setTargetDiary, setDiaryData }) {
     setEdit(false);
   };
   const onEditorContentChanged = (content) => {
-    console.log(content.markdown);
     setNewEdit(content.markdown);
   };
   return (

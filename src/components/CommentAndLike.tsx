@@ -40,7 +40,6 @@ const CommentAndLike = ({
       let comments = newFriendPost[index].comment;
       comments = comments ? [...comments, commentChange] : [commentChange];
       newFriendPost[index].comment = comments;
-      console.log(newFriendPost[index].comment);
       setFriendsPosts(newFriendPost);
       await firebase.updateComment(newFriendPost[index]);
       setCommentChange({
@@ -125,7 +124,6 @@ const CommentAndLike = ({
     } else {
       //todo
       if (!newData[index].comment) {
-        console.log("1");
         newData.forEach((data) => {
           if (data.addComment) {
             data.addComment = false;
@@ -139,7 +137,6 @@ const CommentAndLike = ({
 
         // setFriendsPosts(newData);
       } else if (newData[index].comment.length === 0) {
-        console.log("2");
         newData.forEach((data) => {
           if (data.addComment) {
             data.addComment = false;
@@ -153,8 +150,6 @@ const CommentAndLike = ({
 
         // setFriendsPosts(newData);
       } else {
-        console.log("3");
-
         const comments = await firebase.getCommentsProfile(item.comment);
         newData.forEach((data) => {
           if (data.addComment) {

@@ -1,22 +1,17 @@
 import { useNavigate, useParams } from "react-router-dom";
 import { useState, useEffect, useContext, useReducer } from "react";
 import { AuthContext } from "../../context/authContext";
-import Divine from "./Divine";
 import cards from "../../tarotcard/tarot-images";
-import { Link } from "react-router-dom";
 import firebase from "../../utils/firebase";
 import Draggable from "../Draggable";
-import AskGPT from "../../components/AksGPT";
-import lightCard from "../../images/card-light.png";
+import AskAndNote from "../../components/AskAndNote";
 import Button from "../../components/Button";
 import { SpreadPlace } from "./SpreadPlace";
-import type {
-  SpreadData,
-  DraggableProps,
-  DesignSpreadData,
-} from "../../utils/type";
+import type { SpreadData, DesignSpreadData } from "../../utils/type";
 import UnderlineButton from "../../components/UnderlineButton";
-import CommentAndLike from "../../components/CommentAndLike";
+import { getRandomCards, getRandomBool } from "../../utils/function";
+import UnderlineInput from "../../components/UnderlineInput";
+import ChooseCard from "./ChooseCard";
 
 const initialDivinedData: DesignSpreadData = {
   userUID: "",
@@ -28,47 +23,41 @@ const initialDivinedData: DesignSpreadData = {
   question: "",
   secret: false,
 };
-function reducer(state, action) {
+
+function reducer(_, action) {
   switch (action.type) {
     case "preview": {
-      return 0;
-      //預覽狀態
+      return "preview";
     }
     case "start": {
-      return 1;
-      //開始選牌
+      return "start";
     }
     case "pickEnoughCards": {
-      return 2;
-      //占卜
+      return "pickEnoughCards";
     }
     case "end": {
-      return 3;
-      //顯示結果
+      return "end";
     }
   }
   throw Error("Unknown action: " + action.type);
 }
 
 function Spread() {
-  const { isLogin } = useContext(AuthContext);
-  const { userUID } = useContext(AuthContext);
-  const [spreadData, setSpreadData] = useState<SpreadData | undefined>(
-    undefined
-  );
+  const { isLogin, userUID } = useContext(AuthContext);
+  const [divining, dispatch] = useReducer(reducer, "preview");
+  const [spreadData, setSpreadData] = useState<SpreadData | null>(null);
   const [divinedData, setDivinedData] =
     useState<DesignSpreadData>(initialDivinedData);
-  const { id } = useParams();
-  const tarot = cards.cards;
-  const [divining, dispatch] = useReducer(reducer, 0);
-  // const [end, setEnd] = useState<boolean>(false);
   const [askAI, setAskAI] = useState<boolean>(false);
   const [edit, setEdit] = useState<boolean>(false);
   const [pickCard, setPickCard] = useState<Number[]>([0, 0]);
+
+  const { id } = useParams();
+  const tarot = cards.cards;
+
   async function getDesign(id: string): Promise<void> {
     const newData = await firebase.getDesign(id);
     if (newData) {
-      console.log(newData, "抓回來的");
       setSpreadData(newData[0]);
       setDivinedData({
         userUID: newData[0].userUID,
@@ -90,6 +79,7 @@ function Spread() {
     }
   }
   const navigate = useNavigate();
+
   useEffect(() => {
     const divine = localStorage.getItem("myResult");
     if (divine) {
@@ -105,41 +95,72 @@ function Spread() {
     }
   }, [id, edit]);
 
+  const handleClickDivine = async () => {
+    const number = spreadData?.spread.reduce(
+      (acc: any, crr) => (crr !== 0 ? acc + 1 : acc),
+      0
+    );
+    const randomCard = await getRandomCards(number);
+    const randomReverse = await getRandomBool(number);
+    const modifiedData = spreadData?.spread.reduce(
+      (
+        acc: any,
+        item:
+          | number
+          | { name: string; order: number; card: number; reverse: boolean },
+        i: number
+      ) => {
+        if (typeof item === "number") {
+          acc.push(0);
+        } else {
+          const card = randomCard[item.order - 1];
+          const reverse = randomReverse[item.order - 1];
+          const newItem = { ...item, card, reverse };
+          acc.push(newItem);
+        }
+        return acc;
+      },
+      []
+    );
+    const newData = { ...divinedData, spread: modifiedData };
+    setDivinedData(newData);
+    dispatch({ type: "end" });
+  };
+
   if (spreadData === undefined) {
-    return;
+    return <></>;
   }
 
   return (
     <>
-      <div
-        // style={{ backgroundImage: `url(${spreadData.image})` }}
-        className="w-screen h-[100%] bg-cover 
-         flex justify-center  bg-center "
-      >
-        <div className="bg-black bg-opacity-50 fixed w-full h-full"></div>
+      <div className='w-screen h-[100%] bg-cover flex justify-center  bg-center'>
+        <div className='bg-black bg-opacity-50 fixed w-full h-full' />
         <div
-          className="fixed w-full h-full bg-cover bg-center  p-[40px]"
-          style={{ backgroundImage: `url(${spreadData.image})` }}
+          className={`fixed w-full h-full bg-cover bg-center  p-[40px]`}
+          style={{ backgroundImage: `url(${spreadData?.image})` }}
         />
-        <div className="fixed w-full h-full bg-cover bg-center  bg-black/20 p-[40px]" />
+        <div className='fixed w-full h-full bg-cover bg-center  bg-black/20 p-[40px]' />
+
         <div
           className={`mx-auto text-yellow w-[1180px]  relative mb-20 mt-40 m-[10px] 
           backdrop-blur-sm bg-black/30 `}
         >
-          <div className="flex flex-row justify-between mx-8 mt-8">
-            <span className="flex flex-col">
+          <div className='flex flex-row justify-between mx-8 mt-8'>
+            <span className='flex flex-col'>
               <h1
                 className={`text-3xl font-NT  tracking-widest mt-4 
-            ${spreadData.userUID === "all" ? "shadowYellow text-5xl" : ""}`}
+                ${
+                  spreadData?.userUID === "all" ? "shadowYellow text-5xl" : ""
+                }`}
               >
-                {spreadData.title}
+                {spreadData?.title}
               </h1>
-              <p className="w-[60%] leading-7 text-sm mt-5 whitespace-pre-wrap">
-                {spreadData.description}
+              <p className='w-[60%] leading-7 text-sm mt-5'>
+                {spreadData?.description}
               </p>
-              <div className="font-NT text-yellow text-2xl mt-8 mb-5 tracking-widest shadowYellow ">
+              <div className='font-NT text-yellow text-2xl mt-8 mb-5 tracking-widest shadowYellow '>
                 PICK{" "}
-                {spreadData.spread.reduce(
+                {spreadData?.spread.reduce(
                   (acc: any, crr) => (crr !== 0 ? acc + 1 : acc),
                   0
                 )}{" "}
@@ -147,7 +168,7 @@ function Spread() {
               </div>
             </span>
 
-            {divining === 0 && userUID === spreadData.userUID ? (
+            {divining === "preview" && userUID === spreadData?.userUID ? (
               <Button
                 action={() => {
                   setEdit(true);
@@ -156,7 +177,7 @@ function Spread() {
                 type={"little"}
               />
             ) : (
-              spreadData.author && (
+              spreadData?.author && (
                 <div>
                   <div>Author</div>
                   <UnderlineButton
@@ -168,9 +189,9 @@ function Spread() {
               )
             )}
           </div>
-          {/* 開始選牌 */}
-          {divining === 0 && (
-            <div className="flex gap-3 mb-8 ml-8 w-[280px]">
+
+          {divining === "preview" && (
+            <div className='flex gap-3 mb-8 ml-8 w-[280px]'>
               <Button
                 action={() => {
                   if (!isLogin) {
@@ -183,30 +204,28 @@ function Spread() {
               />
             </div>
           )}
-          {/* 寫下問題 */}
-          {divining !== 0 && (
-            <input
-              type="text"
-              value={divinedData.question}
-              disabled={divining !== 1 ? true : false}
-              onChange={(e) => {
-                setDivinedData({ ...divinedData, question: e.target.value });
-              }}
-              className="bg-pink bg-opacity-20 p-2 ml-8 w-[25%] tracking-wider placeholder:text-yellow mb-4"
-              placeholder="請寫下你的問題"
-            />
+          {divining !== "preview" && (
+            <div className='w-[25%] mb-4  ml-8'>
+              <UnderlineInput
+                name='請寫下你的問題：'
+                value={divinedData?.question || ""}
+                inputType={"text"}
+                action={(e) => {
+                  setDivinedData({
+                    ...divinedData,
+                    question: e.target.value,
+                  });
+                }}
+                placeholder='Write Your Question'
+                disabled={divining !== "start" ? true : false}
+              />
+            </div>
           )}
-          {/* -----更換狀態----- */}
-          {/* 預覽 */}
-          {/* 占卜 */}
-          {divining === 0 && (
-            <SpreadPlace type={spreadData} tarot={tarot} size={"large"} />
-          )}
-          {/* 可編輯 */}
-          {spreadData.userUID === userUID && edit && (
+
+          {spreadData?.userUID === userUID && edit && (
             <div
-              className="w-[110%] h-[100%] overflow-y-scroll p-16 bg-darkPink z-20 mx-auto fixed top-1/2 left-1/2 
-          transform -translate-x-1/2 -translate-y-1/2"
+              className='w-[110%] h-[100%] overflow-y-scroll p-16 bg-darkPink z-20 mx-auto fixed top-1/2 left-1/2 
+          transform -translate-x-1/2 -translate-y-1/2'
             >
               <Draggable
                 setEdit={setEdit}
@@ -216,60 +235,34 @@ function Spread() {
               />
             </div>
           )}
-          {/* 結果 */}
-          {divining === 3 && (
-            <SpreadPlace type={divinedData} tarot={tarot} size={"large"} />
-          )}
 
-          {/* 選牌占卜 */}
-          {divining === 1 && (
-            <div className="flex flex-col gap-6 justify-center mb-18 mt-5 items-center">
-              <SelectCard pickCard={pickCard} setPickCard={setPickCard} />
-              <span className="flex flex-row items-end">
-                <span className="text-5xl text-pink font-NT shadowPink tracking-widest">
-                  {pickCard[0] + ""}
-                </span>
-                <p className="text-3xl text-pink font-NT shadowPink tracking-widest mb-1">
-                  {`/` + pickCard[1]}
-                </p>
-              </span>
-              <Divine
-                spreadData={spreadData}
-                setSpreadData={setSpreadData}
-                divinedData={divinedData}
-                setDivinedData={setDivinedData}
-                divining={divining}
-                dispatch={dispatch}
-                pickCard={pickCard}
-              />
-              <div className="w-[100%] h-16"></div>
-            </div>
-          )}
-
-          {/* 占卜 */}
-          {divining === 3 && (
-            <Divine
-              spreadData={spreadData}
-              setSpreadData={setSpreadData}
-              divinedData={divinedData}
-              setDivinedData={setDivinedData}
-              divining={divining}
-              dispatch={dispatch}
+          {divining === "start" ? (
+            <ChooseCard
+              handleClickDivine={handleClickDivine}
               pickCard={pickCard}
+              setPickCard={setPickCard}
+              divinedData={divinedData}
+            />
+          ) : (
+            <SpreadPlace
+              type={divining === "end" ? divinedData : spreadData}
+              tarot={tarot}
+              size={"large"}
             />
           )}
-          {/* 詢問AI */}
-          {divining === 3 && (
-            <div className=" w-[100%] px-16 group relative pb-16">
-              <AskGPT
-                divinedData={divinedData}
-                setDivinedData={setDivinedData}
-                askAI={askAI}
-                setAskAI={setAskAI}
-                divining={divining}
-                dispatch={dispatch}
-              />
-            </div>
+          {divining === "end" && (
+            <>
+              <div className=' w-[100%] px-16 group relative pb-16'>
+                <AskAndNote
+                  divinedData={divinedData}
+                  setDivinedData={setDivinedData}
+                  askAI={askAI}
+                  setAskAI={setAskAI}
+                  divining={divining}
+                  dispatch={dispatch}
+                />
+              </div>
+            </>
           )}
         </div>
       </div>
@@ -277,72 +270,3 @@ function Spread() {
   );
 }
 export default Spread;
-
-export const divine = (item, i, tarot) => {
-  return (
-    <div
-      className={`border rounded-lg w-[108px] h-[180px] cursor-pointer relative
-flex items-center justify-center flex-col  text-white z-1 gap-2 bg-slate-700`}
-    >
-      {item.card !== undefined && (
-        <Link to={`/card/${item.card}`}>
-          <img
-            src={tarot[item.card].img}
-            alt={tarot[item.card].name}
-            className={`${
-              item.reverse ? "" : "rotate-180"
-            } w-[100%] h-[100%] absolute top-0 left-0 `}
-          />
-        </Link>
-      )}
-    </div>
-  );
-};
-export const SelectCard = ({ setPickCard, pickCard }) => {
-  const [cardArr, setCardArr] = useState(new Array(24).fill(false));
-
-  return (
-    <div className="flex flex-row w-[90%] h-[350px] justify-center relative mt-5 ">
-      {cardArr.map((card, index) => {
-        return (
-          <div
-            key={index}
-            className={`rounded-lg absolute top-0 w-[120px] cursor-pointer shadow-lg shadow-green shadow-opacity-60 
-            origin-center rotate-[${index * 2 - 22}deg] translate-x-${
-              index * 50 - 600
-            }
-            ${
-              card
-                ? "top-[-40px] "
-                : " hover:top-[-20px] hover:transform hover:-translate-x-[20px] hover:-translate-y-[20px] transition duration-300"
-            }
-             `}
-            style={{
-              // left: `${(index - 1) * 40}px`,
-              transform: `rotate(${index * 2 - 22}deg) translateX(${
-                index * 40 - 440
-              }px)`,
-              transformOrigin: `center bottom`,
-            }}
-            onClick={() => {
-              const newCardArr = [...cardArr];
-              newCardArr[index] = !newCardArr[index];
-              const count = newCardArr.reduce(
-                (acc, val) => (val ? acc + 1 : acc),
-                0
-              );
-              const newPickCard = [...pickCard];
-              if (count <= pickCard[1] && pickCard[0] <= pickCard[1]) {
-                newPickCard[0] = count;
-                setPickCard(newPickCard);
-                setCardArr(newCardArr);
-              }
-            }}
-          >
-            <img src={lightCard} alt="card" className="w-[100%]" />
-          </div>
-        );
-      })}
-    </div>
-  );
-};

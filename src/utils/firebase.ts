@@ -57,16 +57,13 @@ const firebase = {
   async signOut(auth: Auth) {
     await signOut(auth);
     localStorage.removeItem("userUID");
-    console.log("登出");
   },
   async setUserDoc(data: DocumentData) {
     const docRef = doc(db, "users", `${data.userUID}`);
     const docSnap = await getDoc(docRef);
     if (docSnap.exists()) {
-      console.log("帳戶已存在");
       return;
     } else {
-      console.log("帳戶不存在");
       const userRef = collection(db, "users");
       await setDoc(doc(userRef, data.userUID), data);
     }
@@ -89,7 +86,6 @@ const firebase = {
       const storageRef = ref(storage, `image/${userUID + file.name}`);
       await uploadBytes(storageRef, file);
       const imageURL = await getDownloadURL(storageRef);
-      console.log(imageURL);
       return imageURL;
     } catch (e) {
       console.error("error", e);
@@ -180,7 +176,6 @@ const firebase = {
         following: data.following,
       };
     } else {
-      console.log("No such document!");
     }
   },
   //參訪其他人頁面
@@ -256,7 +251,6 @@ const firebase = {
       };
       diary.push(newDocData);
     });
-    // console.log("diary", diary);
     diary.sort(function (a, b) {
       return a.time.seconds - b.time.seconds;
     });
@@ -419,7 +413,6 @@ const firebase = {
     return comments;
   },
   async uploadBlob(userUID, file) {
-    console.log("上傳");
     const storage = getStorage();
     const storageRef = ref(storage, `images/${userUID}`);
     // 'file' comes from the Blob or File API
@@ -446,7 +439,6 @@ const firebase = {
           comment: data.comment,
           time: Timestamp.fromDate(new Date()),
         });
-        console.log("留言成功");
       } else {
         //牌陣
         const spreadRef = doc(db, "spreads", data.spreadId);

@@ -219,7 +219,7 @@ input {
   transform: scale(1.5, 1.5);
   animation: 2s fadeIn;
   opacity: 1;
-  z-index: 20;
+  z-index: 15;
   transform-origin: bottom center;
   animation-duration: 750ms;
   margin-bottom: 0px;

@@ -64,30 +64,23 @@ const Gallery = ({
   useEffect(() => {
     let post;
     if (page === 3 && userUID === uid && userDiary) {
-      console.log(userDiary, "userDiary");
       post = userDiary.slice(0, 5);
       setData(post);
     } else if (page === 1 && userUID === uid && friendsPosts.length !== 0) {
-      console.log("friendsPosts來");
       if (friendsPosts.length < 5) {
-        console.log("沒有slice");
         setIfMore(false);
         // setFriendsPosts(friendsPostsRef.current);
         setData(friendsPosts);
       } else {
-        console.log("有slice");
         const newData = [...friendsPosts];
         post = newData.slice(0, 5);
         setData(post);
       }
     } else if (Object.values(visitedUser).length !== 0) {
-      console.log("visitedUser", visitedUser);
       if (visitedUser.diary.length < 5) {
-        console.log("沒有slice");
         setIfMore(false);
         setData(visitedUser.diary);
       } else {
-        console.log("有slice");
         post = visitedUser.diary.slice(0, 5);
         setData(post);
       }
@@ -99,7 +92,6 @@ const Gallery = ({
   }, [data]);
   //監聽
   async function getDocID(data) {
-    console.log("來", data);
     const newFriendsPosts = [...friendsPosts];
     let newData: SpreadData[] = [];
     const q = query(
@@ -108,24 +100,19 @@ const Gallery = ({
       limit(1)
     );
     const querySnapshot = await getDocs(q);
-    console.log("querySnapshot", querySnapshot);
     querySnapshot.forEach((doc) => {
-      console.log("有嗎！", doc.data());
       newData.push(doc.data() as SpreadData);
     });
     if (newData[0]) {
       newFriendsPosts[0].docId = newData[0].docId;
       setData(newFriendsPosts);
-      console.log("改變完的", newFriendsPosts);
     }
   }
   useEffect(() => {
     if (!data) return;
     if (!getNewPosts) return;
-    console.log("friendsPosts改變");
     const newData = [...friendsPosts];
     // if (newData[0].docId === undefined) {
-    // console.log("docId === undefined");
     getDocID(newData[0]);
     // }
     //setData([newData[0], ...data]);
@@ -150,7 +137,6 @@ const Gallery = ({
     return;
   };
   const DeletePost = async (userUID, docID, index) => {
-    console.log("文章index", index);
     await firebase.deleteDiary(userUID, docID);
     if (!data) return;
     const newData = [...data];
@@ -158,10 +144,8 @@ const Gallery = ({
     setData(newData as SpreadData[] | VisitedUser[]);
     if (userUID === uid && page === 1) {
       friendsPosts.splice(index, 1);
-      console.log(friendsPosts, " 更新後的friendsPosts");
     } else {
       visitedUser.diary.splice(index, 1);
-      console.log(friendsPosts, " 更新後的friendsPosts");
     }
 
     setAlert(false);
@@ -294,7 +278,6 @@ const Gallery = ({
       visitedUser.diary &&
       visitedUser.diary.length === 0
     ) {
-      console.log("!!");
       return (
         <p className="text-5xl text-yellow font-NT shadowYellow mt-2">
           No Diary Yet {" : ("}
@@ -379,12 +362,6 @@ const Gallery = ({
                           value: "Confirm",
                           type: "littlePink",
                           action: () => {
-                            console.log(
-                              userUID,
-                              item.docId,
-                              index,
-                              "userUID, item.docId, index"
-                            );
                             DeletePost(userUID, item.docId, index);
                           },
                         },
@@ -426,7 +403,7 @@ const Gallery = ({
             )}
             {item.question ? (
               <>
-                <h1 className="ml-4 mt-4 mb-4 h-4 pb-10 font-notoSansJP text-base text-yellow font-normal tracking-widest">
+                <h1 className="ml-4 mt-4 mb-4 h-4 pb-10 font-notoSansJP cursor-default  text-base text-yellow font-normal tracking-widest">
                   {item.question === "" ? "" : item.question}
                 </h1>
 
@@ -472,7 +449,6 @@ const Gallery = ({
                                 <span
                                   className="text-pink cursor-pointer relative group font-NT shadowPink tracking-widest"
                                   onClick={() => {
-                                    console.log(index, "index");
                                     seeMoreGPT(index);
                                   }}
                                 >
@@ -492,7 +468,6 @@ const Gallery = ({
                                 <span
                                   className="text-pink cursor-pointer relative group font-NT shadowPink tracking-widest"
                                   onClick={() => {
-                                    console.log(index, "index");
                                     seeMoreGPT(index);
                                   }}
                                 >

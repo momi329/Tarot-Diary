@@ -41,7 +41,6 @@ const ProfileHeader = ({
       newData.followers = [...newData.followers, userUID];
       setVisitedUser(newData);
     }
-    console.log("已追蹤");
   }
   async function unfollow(uid, userUID) {
     await firebase.unfollow(uid, userUID);
@@ -53,7 +52,6 @@ const ProfileHeader = ({
         newData.followers.splice(index, 1);
       }
       setVisitedUser(newData);
-      console.log("已取消");
     }
   }
   async function getFriends(followers, following) {
@@ -70,16 +68,11 @@ const ProfileHeader = ({
 
   useEffect(() => {
     if (userUID === uid) {
-      console.log("自己");
       setData(user);
     } else {
-      console.log("別人");
       setData(visitedUser);
     }
   }, [uid, user, userUID, visitedUser]);
-  useEffect(() => {
-    console.log(data);
-  }, [data]);
 
   if (Object.keys(data).length === 0)
     return (

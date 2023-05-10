@@ -24,7 +24,6 @@ function ProfileEdit() {
   const inputImageChange = async (e) => {
     const file: File | null = e.target.files[0];
     const url = await firebase.uploadUserImage(userUID, file);
-    console.log(url);
     if (typeof url === "string") {
       setModify({ ...modify, image: url });
     }
@@ -48,7 +47,7 @@ function ProfileEdit() {
           ]}
         />
       )}
-      <div className='font-NT text-yellow '>
+      <div className="font-NT text-yellow ">
         <div>
           <Button
             action={() => {
@@ -57,14 +56,14 @@ function ProfileEdit() {
             type={"tiny"}
             value={"Save"}
           />
-          <div className='flex flex-col mt-8 gap-4 justify-center mx-auto items-center'>
-            <div className='flex justify-center flex-col relative w-[150px] h-[150px]'>
+          <div className="flex flex-col mt-8 gap-4 justify-center mx-auto items-center">
+            <div className="flex justify-center flex-col relative w-[150px] h-[150px]">
               <img
                 src={modify.image}
                 alt={modify.name}
-                className='w-[100%] h-[100%] object-cover'
+                className="w-[100%] h-[100%] object-cover"
               />
-              <label htmlFor='upload'>
+              <label htmlFor="upload">
                 <button
                   onClick={() => {
                     const uploadImage = document.getElementById("upload");
@@ -72,26 +71,26 @@ function ProfileEdit() {
                       uploadImage.click();
                     }
                   }}
-                  className='hover:underline bottom-0 bg-opacity-60
-            absolute w-[100%] bg-darkPink z-10 pt-[2px]'
+                  className="hover:underline bottom-0 bg-opacity-60
+            absolute w-[100%] bg-darkPink z-10 pt-[2px]"
                 >
                   {" "}
                   Upload Img{" "}
                 </button>
               </label>
               <input
-                id='upload'
-                type='file'
-                accept='image/*'
+                id="upload"
+                type="file"
+                accept="image/*"
                 onChange={(e) => {
                   inputImageChange(e);
                 }}
-                className='hidden w-[100%] absolute bottom-0 z-0'
+                className="hidden w-[100%] absolute bottom-0 z-0"
               />
             </div>
-            <div className='flex flex-col items-start shadowYellow tracking-widest w-[40%]'>
+            <div className="flex flex-col items-start shadowYellow tracking-widest w-[40%]">
               <p>Name</p>
-              <div className='h-[1px] w-[100%] bg-yellow my-2' />
+              <div className="h-[1px] w-[100%] bg-yellow my-2" />
               <input
                 maxLength={20}
                 value={modify.name}
@@ -99,9 +98,9 @@ function ProfileEdit() {
                 className={`w-[100%] p-2  bg-pink bg-opacity-20`}
               />
             </div>
-            <div className='flex flex-col items-start shadowYellow tracking-widest w-[40%]'>
+            <div className="flex flex-col items-start shadowYellow tracking-widest w-[40%]">
               <p>Current Mood</p>
-              <div className='h-[1px] w-[100%] bg-yellow my-2' />
+              <div className="h-[1px] w-[100%] bg-yellow my-2" />
               <input
                 maxLength={20}
                 value={modify.sign}

@@ -127,7 +127,6 @@ export const AuthContextProvider: React.FC = ({ children }: any) => {
           setUser(data);
           setUserUID(user.uid);
         } else {
-          // console.log("沒有");
           setIsLogin(true);
           const data: User = {
             name: user.displayName || "",
@@ -148,7 +147,6 @@ export const AuthContextProvider: React.FC = ({ children }: any) => {
     setTimeout(() => setIsLoading(false), 1500);
   }, []);
 
-  // console.log(isLoading);
   const signIn = async (
     auth: ReturnType<typeof getAuth>,
     provider: GoogleAuthProvider | FacebookAuthProvider

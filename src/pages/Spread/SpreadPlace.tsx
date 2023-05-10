@@ -11,7 +11,7 @@ export const SpreadPlace = ({ type, tarot, size }) => {
     };
   } else if (size === "medium") {
     widthAndHeight = {
-      a: " w-[542px] mb-5 p-5",
+      a: " w-[542px] mb-5 p-5 bg-black/40",
       b: " w-[71px] h-[60px] ",
       c: " w-[70px] h-[120px] gap-2 ",
       scale:

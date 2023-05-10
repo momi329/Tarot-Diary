@@ -11,7 +11,7 @@ import { doc, updateDoc, Timestamp, setDoc } from "firebase/firestore";
 import { AuthContext } from "../context/authContext";
 import Button from "../components/Button";
 import lightCard from "../images/card-light.png";
-import UnderlineInput from "../components/UnderlineInput";
+
 function Draggable({ edit, setEdit, spreadData, id }) {
   const [onSave, setOnSave] = useState({
     spreadId: "",
@@ -406,9 +406,11 @@ function Draggable({ edit, setEdit, spreadData, id }) {
           <div className="group relative">
             <div
               className={`${
-                validationWarn() === "" ? "group-hover:opacity-0 bg-none" : ""
+                validationWarn() === false
+                  ? "group-hover:opacity-0 bg-none"
+                  : "group-hover:opacity-100"
               }
-              group-hover:opacity-100 duration-200 opacity-0 bg-pink/30 text-yellow text-sm p-1 
+               duration-200 opacity-0 bg-pink/30 text-yellow text-sm p-1 
          font-notoSansJP text-center rounded-lg m-1 tracking-widest absolute top-[-35px] left-9 z-1 `}
             >
               {validationWarn()}
@@ -497,7 +499,7 @@ function Draggable({ edit, setEdit, spreadData, id }) {
                       EDIT
                     </div>
                     <select
-                      value={item.order}
+                      defaultValue={item.order}
                       onChange={(e) => handleOptionChange(e, item, i)}
                       className="text-green border-b-green bg-white cursor-pointer outline-none bottom-2 shadowBlack
                          pl-7 pr-6 pt-[5px] pb-[4px] rounded-sm bg-opacity-30 absolute font-NT text-base"
@@ -511,7 +513,7 @@ function Draggable({ edit, setEdit, spreadData, id }) {
                         ))}
                     </select>
                   </>
-                  {/* )} */}
+                  )}
                 </div>
               )}
             </div>
