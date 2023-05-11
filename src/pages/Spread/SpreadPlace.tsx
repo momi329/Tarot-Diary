@@ -18,15 +18,15 @@ export const SpreadPlace = ({ type, tarot, size }) => {
         " hover:transform hover:scale-125 transition duration-300 hover:z-10 ",
     };
   }
-  // backdrop-blur-sm bg-white/10
+  if (!type) return <></>;
   return (
     <div
       className={`flex flex-wrap justify-center  border border-yellow z-1 
   mx-auto  border-opacity-50  ${widthAndHeight.a} border-none  ${
         widthAndHeight.scale
-      } min-h-[350px] ${type.userUID === "all" ? "pt-[60px]" : ""}`}
+      } min-h-[350px] ${type?.userUID === "all" ? "pt-[60px]" : ""}`}
     >
-      {type.spread.map((item: any, i: number) => {
+      {type.spread?.map((item: any, i: number) => {
         return (
           <div
             className={`flex justify-center box-border ${widthAndHeight.b} `}

@@ -10,6 +10,7 @@ function Friends({ openFriends, friends, setOpenFriends }) {
   const [data, setData] = useState<DocumentData[]>();
   const [inputValue, setInputValue] = useState("");
   const usersRef = useRef<DocumentData[] | null>(null);
+
   async function getAllUsers() {
     const users = await firebase.getAllUsers();
     if (users) {
@@ -22,6 +23,7 @@ function Friends({ openFriends, friends, setOpenFriends }) {
   }, []);
 
   useEffect(() => {
+    if (!friends) return;
     if (openFriends.followers) {
       setData(friends.followers);
     } else {
@@ -89,16 +91,6 @@ function Friends({ openFriends, friends, setOpenFriends }) {
             />
           </>
         )}
-
-        {/* <div
-          className='cursor-pointer absolute top-[-15px] right-3 w-6 h-6'
-          onClick={() => {
-            setOpenFriends({ following: false, followers: false });
-          }}
-        >
-          <div className='w-8 h-[1.2px] bg-gold rotate-[30deg] absolute top-0' />
-          <div className='w-8 h-[1.2px] bg-gold rotate-[-30deg] absolute top-0' />
-        </div> */}
         <div className="w-[90%] h-[1px] bg-gold mb-4" />
         <div
           className={`w-[90%] h-auto overflow-y-scroll flex flex-col  gap-4

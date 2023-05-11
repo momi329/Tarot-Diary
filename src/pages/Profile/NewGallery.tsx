@@ -3,18 +3,7 @@ import { AuthContext } from "../../context/authContext";
 import { Link, useNavigate, useParams } from "react-router-dom";
 
 import firebase from "../../utils/firebase";
-import {
-  collection,
-  query,
-  where,
-  getDocs,
-  orderBy,
-  limit,
-  DocumentData,
-} from "firebase/firestore";
-import { db } from "../../utils/firebase";
 import cards from "../../tarotcard/tarot-images";
-import { AiOutlineArrowRight } from "react-icons/ai";
 
 import SpreadPreview from "../../components/SpreadPreview";
 import { SpreadPlace } from "../Spread/SpreadPlace";
@@ -22,21 +11,16 @@ import { formatTimestamp } from "./Profile";
 import Viewer from "../../components/Editor/Viewer";
 import Editor from "../../components/Editor/Editor";
 import CommentAndLike from "../../components/CommentAndLike";
-//svg
+import UnderlineButton from "../../components/UnderlineButton";
 import Button from "../../components/Button";
+
 import Star from "../../images/Star";
 import Loading from "../../components/Loading";
-//type
-import type { SpreadData, VisitedUser } from "../../utils/type";
-import LoadingPage from "../LoadingPage";
 import Moon from "../../images/Moon";
 import Alert from "../../components/Alert";
-import UnderlineButton from "../../components/UnderlineButton";
-import e from "express";
 
-const NewGallery = ({ data }) => {
-  //   const postsLength = [...friendsPosts];
-  //   const [edit, setEdit] = useState(postsLength.fill(false));
+const NewGallery = ({ data, page }) => {
+  const [edit, setEdit] = useState(null);
   const [newEdit, setNewEdit] = useState({ secret: false, content: "" });
   const [commentChange, setCommentChange] = useState({
     user: "",
@@ -44,17 +28,76 @@ const NewGallery = ({ data }) => {
     userImage: "",
     comment: "",
   });
+  const [openComment, setOpenComment] = useState<number | null>(null);
   const { user, userUID, loading, setLoading, alert, setAlert } =
     useContext(AuthContext);
-  //   const [data, setData] = useState<SpreadData[] | VisitedUser[] | null>(null);
+  const [post, setPost] = useState<[] | null>(null);
   const [ifMore, setIfMore] = useState(true);
   const tarot = cards.cards;
   const navigate = useNavigate();
   const { uid } = useParams();
 
-  useEffect(() => console.log(data, "this is data"), [data]);
+  useEffect(() => {
+    if (!data) return;
+    const newData = [...data];
+    newData
+      .sort(function (a, b) {
+        return a.time.seconds - b.time.seconds;
+      })
+      .reverse();
+    setEdit(Array(newData.length).fill(false));
+    newData?.length < 5 ? setPost(newData) : setPost(newData.slice(0, 5));
+  }, [data, page]);
 
-  if (!data)
+  const handleSave = async (index) => {
+    if (!post) return;
+    await firebase.updateDiary(userUID, post[index].docId, newEdit);
+    post[index].content = newEdit.content;
+    const newData = [...edit];
+    newData[index] = false;
+    setEdit(newData);
+  };
+  const handleEdit = (index, secret) => {
+    const newData = [...edit];
+    newData[index] = true;
+    setEdit(newData);
+    setNewEdit({ ...newEdit, secret: secret });
+  };
+  const onEditorContentChanged = (content) => {
+    setNewEdit({ ...newEdit, content: content.markdown });
+  };
+  const DeletePost = async (userUID, docID, index) => {
+    await firebase.deleteDiary(userUID, docID);
+    const newData = [...post];
+    const deleteIndex = newData.findIndex((post) => post.docId === docID);
+    const target = newData.splice(deleteIndex, 1);
+    console.log("deleted", target);
+    setPost(newData);
+    setAlert(false);
+  };
+  const seeMore = () => {
+    if (!data) return;
+    setLoading(true);
+    const newData = [...data];
+    newData
+      .sort(function (a, b) {
+        return a.time.seconds - b.time.seconds;
+      })
+      .reverse();
+    const more = post?.length + 5;
+    newData?.length < 5 && setIfMore(false);
+    setTimeout(() => {
+      newData?.length < more && setIfMore(false);
+      setPost(newData?.slice(0, more));
+      setLoading(false);
+    }, 1500);
+  };
+  const seeMoreGPT = (index: number) => {
+    const newPost = [...post];
+    newPost[index].seeMore = !newPost[index].seeMore;
+    setPost(newPost);
+  };
+  if (!post)
     return (
       <div className="flex gap-4 flex-col  w-[100%] animate-pulse">
         <div className="bg-yellow-100 px-6 py-5 relative  bg-pink bg-opacity-30 h-[400px]">
@@ -80,7 +123,6 @@ const NewGallery = ({ data }) => {
         </div>
       </div>
     );
-
   if (userUID === uid) {
     if (data === 0) {
       return (
@@ -145,25 +187,19 @@ const NewGallery = ({ data }) => {
       );
     }
   }
-  //   } else {
-  //     if (
-  //       userUID !== uid &&
-  //       visitedUser.diary &&
-  //       visitedUser.diary.length === 0
-  //     ) {
-  //       console.log("!!");
-  //       return (
-  //         <p className="text-5xl text-yellow font-NT shadowYellow mt-2">
-  //           No Diary Yet {" : ("}
-  //         </p>
-  //       );
-  //     }
-  //   }
+  if (userUID !== uid && post.length === 0) {
+    console.log("!!");
+    return (
+      <p className="text-5xl text-yellow font-NT shadowYellow mt-2">
+        No Diary Yet {" : ("}
+      </p>
+    );
+  }
 
   return (
     <>
       <div className="flex gap-4 flex-col  w-[100%] ">
-        {data.map((item, index) => (
+        {post.map((item, index) => (
           <div
             key={index}
             className="bg-yellow-100 px-6 py-5 relative  bg-pink bg-opacity-30 "
@@ -189,11 +225,11 @@ const NewGallery = ({ data }) => {
                   </div>
                 </Link>
               )}
-              {/* 自己的貼文才能編輯 */}
+
               {userUID === item.user && item.docId && (
                 <>
                   <div className="absolute top-[90px] right-8  ">
-                    {/* <UnderlineButton
+                    <UnderlineButton
                       type={"meanings"}
                       action={() => {
                         edit[index]
@@ -201,19 +237,8 @@ const NewGallery = ({ data }) => {
                           : handleEdit(index, item.secret);
                       }}
                       value={edit[index] ? "Save" : "Edit"}
-                    /> */}
+                    />
                   </div>
-                  {/* <div
-                    className='absolute top-[100px] right-6 cursor-pointer inline-flex
-                  font-NT text-yellow text-xl '
-                    onClick={() => {
-                      edit[index]
-                        ? handleSave(index)
-                        : handleEdit(index, item.secret);
-                    }}
-                  >
-                    {edit[index] ? "Save" : "Edit"}
-                  </div> */}
 
                   <div className="absolute top-[90px] right-[90px] ">
                     <UnderlineButton
@@ -223,7 +248,7 @@ const NewGallery = ({ data }) => {
                     />
                   </div>
 
-                  {/* {!edit[index] && alert && (
+                  {!edit[index] && alert && (
                     <Alert
                       value={"Are you sure you want to delete?"}
                       buttonValue={[
@@ -239,7 +264,6 @@ const NewGallery = ({ data }) => {
                             console.log(
                               userUID,
                               item.docId,
-                              index,
                               "userUID, item.docId, index"
                             );
                             DeletePost(userUID, item.docId, index);
@@ -264,17 +288,17 @@ const NewGallery = ({ data }) => {
                       <option value="false">Public</option>
                       <option value="true">Private</option>
                     </select>
-                  ) : ( */}
-                  <div
-                    className="font-NT text-yellow tracking-widest shadowYellow text-base flex
+                  ) : (
+                    <div
+                      className="font-NT text-yellow tracking-widest shadowYellow text-base flex
                     flex-row items-center justify-center"
-                  >
-                    {item.secret ? "Private" : "Public"}・
-                    <div className="pb-[2px]">
-                      <Moon color={"#9F8761"} width={20} height={20} />
+                    >
+                      {item.secret ? "Private" : "Public"}・
+                      <div className="pb-[2px]">
+                        <Moon color={"#9F8761"} width={20} height={20} />
+                      </div>
                     </div>
-                  </div>
-                  {/* )} */}
+                  )}
                 </>
               )}
             </div>
@@ -329,8 +353,7 @@ const NewGallery = ({ data }) => {
                                 <span
                                   className="text-pink cursor-pointer relative group font-NT shadowPink tracking-widest"
                                   onClick={() => {
-                                    console.log(index, "index");
-                                    // seeMoreGPT(index);
+                                    seeMoreGPT(index);
                                   }}
                                 >
                                   close
@@ -349,8 +372,8 @@ const NewGallery = ({ data }) => {
                                 <span
                                   className="text-pink cursor-pointer relative group font-NT shadowPink tracking-widest"
                                   onClick={() => {
-                                    console.log(index, "index");
-                                    // seeMoreGPT(index);
+                                    console.log(index, "here");
+                                    seeMoreGPT(index);
                                   }}
                                 >
                                   see more
@@ -370,30 +393,27 @@ const NewGallery = ({ data }) => {
                     <p className="ml-3 mb-2 shadowYellow text-yellow font-NT  tracking-wider text-lg">
                       Memo
                     </p>
-                    {/* {edit[index] ? (
+                    {userUID === uid && edit[index] ? (
                       <Editor
                         value={item.content}
                         onChange={onEditorContentChanged}
                       />
-                    ) : ( */}
-                    <Viewer value={item.content} />
-                    {/* )} */}
+                    ) : (
+                      <Viewer value={item.content} />
+                    )}
                   </div>
                 </span>
-                {/* <CommentAndLike
+                <CommentAndLike
                   item={item}
                   index={index}
-                  user={user}
-                  uid={uid}
                   commentChange={commentChange}
-                  userUID={userUID}
                   setCommentChange={setCommentChange}
-                  friendsPosts={friendsPosts}
-                  setFriendsPosts={setFriendsPosts}
+                  openComment={openComment}
+                  setOpenComment={setOpenComment}
                   page={page}
-                  visitedUser={visitedUser}
-                  setVisitedUser={setVisitedUser}
-                /> */}
+                  post={post}
+                  setPost={setPost}
+                />
               </>
             ) : (
               <div>
@@ -413,13 +433,13 @@ const NewGallery = ({ data }) => {
                           {" "}
                           {item.title}{" "}
                         </span>
-                        {/* <UnderlineButton
+                        <UnderlineButton
                           value={item.title}
                           type={"profile"}
                           action={() => {
                             navigate(`/spread/${item.spreadId}`);
                           }}
-                        /> */}
+                        />
                         牌陣<br></br>趕快來占卜喔！
                       </div>
                       <span className="text-gray text-sm mt-2">
@@ -448,7 +468,7 @@ const NewGallery = ({ data }) => {
                     </div>
                   </div>
                 )}
-                {/* <CommentAndLike
+                <CommentAndLike
                   item={item}
                   index={index}
                   user={user}
@@ -456,12 +476,14 @@ const NewGallery = ({ data }) => {
                   commentChange={commentChange}
                   userUID={userUID}
                   setCommentChange={setCommentChange}
-                  friendsPosts={friendsPosts}
-                  setFriendsPosts={setFriendsPosts}
+                  openComment={openComment}
+                  setOpenComment={setOpenComment}
+                  // friendsPosts={friendsPosts}
+                  // setFriendsPosts={setFriendsPosts}
                   page={page}
-                  visitedUser={visitedUser}
-                  setVisitedUser={setVisitedUser}
-                /> */}
+                  // visitedUser={visitedUser}
+                  // setVisitedUser={setVisitedUser}
+                />
               </div>
             )}
           </div>
@@ -477,7 +499,7 @@ const NewGallery = ({ data }) => {
                 type={"big"}
                 value={"See More"}
                 action={() => {
-                  //   seeMore();
+                  seeMore();
                 }}
               />
             </div>

@@ -90,6 +90,7 @@ function Spread() {
       localStorage.removeItem("myResult");
     } else {
       if (id) {
+        console.log("id");
         getDesign(id);
       }
     }
@@ -127,26 +128,25 @@ function Spread() {
     dispatch({ type: "end" });
   };
 
-  if (spreadData === undefined) {
+  if (!spreadData) {
     return <></>;
   }
-
   return (
     <>
-      <div className='w-screen h-[100%] bg-cover flex justify-center  bg-center'>
-        <div className='bg-black bg-opacity-50 fixed w-full h-full' />
+      <div className="w-screen h-[100%] bg-cover flex justify-center  bg-center">
+        <div className="bg-black bg-opacity-50 fixed w-full h-full" />
         <div
           className={`fixed w-full h-full bg-cover bg-center  p-[40px]`}
           style={{ backgroundImage: `url(${spreadData?.image})` }}
         />
-        <div className='fixed w-full h-full bg-cover bg-center  bg-black/20 p-[40px]' />
+        <div className="fixed w-full h-full bg-cover bg-center  bg-black/20 p-[40px]" />
 
         <div
           className={`mx-auto text-yellow w-[1180px]  relative mb-20 mt-40 m-[10px] 
           backdrop-blur-sm bg-black/30 `}
         >
-          <div className='flex flex-row justify-between mx-8 mt-8'>
-            <span className='flex flex-col'>
+          <div className="flex flex-row justify-between mx-8 mt-8">
+            <span className="flex flex-col">
               <h1
                 className={`text-3xl font-NT  tracking-widest mt-4 
                 ${
@@ -155,10 +155,10 @@ function Spread() {
               >
                 {spreadData?.title}
               </h1>
-              <p className='w-[60%] leading-7 text-sm mt-5'>
+              <p className="w-[60%] leading-7 text-sm mt-5">
                 {spreadData?.description}
               </p>
-              <div className='font-NT text-yellow text-2xl mt-8 mb-5 tracking-widest shadowYellow '>
+              <div className="font-NT text-yellow text-2xl mt-8 mb-5 tracking-widest shadowYellow ">
                 PICK{" "}
                 {spreadData?.spread.reduce(
                   (acc: any, crr) => (crr !== 0 ? acc + 1 : acc),
@@ -191,7 +191,7 @@ function Spread() {
           </div>
 
           {divining === "preview" && (
-            <div className='flex gap-3 mb-8 ml-8 w-[280px]'>
+            <div className="flex gap-3 mb-8 ml-8 w-[280px]">
               <Button
                 action={() => {
                   if (!isLogin) {
@@ -205,9 +205,9 @@ function Spread() {
             </div>
           )}
           {divining !== "preview" && (
-            <div className='w-[25%] mb-4  ml-8'>
+            <div className="w-[25%] mb-4  ml-8">
               <UnderlineInput
-                name='請寫下你的問題：'
+                name="請寫下你的問題："
                 value={divinedData?.question || ""}
                 inputType={"text"}
                 action={(e) => {
@@ -216,7 +216,7 @@ function Spread() {
                     question: e.target.value,
                   });
                 }}
-                placeholder='Write Your Question'
+                placeholder="Write Your Question"
                 disabled={divining !== "start" ? true : false}
               />
             </div>
@@ -224,8 +224,8 @@ function Spread() {
 
           {spreadData?.userUID === userUID && edit && (
             <div
-              className='w-[110%] h-[100%] overflow-y-scroll p-16 bg-darkPink z-20 mx-auto fixed top-1/2 left-1/2 
-          transform -translate-x-1/2 -translate-y-1/2'
+              className="w-[110%] h-[100%] overflow-y-scroll p-16 bg-darkPink z-20 mx-auto fixed top-1/2 left-1/2 
+          transform -translate-x-1/2 -translate-y-1/2"
             >
               <Draggable
                 setEdit={setEdit}
@@ -252,7 +252,7 @@ function Spread() {
           )}
           {divining === "end" && (
             <>
-              <div className=' w-[100%] px-16 group relative pb-16'>
+              <div className=" w-[100%] px-16 group relative pb-16">
                 <AskAndNote
                   divinedData={divinedData}
                   setDivinedData={setDivinedData}

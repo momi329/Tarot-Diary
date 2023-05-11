@@ -30,26 +30,31 @@ import type { TarotData } from "../../utils/type";
 import useGetUserProfile from "./hooks/useGetUserProfile.tsx";
 import useGetUserDiary from "./hooks/useGetUserDiary";
 import NewGallery from "./NewGallery";
+import useGetUserExplore from "./hooks/useGetUserExplore";
+import useGetUserSpread from "./hooks/useGetUserSpread";
 function Profile(): JSX.Element {
-  const { isLogin, user, userUID, loading, setLoading } =
-    useContext(AuthContext);
-  const [userDesign, setUserDesign] = useState<DocumentData[] | never[]>([]);
-  const [userDiary, setUserDiary] = useState<DocumentData[] | never[]>([]);
-  const [page, setPage] = useState<Number>(1);
-  const [visitedUser, setVisitedUser] = useState<VisitedUser | {}>({});
+  const { isLogin, user, userUID } = useContext(AuthContext);
   const { uid } = useParams();
-  const [friendsPosts, setFriendsPosts] = useState<DocumentData[] | never[]>(
-    []
+  const [page, setPage] = useState<string>(
+    userUID === uid ? "explore" : "diaryPost"
   );
-  const [getNewPosts, setGetNewPosts] = useState(false);
-  const navigate = useNavigate();
-  const friendsPostsRef = useRef<DocumentData[] | []>([]);
-  // const visitedUserRef = useRef<VisitedUser | {}>({});
-  const { userProfile, getUserProfile } = useGetUserProfile();
+  const [following, setFollowing] = useState<boolean>(false);
+  const { userProfile, setUserProfile, getUserProfile } = useGetUserProfile();
   const { diary, getDiary } = useGetUserDiary();
+  const { friendsPosts } = useGetUserExplore();
+  const { userSpread, getUserSpread } = useGetUserSpread();
+
   useEffect(() => {
+    getUserProfile();
     initialFollowing();
-  }, [userUID, uid]);
+    if (userUID !== uid) {
+      getDiary();
+      setPage("diaryPost");
+    }
+    if (userUID === uid) {
+      setPage("explore");
+    }
+  }, [uid]);
 
   const initialFollowing = () => {
     if (uid) {
@@ -58,135 +63,8 @@ function Profile(): JSX.Element {
       setFollowing(false);
     }
   };
-  const [following, setFollowing] = useState<boolean>(false);
-  const [newpose, setNewPost] = useState([]);
-  async function getUserDesignAndDiary(userUID: string) {
-    const spread = await firebase.getUserDesign(userUID);
-    const diary = await firebase.getOtherUserDiary(userUID, user);
-    diary
-      .sort(function (a, b) {
-        return a.time.seconds - b.time.seconds;
-      })
-      .reverse();
-    setUserDesign(spread);
-    setUserDiary(diary);
-  }
-  async function getOtherUserDiaryAndSpread(uid) {
-    const profile = await firebase.getProfile(uid);
-    const diary = await firebase.getOtherUserDiary(uid, user);
-    const spread = await firebase.getOtherUserSpread(uid);
-    diary
-      .sort(function (a, b) {
-        return a.time.seconds - b.time.seconds;
-      })
-      .reverse();
 
-    return {
-      ...profile,
-      userUID: uid,
-      diary: diary,
-      spread: spread,
-      seeMore: false,
-    };
-  }
-  async function getAllFollowingDiaryAndSpread(user) {
-    const allDiary = await firebase.getAllFollowingDiary(user);
-    const spread = await firebase.getAllFollowingSpread(user);
-    const allDiaryAndSpread = [...allDiary, ...spread];
-    allDiaryAndSpread &&
-      (await allDiaryAndSpread
-        .sort(function (a, b) {
-          return a.time.seconds - b.time.seconds;
-        })
-        .reverse());
-    return allDiaryAndSpread;
-  }
-
-  async function getAllFollowingSnapShop(user) {
-    const allPerson = [...user.following, user.userUID];
-    const data = [];
-    allPerson.map(async (person) => {
-      const docRef = doc(db, "users", person);
-      const getFollowingUser = await getDoc(docRef);
-      const followingUser: any = getFollowingUser.data();
-      const q = query(
-        collection(db, "users", person, "diary"),
-        where("secret", "==", false)
-      );
-      // friendsPostsRef.current
-
-      onSnapshot(q, (querySnapshot) => {
-        querySnapshot.docChanges().forEach((change) => {
-          if (change.type === "added") {
-            const newDocData: any = {
-              ...change.doc.data(),
-              user: followingUser.userUID,
-              userImg: followingUser.image,
-              userName: followingUser.name,
-            };
-            // data.push(newDocData);
-
-            if (newDocData.docId === undefined) {
-              setFriendsPosts((prev) => [newDocData, ...prev]);
-              setTimeout(() => setGetNewPosts(true), 1000);
-            }
-          }
-        });
-      });
-      // data
-      //   .sort(function (a, b) {
-      //     return a.time.seconds - b.time.seconds;
-      //   })
-      //   .reverse();
-      // console.log("排序", data);
-    });
-    // allPerson.map(async (person) => {
-    //   const docRef = doc(db, "users", person);
-    //   const getFollowingUser = await getDoc(docRef);
-    //   const followingUser: any = getFollowingUser.data();
-    //   const q = query(
-    //     collection(db, "spreads"),
-    //     where("userUID", "==", person)
-    //   );
-    //   onSnapshot(q, (querySnapshot) => {
-    //     querySnapshot.docChanges().forEach((change) => {
-    //       if (change.type === "added" && change.doc.data().time) {
-    //         const newDocData = {
-    //           ...change.doc.data(),
-    //           user: person,
-    //           userImg: followingUser.image,
-    //           userName: followingUser.name,
-    //         };
-    //         setFriendsPosts((prev) => [newDocData, ...prev]);
-    //         //allData.push(newDocData);
-    //       }
-    //     });
-    //   });
-    // });
-  }
-
-  useEffect(() => {
-    async function getAllData() {
-      if (uid) {
-        if (uid === userUID) {
-          //本人
-          getUserDesignAndDiary(userUID); //抓自己的
-          const friendsPost = await getAllFollowingDiaryAndSpread(user); //抓自己和別人的
-          setFriendsPosts(friendsPost);
-          getAllFollowingSnapShop(user); //監聽別人的
-
-          return () => {
-            getAllFollowingSnapShop(user);
-          };
-        } else {
-          const visited = await getOtherUserDiaryAndSpread(uid);
-          setVisitedUser(visited);
-        }
-      }
-    }
-    getAllData();
-  }, [isLogin, uid, user, page, userUID]);
-  if (!user || !visitedUser) {
+  if (!user) {
     return <></>;
   }
 
@@ -195,69 +73,39 @@ function Profile(): JSX.Element {
       {uid && <div className="w-screen h-[110px] mx-auto" />}
       <div className="mx-auto w-screen">
         {!uid ? (
-          <>
-            <Member />
-          </>
+          <Member />
         ) : (
           <div className="flex flex-row w-[1180px] z-20 h-[300px] justify-center gap-[2%] mx-auto ">
             <div className="h-[100%] w-2/12">
               {userUID && (
-                <Buttons setPage={setPage} page={page} getDiary={getDiary} />
+                <Buttons
+                  setPage={setPage}
+                  page={page}
+                  getDiary={getDiary}
+                  getUserSpread={getUserSpread}
+                />
               )}
             </div>
+
             <div className=" h-[100%] w-6/12">
-              {isLogin && (page === 2 || page === 3) ? (
-                <Toggle page={page} setPage={setPage} />
-              ) : (
-                <></>
+              {isLogin &&
+                userUID === uid &&
+                (page === "diaryCalender" || page === "diaryPost") && (
+                  <Toggle page={page} setPage={setPage} />
+                )}
+              {page === "diaryPost" && <NewGallery data={diary} page={page} />}
+              {page === "explore" && friendsPosts && (
+                <NewGallery data={friendsPosts} page={page} />
               )}
-              {/* {page === 1 && (
-                <Gallery
-                  visitedUser={visitedUser}
-                  setVisitedUser={setVisitedUser}
-                  userDiary={userDiary}
-                  uid={uid}
-                  userUID={userUID}
-                  friendsPosts={friendsPosts}
-                  setFriendsPosts={setFriendsPosts}
-                  page={page}
-                  // visitedUserRef={visitedUserRef}
-                  friendsPostsRef={friendsPostsRef}
-                  setGetNewPosts={setGetNewPosts}
-                  getNewPosts={getNewPosts}
-                />
-              )} */}
-              {page === 3 && <NewGallery data={diary} />}
-              {/* {page === 3 && (
-                <Gallery
-                  visitedUser={visitedUser}
-                  setVisitedUser={setVisitedUser}
-                  userDiary={userDiary}
-                  uid={uid}
-                  userUID={userUID}
-                  friendsPosts={friendsPosts}
-                  setFriendsPosts={setFriendsPosts}
-                  page={page}
-                  // visitedUserRef={visitedUserRef}
-                  setGetNewPosts={setGetNewPosts}
-                  getNewPosts={getNewPosts}
-                  friendsPostsRef={friendsPostsRef}
-                />
-              )} */}
-              {/* 編輯個人檔案 */}
-              {userUID === uid && page === 6 && <ProfileEdit />}
-              {/* 日記 */}
-              {userUID === uid && page === 2 && <Diary />}
-              {/* 設計牌陣 */}
-              {userUID === uid && page === 4 && (
-                <UserSpread userDesign={userDesign} visitedUser={visitedUser} />
-              )}
+              {userUID === uid && page === "editProfile" && <ProfileEdit />}
+              {userUID === uid && page === "diaryCalender" && <Diary />}
+              {page === "design" && <UserSpread userSpread={userSpread} />}
             </div>
+
             <div className=" h-[100%] w-3/12 ">
               <ProfileHeader
-                uid={uid}
-                visitedUser={visitedUser}
-                setVisitedUser={setVisitedUser}
+                userProfile={userProfile}
+                setUserProfile={setUserProfile}
                 following={following}
                 setFollowing={setFollowing}
                 setPage={setPage}
@@ -271,12 +119,12 @@ function Profile(): JSX.Element {
 }
 export default Profile;
 
-const Buttons = ({ page, setPage, getDiary }) => {
+const Buttons = ({ page, setPage, getDiary, getUserSpread }) => {
   const { userUID } = useContext(AuthContext);
   const { uid } = useParams();
 
-  const switchPage = (num: Number) => {
-    setPage(num);
+  const switchPage = (page: string) => {
+    setPage(page);
     return;
   };
   return (
@@ -285,34 +133,37 @@ const Buttons = ({ page, setPage, getDiary }) => {
     text-2xl items-start   ml-[3%] fixed shadowYellow gap-6"
     >
       {userUID === uid && (
-        <>
-          <UnderlineButton
-            value={"Explore"}
-            type={"profile"}
-            action={() => {
-              switchPage(1);
-            }}
-            selected={page === 1}
-          />
-          <UnderlineButton
-            value={"Diary"}
-            type={"profile"}
-            action={() => {
-              getDiary();
-              switchPage(2);
-            }}
-            selected={page === 2}
-          />
-          <UnderlineButton
-            value={"Design"}
-            type={"profile"}
-            action={() => {
-              switchPage(4);
-            }}
-            selected={page === 4}
-          />
-        </>
+        <UnderlineButton
+          value={"Explore"}
+          type={"profile"}
+          action={() => {
+            switchPage("explore");
+          }}
+          selected={page === "explore"}
+        />
       )}
+      <UnderlineButton
+        value={"Diary"}
+        type={"profile"}
+        action={() => {
+          getDiary();
+          if (userUID === uid) {
+            switchPage("diaryCalender");
+          } else {
+            switchPage("diaryPost");
+          }
+        }}
+        selected={page === "diaryCalander"}
+      />
+      <UnderlineButton
+        value={"Design"}
+        type={"profile"}
+        action={() => {
+          getUserSpread();
+          switchPage("design");
+        }}
+        selected={page === "design"}
+      />
     </div>
   );
 };
@@ -322,31 +173,21 @@ export function formatTimestamp(timestamp) {
   const date = new Date(
     timestamp.seconds * 1000 + timestamp.nanoseconds / 1000000
   );
-  //const diffInMs = now - date;
   const diffInMs = now.getTime() - date.getTime();
-  // 超過五天
   if (diffInMs >= 5 * 24 * 60 * 60 * 1000) {
     return date.toLocaleDateString();
   }
-
-  // 一天內
   if (diffInMs >= 24 * 60 * 60 * 1000) {
     const diffInDays = Math.floor(diffInMs / (24 * 60 * 60 * 1000));
     return `${diffInDays} day${diffInDays > 1 ? "s" : ""} ago`;
   }
-
-  // 一小時內
   if (diffInMs >= 60 * 60 * 1000) {
     const diffInHours = Math.floor(diffInMs / (60 * 60 * 1000));
     return `${diffInHours} hour${diffInHours > 1 ? "s" : ""} ago`;
   }
-
-  // 一分鐘內
   if (diffInMs >= 60 * 1000) {
     const diffInMinutes = Math.floor(diffInMs / (60 * 1000));
     return `${diffInMinutes} minute${diffInMinutes > 1 ? "s" : ""} ago`;
   }
-
-  // 剛剛
   return "just now";
 }

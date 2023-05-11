@@ -1,12 +1,28 @@
 import { DocumentData, Timestamp } from "firebase/firestore";
 
-//profile
-export interface Comment {
+export type Spread =
+  | number
+  | {
+      order: number;
+      disabled?: boolean;
+      value: string;
+      name: string;
+      card: number;
+      reverse: boolean;
+    };
+export type Comment = {
   comment: string;
-  userImage: string;
-  userName: string;
   user: string;
-}
+  userName: string;
+  userImage: string;
+};
+
+
+
+
+
+
+
 
 export interface SpreadItem {
   reverse: boolean;
@@ -115,15 +131,7 @@ export type SpreadPreviewProps = {
   key?: number;
   page?: number;
 };
-//gpt
-export interface Message {
-  value: string;
-  name: string;
-  order: number;
-  disabled: boolean;
-  card: number;
-  reverse: boolean;
-}
+
 export type FriendsData = {
   followers: friends[];
   following: friends[];
@@ -133,10 +141,4 @@ type friends = {
   sign: string;
   image: string;
   uid: string;
-};
-export type comment = {
-  userName: string;
-  userImage: string;
-  comment: string;
-  user: string;
 };

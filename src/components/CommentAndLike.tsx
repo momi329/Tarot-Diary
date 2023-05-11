@@ -4,7 +4,7 @@ import fill from "../images/heartfill.png";
 import like from "../images/heart.png";
 import commentIt from "../images/comment.png";
 import commenting from "../images/commenting.png";
-import { useContext } from "react";
+import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../context/authContext";
 import Alert from "./Alert";
 import { useNavigate } from "react-router-dom";
@@ -12,19 +12,17 @@ import { useNavigate } from "react-router-dom";
 const CommentAndLike = ({
   item,
   index,
-  user,
-  uid,
-  userUID,
   commentChange,
   setCommentChange,
-  friendsPosts,
-  setFriendsPosts,
   page,
-  visitedUser,
-  setVisitedUser,
+  openComment,
+  setOpenComment,
+  post,
+  setPost,
 }) => {
-  const { alert, setAlert } = useContext(AuthContext);
+  const { user, userUID, alert, setAlert } = useContext(AuthContext);
   const navigate = useNavigate();
+
   const handleCommentChange = (e) => {
     setCommentChange({
       ...commentChange,
@@ -34,148 +32,63 @@ const CommentAndLike = ({
       userImage: user.image,
     });
   };
-  const comment = async (index) => {
-    if (uid === userUID && page === 1) {
-      const newFriendPost = [...friendsPosts];
-      let comments = newFriendPost[index].comment;
-      comments = comments ? [...comments, commentChange] : [commentChange];
-      newFriendPost[index].comment = comments;
-      setFriendsPosts(newFriendPost);
-      await firebase.updateComment(newFriendPost[index]);
-      setCommentChange({
-        ...commentChange,
-        user: userUID,
-        comment: "",
-      });
-    } else {
-      const newVisitedUser = [...visitedUser.diary];
-      let comments = newVisitedUser[index].comment;
-      comments = comments ? [...comments, commentChange] : [commentChange];
-      newVisitedUser[index].comment = comments;
-      setVisitedUser({ ...visitedUser, diary: newVisitedUser });
-      await firebase.updateComment(newVisitedUser[index]);
-      setCommentChange({
-        ...commentChange,
-        user: userUID,
-        comment: "",
-      });
-    }
+  const comment = async (item, index: number) => {
+    const newItem = { ...item };
+    newItem.comment.push(commentChange);
+    await firebase.updateComment(newItem);
+    setCommentChange({
+      ...commentChange,
+      user: userUID,
+      comment: "",
+    });
+    setPost((prev) => {
+      const updateData = [...prev];
+      updateData[index] = newItem;
+      return updateData;
+    });
   };
-  const likeOrUnlike = async (index) => {
-    if (uid === userUID && page === 1) {
-      const newFriendPost = [...friendsPosts];
-      let likes = newFriendPost[index].like;
-      if (likes && likes.includes(user.userUID)) {
-        //取消喜歡
-        const remove = (i) => i === user.userUID;
-        const removeIndex = likes.findIndex(remove);
-        likes.splice(removeIndex);
+  const likeOrUnlike = async (item, index) => {
+    const newData = { ...item };
+    if (newData.like && newData.like.includes(user.userUID)) {
+      const remove = (i) => i === user.userUID;
+      const removeIndex = newData?.like.findIndex(remove);
+      newData.like.splice(removeIndex);
+      await firebase.updateLike(newData);
+    } else {
+      if (newData?.like) {
+        newData.like = [...newData.like, user.userUID];
       } else {
-        //喜歡
-        likes = likes ? [...likes, user.userUID] : [user.userUID];
+        newData.like = [user.userUID];
       }
-      newFriendPost[index].like = likes;
-      await firebase.updateLike(newFriendPost[index]);
-      setFriendsPosts(newFriendPost);
-    } else {
-      const newFriendPost = [...visitedUser.diary];
-      let likes = newFriendPost[index].like;
-      if (likes && likes.includes(user.userUID)) {
-        //取消喜歡
-        const remove = (i) => i === user.userUID;
-        const removeIndex = likes.findIndex(remove);
-        likes.splice(removeIndex);
-      } else {
-        //喜歡
-        likes = likes ? [...likes, user.userUID] : [user.userUID];
-      }
-      newFriendPost[index].like = likes;
-      await firebase.updateLike(newFriendPost[index]);
-      setVisitedUser({ ...visitedUser, diary: newFriendPost });
+      await firebase.updateLike(newData);
+      const newPost = [...post];
+      newPost[index] = newData;
+      setPost(newPost);
     }
   };
-  const deleteComment = async (index, q) => {
-    if (uid === userUID && page === 1) {
-      const newFriendPost = [...friendsPosts];
-      newFriendPost[index].comment.splice(q, 1);
-      setFriendsPosts(newFriendPost);
-      await firebase.updateComment(newFriendPost[index]);
-    } else {
-      const newVisitedUser = [...visitedUser.diary];
-      newVisitedUser[index].comment.splice(q, 1);
-      setVisitedUser({ ...visitedUser, diary: newVisitedUser });
-      await firebase.updateComment(newVisitedUser[index]);
-    }
+  const deleteComment = async (item, q) => {
+    //await firebase.updateComment(item);
+    const newData = { ...item };
+    console.log(item.comment[q], q);
+    newData.comment.splice(q, 1);
+    // setPost((prev) => {
+    //   const updateData = [...prev];
+    //   updateData[index] = newData;
+    //   return updateData;
+    // });
   };
-  const commentStatusChange = async (item, index) => {
-    let newData;
-    if (uid === userUID) {
-      newData = [...friendsPosts];
-    } else {
-      newData = [...visitedUser.diary];
-    }
-    if (item.addComment === true) {
-      item.addComment = false;
-      newData[index] = item;
-      uid === userUID
-        ? setFriendsPosts(newData)
-        : setVisitedUser({ ...visitedUser, diary: newData });
-      // setFriendsPosts(newData);
-    } else {
-      //todo
-      if (!newData[index].comment) {
-        newData.forEach((data) => {
-          if (data.addComment) {
-            data.addComment = false;
-          }
-        });
-        item.addComment = !item.addComment;
-        newData[index] = item;
-        uid === userUID
-          ? setFriendsPosts(newData)
-          : setVisitedUser({ ...visitedUser, diary: newData });
-
-        // setFriendsPosts(newData);
-      } else if (newData[index].comment.length === 0) {
-        newData.forEach((data) => {
-          if (data.addComment) {
-            data.addComment = false;
-          }
-        });
-        item.addComment = !item.addComment;
-        newData[index] = item;
-        uid === userUID
-          ? setFriendsPosts(newData)
-          : setVisitedUser({ ...visitedUser, diary: newData });
-
-        // setFriendsPosts(newData);
-      } else {
-        const comments = await firebase.getCommentsProfile(item.comment);
-        newData.forEach((data) => {
-          if (data.addComment) {
-            data.addComment = false;
-          }
-        });
-        item.addComment = !item.addComment;
-        item.comment = comments;
-        newData[index] = item;
-        uid === userUID
-          ? setFriendsPosts(newData)
-          : setVisitedUser({ ...visitedUser, diary: newData });
-
-        // setFriendsPosts(newData);
-      }
-    }
+  const commentStatusChange = async (index) => {
+    openComment === index ? setOpenComment(null) : setOpenComment(index);
   };
+
   return (
     <>
       <div className="ml-1 mt-5" key="index">
         <div className="flex items-center mb-2  text-pink">
-          {/* 按讚 */}
           <button
             className={`p-1 mr-2 flex-row flex items-center`}
             onClick={() => {
-              likeOrUnlike(index);
+              likeOrUnlike(item, index);
             }}
           >
             <img
@@ -185,11 +98,11 @@ const CommentAndLike = ({
             />
             <p className=" p-1 ml-1">{item.like ? item.like.length : 0}</p>
           </button>
-          {/* 留言 編寫 瀏覽 */}
+
           <button
             className="pl-3 p-1  mr-2 flex-row flex items-center"
             onClick={() => {
-              commentStatusChange(item, index);
+              commentStatusChange(index);
             }}
           >
             <img
@@ -202,71 +115,73 @@ const CommentAndLike = ({
             </p>
           </button>
         </div>
-        {item.addComment && (
+
+        {openComment === index && (
           <>
-            {item.comment &&
-              item.comment.map((comment, q) => (
-                <>
-                  <div
-                    className="flex flex-row items-center ml-2 my-3 text-sm"
-                    key={`${q}+1`}
-                  >
-                    <img
-                      src={comment.userImage}
-                      alt={comment.user}
-                      className="w-8 h-8 rounded-full cursor-pointer"
-                      onClick={() => navigate(`/profile/${comment.user}`)}
-                    />
-                    <p
-                      className="font-notoSansJP font-normal  ml-4 text-yellow tracking-widest
+            {item.comment?.map((comment, q: number) => (
+              <>
+                <div
+                  className="flex flex-row items-center ml-2 my-3 text-sm"
+                  key={`${q + 1}`}
+                >
+                  <img
+                    src={comment.userImage}
+                    alt={comment.user}
+                    className="w-8 h-8 rounded-full cursor-pointer"
+                    onClick={() => navigate(`/profile/${comment.user}`)}
+                  />
+                  <p
+                    className="font-notoSansJP font-normal  ml-4 text-yellow tracking-widest
                     whitespace-normal w-28 mr-2"
-                    >
-                      {comment.userName}
-                    </p>
-                    <p
-                      className="font-notoSansJP font-normal text-yellow tracking-widest 
+                  >
+                    {comment.userName}
+                  </p>
+                  <p
+                    className="font-notoSansJP font-normal text-yellow tracking-widest 
                   flex-grow w-[300px] break-words  mr-2 whitespace-pre-line"
-                    >
-                      {comment.comment}
-                    </p>
-                    {user.userUID === comment.user && (
+                  >
+                    {comment.comment}
+                  </p>
+                  {user.userUID === comment.user && (
+                    <>
                       <button
                         onClick={() => {
                           setAlert(true);
-                          // deleteComment(index, q);
                         }}
+                        key={q}
                         className="font-NT text-yellow shadowYellow hover:underline tracking-widest mt-[6px]"
                       >
                         Delete
                       </button>
-                    )}
-                    {alert && (
-                      <Alert
-                        value={"Are you sure you want to delete?"}
-                        buttonValue={[
-                          {
-                            value: "Cancel",
-                            type: "little",
-                            action: () => setAlert(false),
-                          },
-                          {
-                            value: "Confirm",
-                            type: "littlePink",
-                            action: (q) => {
-                              deleteComment(index, q);
-                              setTimeout(() => setAlert(false), 5000);
+                      {alert && (
+                        <Alert
+                          value={"Are you sure you want to delete?"}
+                          buttonValue={[
+                            {
+                              value: "Cancel",
+                              type: "little",
+                              action: () => setAlert(false),
                             },
-                          },
-                        ]}
-                      />
-                    )}
-                  </div>
-                  <div
-                    className="w-[100%] h-[1px] bg-white opacity-40"
-                    key={Math.floor(Math.random() * 900) + 100}
-                  />
-                </>
-              ))}
+                            {
+                              value: "Confirm",
+                              type: "littlePink",
+                              action: () => {
+                                deleteComment(item, q);
+                                setTimeout(() => setAlert(false), 5000);
+                              },
+                            },
+                          ]}
+                        />
+                      )}
+                    </>
+                  )}
+                </div>
+                <div
+                  className="w-[100%] h-[1px] bg-white opacity-40"
+                  key={Math.floor(Math.random() * 900) + 100}
+                />
+              </>
+            ))}
             <div className="group relative flex justify-between items-center mt-6">
               <textarea
                 id="comment"
@@ -281,7 +196,7 @@ const CommentAndLike = ({
                 type={"tiny"}
                 value={"Enter"}
                 disabled={commentChange.comment === ""}
-                action={() => comment(index)}
+                action={() => comment(item, index)}
               />
               <div
                 className={`${

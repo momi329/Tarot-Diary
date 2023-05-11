@@ -1,5 +1,5 @@
 import { initializeApp } from "firebase/app";
-import type { comment, FriendsData, SpreadData } from "./type";
+import type { Comment, FriendsData, SpreadData } from "./type";
 import {
   arrayRemove,
   DocumentData,
@@ -21,13 +21,7 @@ import {
   Timestamp,
 } from "firebase/firestore";
 import { GoogleAuthProvider, FacebookAuthProvider } from "firebase/auth";
-import {
-  getStorage,
-  ref,
-  uploadBytes,
-  uploadBytesResumable,
-  getDownloadURL,
-} from "firebase/storage";
+import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 const firebaseConfig = {
   apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
   authDomain: "tarot-diary.firebaseapp.com",
@@ -111,7 +105,6 @@ const firebase = {
     });
     return diaryData;
   },
-
   async getDesign(id: string) {
     try {
       const querySnapshot = await getDocs(collection(db, "spreads"));
@@ -124,7 +117,7 @@ const firebase = {
       if (!spreadData[0].userUID) {
         spreadData[0].author = "預設";
       } else {
-        const docRef = doc(db, "users", `${spreadData[0].userUID}`);
+        const docRef = doc(db, "users", `${spreadData[0]?.userUID}`);
         const docSnap = await getDoc(docRef);
         if (docSnap.exists()) {
           spreadData[0].author = docSnap.data().name;
@@ -160,8 +153,6 @@ const firebase = {
     });
     return docRef.id;
   },
-
-  //參訪其他人頁面
   async getProfile(userUID) {
     const docRef = doc(db, "users", `${userUID}`);
     const docSnap = await getDoc(docRef);
@@ -178,7 +169,6 @@ const firebase = {
     } else {
     }
   },
-  //參訪其他人頁面
   async getOtherUserDiary(uid, user) {
     const docRef = doc(db, "users", uid);
     const data = await getDoc(docRef);
@@ -200,8 +190,6 @@ const firebase = {
     }
     return diary;
   },
-
-  //參訪其他人頁面
   async getOtherUserSpread(uid) {
     const querySnapshot = await getDocs(collection(db, "spreads"));
     let data: DocumentData[] = [];
@@ -214,8 +202,6 @@ const firebase = {
     );
     return newData;
   },
-
-  //追蹤中的日記
   async getAllFollowingDiary(user) {
     let diary: DocumentData[] = [];
     await Promise.all(
@@ -256,7 +242,6 @@ const firebase = {
     });
     return diary;
   },
-  //追蹤中的排陣
   async getAllFollowingSpread(user) {
     let spread: DocumentData[] = [];
     await Promise.all(
@@ -357,50 +342,59 @@ const firebase = {
   },
   async getFriendsProfile(followers, following) {
     const friendsData: FriendsData = { followers: [], following: [] };
-    followers &&
-      followers.length !== 0 &&
-      (await followers.forEach(async (i) => {
-        const docRef = doc(db, "users", i);
-        const docSnap = await getDoc(docRef);
-        if (docSnap.exists()) {
-          const followers = {
-            name: docSnap.data().name,
-            image: docSnap.data().image,
-            sign: docSnap.data().sign,
-            uid: docSnap.data().userUID,
-          };
-          friendsData.followers.push(followers);
-        } else {
-          console.log("no document");
-        }
-      }));
-    following &&
-      following.length !== 0 &&
-      (await following.forEach(async (i) => {
-        const docRef = doc(db, "users", i);
-        const docSnap = await getDoc(docRef);
-        if (docSnap.exists()) {
-          const following = {
-            name: docSnap.data().name,
-            image: docSnap.data().image,
-            sign: docSnap.data().sign,
-            uid: docSnap.data().userUID,
-          };
-          friendsData.following.push(following);
-        } else {
-          console.log("no document");
-        }
-      }));
+
+    const followersPromises = followers.map(async (i) => {
+      const docRef = doc(db, "users", i);
+      const docSnap = await getDoc(docRef);
+      if (docSnap.exists()) {
+        const follower = {
+          name: docSnap.data().name,
+          image: docSnap.data().image,
+          sign: docSnap.data().sign,
+          uid: docSnap.data().userUID,
+        };
+        return follower;
+      } else {
+        console.log("no document");
+        return null;
+      }
+    });
+
+    const followingPromises = following.map(async (i) => {
+      const docRef = doc(db, "users", i);
+      const docSnap = await getDoc(docRef);
+      if (docSnap.exists()) {
+        const follow = {
+          name: docSnap.data().name,
+          image: docSnap.data().image,
+          sign: docSnap.data().sign,
+          uid: docSnap.data().userUID,
+        };
+        return follow;
+      } else {
+        console.log("no document");
+        return null;
+      }
+    });
+
+    const followersData = await Promise.all(followersPromises);
+    const followingData = await Promise.all(followingPromises);
+
+    friendsData.followers = followersData.filter(
+      (follower) => follower !== null
+    );
+    friendsData.following = followingData.filter((follow) => follow !== null);
+
     return friendsData;
   },
   async getCommentsProfile(data) {
-    const comments: comment[] = [];
+    const comments: Comment[] = [];
     await Promise.all(
       data.map(async (i) => {
         const docRef = doc(db, "users", i.user);
         const docSnap = await getDoc(docRef);
         if (docSnap.exists()) {
-          const comment: comment = {
+          const comment: Comment = {
             userName: docSnap.data().name,
             userImage: docSnap.data().image,
             comment: i.comment,
@@ -431,22 +425,17 @@ const firebase = {
     await deleteDoc(doc(db, "users", userUID, "diary", docID));
   },
   async updateComment(data) {
-    // 就是日記
     try {
       if (data.docId) {
         const diaryRef = doc(db, "users", data.user, "diary", data.docId);
         await updateDoc(diaryRef, {
           comment: data.comment,
-          time: Timestamp.fromDate(new Date()),
         });
       } else {
-        //牌陣
         const spreadRef = doc(db, "spreads", data.spreadId);
         await updateDoc(spreadRef, {
           comment: data.comment,
-          time: Timestamp.fromDate(new Date()),
         });
-        //alert("成功");
       }
     } catch (e) {
       console.error("error", e);
