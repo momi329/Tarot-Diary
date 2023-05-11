@@ -1,84 +1,59 @@
-import { useNavigate, useParams } from "react-router-dom";
 import { useState, useEffect, useContext, useReducer } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import { AuthContext } from "../../context/authContext";
-import cards from "../../tarotcard/tarot-images";
-import firebase from "../../utils/firebase";
-import Draggable from "../Draggable";
+
 import AskAndNote from "../../components/AskAndNote";
-import Button from "../../components/Button";
-import { SpreadPlace } from "./SpreadPlace";
-import type { SpreadData, DesignSpreadData } from "../../utils/type";
-import UnderlineButton from "../../components/UnderlineButton";
-import { getRandomCards, getRandomBool } from "../../utils/function";
-import UnderlineInput from "../../components/UnderlineInput";
 import ChooseCard from "./ChooseCard";
+import useGetDesign from "./hooks/useGetDesign";
+import SpreadInfo from "./SpreadInfo";
+import { SpreadPlace } from "./SpreadPlace";
 
-const initialDivinedData: DesignSpreadData = {
-  userUID: "",
-  title: "",
-  image: "",
-  spread: [],
-  description: "",
-  spreadId: "",
-  question: "",
-  secret: false,
-};
+import Draggable from "../Draggable";
+import Button from "../../components/Button";
+import UnderlineInput from "../../components/UnderlineInput";
 
-function reducer(_, action) {
+import cards from "../../tarotcard/tarot-images";
+import { getRandomCards, getRandomBool } from "../../utils/function";
+
+export enum ActionType {
+  Preview = "preview",
+  Start = "start",
+  End = "end",
+}
+
+function reducer(_, action: { type: ActionType }): ActionType {
   switch (action.type) {
-    case "preview": {
-      return "preview";
+    case ActionType.Preview: {
+      return ActionType.Preview;
     }
-    case "start": {
-      return "start";
+    case ActionType.Start: {
+      return ActionType.Start;
     }
-    case "pickEnoughCards": {
-      return "pickEnoughCards";
-    }
-    case "end": {
-      return "end";
+    case ActionType.End: {
+      return ActionType.End;
     }
   }
   throw Error("Unknown action: " + action.type);
 }
 
 function Spread() {
+  const { id } = useParams();
+  const navigate = useNavigate();
   const { isLogin, userUID } = useContext(AuthContext);
-  const [divining, dispatch] = useReducer(reducer, "preview");
-  const [spreadData, setSpreadData] = useState<SpreadData | null>(null);
-  const [divinedData, setDivinedData] =
-    useState<DesignSpreadData>(initialDivinedData);
+  const [divining, dispatch] = useReducer(reducer, ActionType.Preview);
   const [askAI, setAskAI] = useState<boolean>(false);
   const [edit, setEdit] = useState<boolean>(false);
-  const [pickCard, setPickCard] = useState<Number[]>([0, 0]);
+  const {
+    spreadData,
+    setSpreadData,
+    divinedData,
+    setDivinedData,
+    getDesign,
+    pickCard,
+    setPickCard,
+  } = useGetDesign();
 
-  const { id } = useParams();
   const tarot = cards.cards;
-
-  async function getDesign(id: string): Promise<void> {
-    const newData = await firebase.getDesign(id);
-    if (newData) {
-      setSpreadData(newData[0]);
-      setDivinedData({
-        userUID: newData[0].userUID,
-        title: newData[0].title,
-        image: newData[0].image,
-        spread: [],
-        description: newData[0].description,
-        spreadId: newData[0].spreadId,
-        question: "",
-        secret: false,
-      });
-      setPickCard([
-        0,
-        newData[0].spread.reduce(
-          (acc: any, crr) => (crr !== 0 ? acc + 1 : acc),
-          0
-        ),
-      ]);
-    }
-  }
-  const navigate = useNavigate();
 
   useEffect(() => {
     const divine = localStorage.getItem("myResult");
@@ -86,13 +61,10 @@ function Spread() {
       const data = JSON.parse(divine);
       setSpreadData(data);
       setDivinedData(data);
-      dispatch({ type: "end" });
+      dispatch({ type: ActionType.End });
       localStorage.removeItem("myResult");
     } else {
-      if (id) {
-        console.log("id");
-        getDesign(id);
-      }
+      id && getDesign();
     }
   }, [id, edit]);
 
@@ -101,8 +73,8 @@ function Spread() {
       (acc: any, crr) => (crr !== 0 ? acc + 1 : acc),
       0
     );
-    const randomCard = await getRandomCards(number);
-    const randomReverse = await getRandomBool(number);
+    const randomCard = getRandomCards(number);
+    const randomReverse = getRandomBool(number);
     const modifiedData = spreadData?.spread.reduce(
       (
         acc: any,
@@ -125,7 +97,7 @@ function Spread() {
     );
     const newData = { ...divinedData, spread: modifiedData };
     setDivinedData(newData);
-    dispatch({ type: "end" });
+    dispatch({ type: ActionType.End });
   };
 
   if (!spreadData) {
@@ -145,50 +117,11 @@ function Spread() {
           className={`mx-auto text-yellow w-[1180px]  relative mb-20 mt-40 m-[10px] 
           backdrop-blur-sm bg-black/30 `}
         >
-          <div className="flex flex-row justify-between mx-8 mt-8">
-            <span className="flex flex-col">
-              <h1
-                className={`text-3xl font-NT  tracking-widest mt-4 
-                ${
-                  spreadData?.userUID === "all" ? "shadowYellow text-5xl" : ""
-                }`}
-              >
-                {spreadData?.title}
-              </h1>
-              <p className="w-[60%] leading-7 text-sm mt-5">
-                {spreadData?.description}
-              </p>
-              <div className="font-NT text-yellow text-2xl mt-8 mb-5 tracking-widest shadowYellow ">
-                PICK{" "}
-                {spreadData?.spread.reduce(
-                  (acc: any, crr) => (crr !== 0 ? acc + 1 : acc),
-                  0
-                )}{" "}
-                CARDS
-              </div>
-            </span>
-
-            {divining === "preview" && userUID === spreadData?.userUID ? (
-              <Button
-                action={() => {
-                  setEdit(true);
-                }}
-                value={"Edit"}
-                type={"little"}
-              />
-            ) : (
-              spreadData?.author && (
-                <div>
-                  <div>Author</div>
-                  <UnderlineButton
-                    value={spreadData.author}
-                    type={"memberPage"}
-                    action={() => navigate(`/profile/${spreadData.userUID}`)}
-                  />
-                </div>
-              )
-            )}
-          </div>
+          <SpreadInfo
+            spreadData={spreadData}
+            divining={divining}
+            setEdit={setEdit}
+          />
 
           {divining === "preview" && (
             <div className="flex gap-3 mb-8 ml-8 w-[280px]">
@@ -197,7 +130,7 @@ function Spread() {
                   if (!isLogin) {
                     navigate(`/signin`);
                   }
-                  dispatch({ type: "start" });
+                  dispatch({ type: ActionType.Start });
                 }}
                 value={"Start"}
                 type={"big"}
@@ -236,14 +169,15 @@ function Spread() {
             </div>
           )}
 
-          {divining === "start" ? (
+          {divining === "start" && (
             <ChooseCard
               handleClickDivine={handleClickDivine}
               pickCard={pickCard}
               setPickCard={setPickCard}
               divinedData={divinedData}
             />
-          ) : (
+          )}
+          {(divining === "preview" || divining === "end") && (
             <SpreadPlace
               type={divining === "end" ? divinedData : spreadData}
               tarot={tarot}

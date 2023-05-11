@@ -3,6 +3,7 @@ import firebase from "../../../utils/firebase";
 import { useParams } from "react-router-dom";
 
 const useGetUserProfile = () => {
+  //TODO: any
   const [userProfile, setUserProfile] = useState<any>();
   const { uid } = useParams();
   const getUserProfile = useCallback(async () => {

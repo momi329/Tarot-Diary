@@ -11,27 +11,8 @@ import {
   Timestamp,
 } from "firebase/firestore";
 import { useParams } from "react-router-dom";
-import type { Spread, Comment } from "../../../utils/type";
+import type { FriendsPosts } from "../../../utils/type";
 
-type FriendsPosts = {
-  content?: string;
-  image: string;
-  spread: Spread[];
-  description: string;
-  secret?: boolean;
-  time: Timestamp;
-  askGpt: string;
-  title: string;
-  like: string[];
-  docId?: string;
-  question: string;
-  spreadId: string;
-  userUID: string;
-  user: string;
-  userImg: string;
-  userName: string;
-  comment?: Comment[];
-};
 function useGetUserExplore() {
   const { user } = useContext(AuthContext);
   const [friendsPosts, setFriendsPosts] = useState<FriendsPosts[] | null>(null);
@@ -45,6 +26,7 @@ function useGetUserExplore() {
       allPerson.map(async (person) => {
         const docRef = doc(db, "users", person);
         const getFollowingUser = await getDoc(docRef);
+        // TODO: any
         const followingUser: any = getFollowingUser.data();
         const q = query(
           collection(db, "users", person, "diary"),

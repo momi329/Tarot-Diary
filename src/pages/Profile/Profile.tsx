@@ -1,44 +1,39 @@
-import { useState, useEffect, useContext, useRef } from "react";
+import { useState, useEffect, useContext } from "react";
 import { AuthContext } from "../../context/authContext";
-import { useNavigate, useParams } from "react-router-dom";
-//firebase
-import firebase from "../../utils/firebase";
-import {
-  collection,
-  query,
-  where,
-  onSnapshot,
-  doc,
-  getDoc,
-  DocumentData,
-  getDocs,
-} from "firebase/firestore";
-import { db } from "../../utils/firebase";
-//components
+import { useParams } from "react-router-dom";
+// TODO: format
+// 1: type import type{} 2: From outside eg React, external libraries
+// 3: Not from this folder 4: From this folder
 import Diary from "../../components/Diary";
 import Toggle from "./Toggle";
-import Gallery from "./Gallery";
 import ProfileHeader from "./ProfileHeader";
 import UserSpread from "./UserSpread";
 import ProfileEdit from "./ProfileEdit";
-//type
-import type { VisitedUser } from "../../utils/type";
+
 import Member from "../Member";
-import LoadingPage from "../LoadingPage";
 import UnderlineButton from "../../components/UnderlineButton";
-import type { TarotData } from "../../utils/type";
 import useGetUserProfile from "./hooks/useGetUserProfile.tsx";
 import useGetUserDiary from "./hooks/useGetUserDiary";
 import NewGallery from "./NewGallery";
 import useGetUserExplore from "./hooks/useGetUserExplore";
 import useGetUserSpread from "./hooks/useGetUserSpread";
+// TODO: enum used by different files should be in types folder
+export enum Page {
+  DiaryCalendar = "diaryCalendar",
+  DiaryPost = "diaryPost",
+  Explore = "explore",
+  EditProfile = "editProfile",
+  Design = "design",
+}
+
 function Profile(): JSX.Element {
   const { isLogin, user, userUID } = useContext(AuthContext);
   const { uid } = useParams();
-  const [page, setPage] = useState<string>(
-    userUID === uid ? "explore" : "diaryPost"
+  const [page, setPage] = useState<Page>(
+    userUID === uid ? Page.Explore : Page.DiaryPost
   );
   const [following, setFollowing] = useState<boolean>(false);
+
   const { userProfile, setUserProfile, getUserProfile } = useGetUserProfile();
   const { diary, getDiary } = useGetUserDiary();
   const { friendsPosts } = useGetUserExplore();
@@ -49,10 +44,10 @@ function Profile(): JSX.Element {
     initialFollowing();
     if (userUID !== uid) {
       getDiary();
-      setPage("diaryPost");
+      setPage(Page.DiaryPost);
     }
     if (userUID === uid) {
-      setPage("explore");
+      setPage(Page.Explore);
     }
   }, [uid]);
 
@@ -90,16 +85,18 @@ function Profile(): JSX.Element {
             <div className=" h-[100%] w-6/12">
               {isLogin &&
                 userUID === uid &&
-                (page === "diaryCalender" || page === "diaryPost") && (
+                (page === Page.DiaryCalendar || page === Page.DiaryPost) && (
                   <Toggle page={page} setPage={setPage} />
                 )}
-              {page === "diaryPost" && <NewGallery data={diary} page={page} />}
-              {page === "explore" && friendsPosts && (
+              {page === Page.DiaryPost && (
+                <NewGallery data={diary} page={page} />
+              )}
+              {page === Page.Explore && friendsPosts && (
                 <NewGallery data={friendsPosts} page={page} />
               )}
-              {userUID === uid && page === "editProfile" && <ProfileEdit />}
-              {userUID === uid && page === "diaryCalender" && <Diary />}
-              {page === "design" && <UserSpread userSpread={userSpread} />}
+              {userUID === uid && page === Page.EditProfile && <ProfileEdit />}
+              {userUID === uid && page === Page.DiaryPost && <Diary />}
+              {page === Page.Design && <UserSpread userSpread={userSpread} />}
             </div>
 
             <div className=" h-[100%] w-3/12 ">
@@ -139,7 +136,7 @@ const Buttons = ({ page, setPage, getDiary, getUserSpread }) => {
           action={() => {
             switchPage("explore");
           }}
-          selected={page === "explore"}
+          selected={page === Page.Explore}
         />
       )}
       <UnderlineButton
@@ -153,7 +150,7 @@ const Buttons = ({ page, setPage, getDiary, getUserSpread }) => {
             switchPage("diaryPost");
           }
         }}
-        selected={page === "diaryCalander"}
+        selected={page === Page.DiaryCalendar}
       />
       <UnderlineButton
         value={"Design"}
@@ -162,7 +159,7 @@ const Buttons = ({ page, setPage, getDiary, getUserSpread }) => {
           getUserSpread();
           switchPage("design");
         }}
-        selected={page === "design"}
+        selected={page === Page.Design}
       />
     </div>
   );

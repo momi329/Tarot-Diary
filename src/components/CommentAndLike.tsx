@@ -14,7 +14,6 @@ const CommentAndLike = ({
   index,
   commentChange,
   setCommentChange,
-  page,
   openComment,
   setOpenComment,
   post,

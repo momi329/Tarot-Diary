@@ -1,15 +1,15 @@
-import { DocumentData } from "firebase/firestore";
 import { useEffect, useState, useRef, useContext } from "react";
 import SpreadPreview from "../components/SpreadPreview";
 import Arrow from "../images/Arrow";
 import Star from "../images/Star";
+
 import { AuthContext } from "../context/authContext";
 function Divination() {
   const [page, setPage] = useState(0);
   const listRef = useRef<HTMLDivElement>(null);
   const { spreads } = useContext(AuthContext);
 
-  function scrollToIndex(index) {
+  function scrollToIndex(index: number) {
     if (spreads && index === spreads.length) {
       index = 0;
       setPage(0);
@@ -47,7 +47,6 @@ function Divination() {
       } else {
         addPage = 0;
       }
-
       scrollToIndex(addPage);
       setPage(addPage);
     }
@@ -75,10 +74,8 @@ function Divination() {
             <p className="font-maintelas  text-[128px] text-pink absolute top-[-110px] left-[-100px] rotate-[-20deg]">
               Divine
             </p>
-            {/* 每日推薦 */}
 
             <div className="relative flex">
-              {/* 左箭頭 */}
               <div
                 className="scale-y-[0.5] stroke-1 stroke-white 
               cursor-pointer rotate-[-90deg] absolute left-[-80px] top-1/3  opacity-70  "
@@ -91,7 +88,6 @@ function Divination() {
                   color={"#fff"}
                 />{" "}
               </div>
-              {/* 右箭頭 */}
               <div className="scale-y-[0.5] stroke-1 stroke-white cursor-pointer rotate-90 absolute right-[-80px] top-1/3  opacity-70  ">
                 <Arrow
                   size={"80px"}
@@ -101,7 +97,7 @@ function Divination() {
                   color={"#fff"}
                 />{" "}
               </div>
-              {/* 牌陣 */}
+
               <div
                 className="relative overflow-hidden w-full  h-[400px] flex-nowrap shrink flex flex-row
              mt-5  my-8 gap-5 items-end "
@@ -109,14 +105,14 @@ function Divination() {
               >
                 <div className="w-[200px] h-1/2   shrink-0" />
                 {spreads?.map(
-                  (spread, index) =>
-                    index < 6 && (
+                  (spread, spreadCount) =>
+                    spreadCount < 6 && (
                       <SpreadPreview
-                        type={"index"}
+                        type={"carousel"}
                         spread={spread}
-                        index={index}
-                        key={index}
+                        index={spreadCount}
                         page={page}
+                        key={spreadCount}
                       />
                     )
                 )}
@@ -131,7 +127,6 @@ function Divination() {
               <Star color={"#E18EA5"} />
             </div>
 
-            {/* 隨機 */}
             <div className="flex flex-row gap-5 items-center mb-4 mt-10">
               <Star color={"#E18EA5"} />
               <p className="font-NT text-3xl text-yellow shadowYellow">
@@ -141,14 +136,14 @@ function Divination() {
 
             <div className="flex flex-wrap w-full mb-40 gap-4">
               {spreads?.map(
-                (spread, index) =>
-                  index > 5 && (
+                (spread, spreadCount) =>
+                  spreadCount > 5 && (
                     <SpreadPreview
-                      type={"personal"}
+                      type={"carousel"}
                       spread={spread}
-                      index={index}
-                      key={index}
+                      index={spreadCount}
                       page={page}
+                      key={spreadCount}
                     />
                   )
               )}

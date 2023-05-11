@@ -11,18 +11,9 @@ import {
   FacebookAuthProvider,
 } from "firebase/auth";
 
-export interface User {
-  name: string;
-  image: string;
-  sign: string;
-  email: string;
-  followers: string[];
-  following: string[];
-  favorite: [];
-  userUID: string;
-}
+import type { User } from "../utils/type";
 
-interface AuthContextType {
+type AuthContextType = {
   isLogin: boolean;
   user: User;
   loading: boolean;
@@ -39,7 +30,7 @@ interface AuthContextType {
   setOpenSignIn: React.Dispatch<React.SetStateAction<boolean>>;
   alert: boolean;
   setAlert: React.Dispatch<React.SetStateAction<boolean>>;
-}
+};
 
 function shuffle(array) {
   return array.sort(() => Math.random() - 0.5);

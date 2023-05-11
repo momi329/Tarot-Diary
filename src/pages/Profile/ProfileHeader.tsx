@@ -1,6 +1,6 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useState } from "react";
 import { AuthContext } from "../../context/authContext";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 
 import firebase from "../../utils/firebase";
 
@@ -9,8 +9,6 @@ import Star from "../../images/Star";
 import { FriendsData } from "../../utils/type";
 import Friends from "./Friends";
 
-import type { VisitedUser } from "../../utils/type";
-import type { User } from "../../context/authContext";
 const ProfileHeader = ({
   following,
   setFollowing,
@@ -40,7 +38,7 @@ const ProfileHeader = ({
       setUserProfile(newData);
     }
   }
-  async function unfollow(uid, userUID) {
+  async function unfollow(uid: string, userUID: string) {
     await firebase.unfollow(uid, userUID);
     setFollowing(false);
     if (userUID !== uid) {
@@ -52,7 +50,7 @@ const ProfileHeader = ({
       setUserProfile(newData);
     }
   }
-  async function getFriends(followers, following) {
+  async function getFriends(followers: string[], following: string[]) {
     const profile = await firebase.getFriendsProfile(followers, following);
     setFriends(profile);
   }
@@ -96,13 +94,13 @@ const ProfileHeader = ({
     );
   return (
     <>
-      {openFriends.followers || openFriends.following ? (
+      {(openFriends.followers || openFriends.following) && (
         <Friends
           openFriends={openFriends}
           setOpenFriends={setOpenFriends}
           friends={friends}
         />
-      ) : null}
+      )}
       <div className=" bg-black bg-opacity-30  fixed">
         <div className="flex flex-row pt-6 mx-auto justify-center gap-4 ">
           <img
@@ -173,7 +171,9 @@ const ProfileHeader = ({
             <div className="w-[250px]">
               <Button
                 action={() => {
-                  following ? unfollow(uid, userUID) : follow(uid, userUID);
+                  uid && following
+                    ? unfollow(uid, userUID)
+                    : follow(uid, userUID);
                 }}
                 type={"big"}
                 value={following ? "Unfollow" : "Follow"}

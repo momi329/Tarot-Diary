@@ -1,3 +1,5 @@
+import { Page } from "./Profile";
+
 function Toggle({ page, setPage }) {
   return (
     <div className="flex flex-row items-center self-end gap-2">
@@ -8,7 +10,7 @@ function Toggle({ page, setPage }) {
         <input
           id="switchUpload"
           type="checkbox"
-          checked={page === "diaryCalender"}
+          checked={page === Page.DiaryPost}
           onChange={() => {
             page === "diaryPost"
               ? setPage("diaryCalender")
@@ -19,14 +21,14 @@ function Toggle({ page, setPage }) {
         <label htmlFor="switchUpload">
           <div
             className={`absolute top-0 left-0 right-0 bottom-0 rounded-full transition duration-300 ${
-              page === "diaryCalender"
+              page === Page.DiaryCalendar
                 ? "bg-pink bg-opacity-60"
                 : "bg-yellow bg-opacity-40"
             }`}
           >
             <div
               className={`absolute bottom-[2px] left-[2px] w-5 h-5 bg-white rounded-full transition duration-300 transform ${
-                page === "diaryCalender"
+                page === Page.DiaryCalendar
                   ? "translate-x-[24px]"
                   : "translate-x-0"
               }`}

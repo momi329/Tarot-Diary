@@ -7,7 +7,7 @@ import cards from "../../tarotcard/tarot-images";
 
 import SpreadPreview from "../../components/SpreadPreview";
 import { SpreadPlace } from "../Spread/SpreadPlace";
-import { formatTimestamp } from "./Profile";
+import { Page, formatTimestamp } from "./Profile";
 import Viewer from "../../components/Editor/Viewer";
 import Editor from "../../components/Editor/Editor";
 import CommentAndLike from "../../components/CommentAndLike";
@@ -18,9 +18,13 @@ import Star from "../../images/Star";
 import Loading from "../../components/Loading";
 import Moon from "../../images/Moon";
 import Alert from "../../components/Alert";
-
-const NewGallery = ({ data, page }) => {
-  const [edit, setEdit] = useState(null);
+import { Diary, FriendsPosts } from "../../utils/type";
+type GalleryProps = {
+  data: Diary[] | FriendsPosts[];
+  page: Page;
+};
+const NewGallery = ({ data, page }: GalleryProps) => {
+  const [edit, setEdit] = useState<boolean[] | null>(null);
   const [newEdit, setNewEdit] = useState({ secret: false, content: "" });
   const [commentChange, setCommentChange] = useState({
     user: "",
@@ -29,9 +33,9 @@ const NewGallery = ({ data, page }) => {
     comment: "",
   });
   const [openComment, setOpenComment] = useState<number | null>(null);
-  const { user, userUID, loading, setLoading, alert, setAlert } =
+  const { userUID, loading, setLoading, alert, setAlert } =
     useContext(AuthContext);
-  const [post, setPost] = useState<[] | null>(null);
+  const [post, setPost] = useState<Diary[] | FriendsPosts[] | null>(null);
   const [ifMore, setIfMore] = useState(true);
   const tarot = cards.cards;
   const navigate = useNavigate();
@@ -45,19 +49,25 @@ const NewGallery = ({ data, page }) => {
         return a.time.seconds - b.time.seconds;
       })
       .reverse();
-    setEdit(Array(newData.length).fill(false));
-    newData?.length < 5 ? setPost(newData) : setPost(newData.slice(0, 5));
+    newData && setEdit(Array(newData.length).fill(false));
+    if (newData.length < 5) {
+      setPost(newData as Diary[] | FriendsPosts[]);
+    } else {
+      setPost(newData.slice(0, 5) as Diary[] | FriendsPosts[]);
+    }
   }, [data, page]);
 
   const handleSave = async (index) => {
     if (!post) return;
     await firebase.updateDiary(userUID, post[index].docId, newEdit);
     post[index].content = newEdit.content;
+    if (!edit) return;
     const newData = [...edit];
     newData[index] = false;
     setEdit(newData);
   };
   const handleEdit = (index, secret) => {
+    if (!edit) return;
     const newData = [...edit];
     newData[index] = true;
     setEdit(newData);
@@ -68,15 +78,17 @@ const NewGallery = ({ data, page }) => {
   };
   const DeletePost = async (userUID, docID, index) => {
     await firebase.deleteDiary(userUID, docID);
+    if (!post) return;
     const newData = [...post];
     const deleteIndex = newData.findIndex((post) => post.docId === docID);
     const target = newData.splice(deleteIndex, 1);
     console.log("deleted", target);
-    setPost(newData);
+    setPost(newData as Diary[] | FriendsPosts[]);
     setAlert(false);
   };
   const seeMore = () => {
     if (!data) return;
+    if (!post) return;
     setLoading(true);
     const newData = [...data];
     newData
@@ -88,14 +100,15 @@ const NewGallery = ({ data, page }) => {
     newData?.length < 5 && setIfMore(false);
     setTimeout(() => {
       newData?.length < more && setIfMore(false);
-      setPost(newData?.slice(0, more));
+      setPost(newData?.slice(0, more) as Diary[] | FriendsPosts[]);
       setLoading(false);
     }, 1500);
   };
   const seeMoreGPT = (index: number) => {
+    if (!post) return;
     const newPost = [...post];
     newPost[index].seeMore = !newPost[index].seeMore;
-    setPost(newPost);
+    setPost(newPost as Diary[] | FriendsPosts[]);
   };
   if (!post)
     return (
@@ -124,7 +137,7 @@ const NewGallery = ({ data, page }) => {
       </div>
     );
   if (userUID === uid) {
-    if (data === 0) {
+    if (!data) {
       return (
         <>
           <p className="text-5xl text-yellow font-NT shadowYellow mt-2">
@@ -232,11 +245,11 @@ const NewGallery = ({ data, page }) => {
                     <UnderlineButton
                       type={"meanings"}
                       action={() => {
-                        edit[index]
+                        edit && edit[index]
                           ? handleSave(index)
                           : handleEdit(index, item.secret);
                       }}
-                      value={edit[index] ? "Save" : "Edit"}
+                      value={edit && edit[index] ? "Save" : "Edit"}
                     />
                   </div>
 
@@ -248,7 +261,7 @@ const NewGallery = ({ data, page }) => {
                     />
                   </div>
 
-                  {!edit[index] && alert && (
+                  {edit && !edit[index] && alert && (
                     <Alert
                       value={"Are you sure you want to delete?"}
                       buttonValue={[
@@ -272,7 +285,7 @@ const NewGallery = ({ data, page }) => {
                       ]}
                     />
                   )}
-                  {edit[index] ? (
+                  {edit && edit[index] ? (
                     <select
                       className="outline-none font-NT text-yellow pl-2 pr-20 bg-green ml-auto
                  w-[30%] h-[38px] pt-1 text-base item-end bg-opacity-90 rounded-md tracking-widest inline-block"
@@ -393,7 +406,7 @@ const NewGallery = ({ data, page }) => {
                     <p className="ml-3 mb-2 shadowYellow text-yellow font-NT  tracking-wider text-lg">
                       Memo
                     </p>
-                    {userUID === uid && edit[index] ? (
+                    {userUID === uid && edit && edit[index] ? (
                       <Editor
                         value={item.content}
                         onChange={onEditorContentChanged}
@@ -410,7 +423,6 @@ const NewGallery = ({ data, page }) => {
                   setCommentChange={setCommentChange}
                   openComment={openComment}
                   setOpenComment={setOpenComment}
-                  page={page}
                   post={post}
                   setPost={setPost}
                 />
@@ -471,18 +483,12 @@ const NewGallery = ({ data, page }) => {
                 <CommentAndLike
                   item={item}
                   index={index}
-                  user={user}
-                  uid={uid}
                   commentChange={commentChange}
-                  userUID={userUID}
                   setCommentChange={setCommentChange}
                   openComment={openComment}
                   setOpenComment={setOpenComment}
-                  // friendsPosts={friendsPosts}
-                  // setFriendsPosts={setFriendsPosts}
-                  page={page}
-                  // visitedUser={visitedUser}
-                  // setVisitedUser={setVisitedUser}
+                  post={post}
+                  setPost={setPost}
                 />
               </div>
             )}

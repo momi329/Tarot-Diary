@@ -9,6 +9,7 @@ import Editor, { EditorContentChanged } from "./Editor/Editor";
 import firebase from "../utils/firebase";
 import { Timestamp } from "firebase/firestore";
 import { useNavigate } from "react-router-dom";
+import { ActionType } from "../pages/Spread/Spread";
 const tarot = cards.cards;
 const AskAndNote = ({
   divinedData,
@@ -51,7 +52,7 @@ const AskAndNote = ({
   const handleSave = () => {
     const newData = { ...divinedData, time: Timestamp.fromDate(new Date()) };
     createDivinedData(newData, userUID);
-    dispatch({ type: "preview" });
+    dispatch({ type: ActionType.Preview });
     setAskAI(false);
     navigate(`/profile/${userUID}`);
   };
@@ -96,8 +97,8 @@ const AskAndNote = ({
     setDivinedData({ ...divinedData, content: content.markdown });
   };
   return (
-    <div className='flex flex-row '>
-      <div className='flex flex-col w-[48%] '>
+    <div className="flex flex-row ">
+      <div className="flex flex-col w-[48%] ">
         <button
           className={`text-xl font-NT text-pink tracking-[1px] cursor-pointer
           flex flex-row gap-4  duration-1000 ${
@@ -114,11 +115,11 @@ const AskAndNote = ({
             <Loading text={"Asking AI"} />
           ) : (
             <div>
-              <p className='shadowPink cursor-pointer'>
+              <p className="shadowPink cursor-pointer">
                 {" "}
                 Ask AI Get Your Tarot Reading!
               </p>
-              <p className='cursor-pointer text-base text-gray font-notoSansJP text-start'>
+              <p className="cursor-pointer text-base text-gray font-notoSansJP text-start">
                 點擊按紐等待AI智慧塔羅解牌
               </p>
             </div>
@@ -127,37 +128,37 @@ const AskAndNote = ({
 
         {divining === "end" && askAI && (
           <>
-            <div className='mt-2 '>
-              <p className='whitespace-pre-wrap break-all text-sm leading-6 text-yellow my-2'>
+            <div className="mt-2 ">
+              <p className="whitespace-pre-wrap break-all text-sm leading-6 text-yellow my-2">
                 {divinedData.askGpt}
               </p>
             </div>
           </>
         )}
       </div>
-      <div className='flex flex-col gap-2 justify-between items-center '>
+      <div className="flex flex-col gap-2 justify-between items-center ">
         <Star color={"#E18EA5"} />
-        <div className='my-3 w-[1px] bg-pink h-[100%]' />
+        <div className="my-3 w-[1px] bg-pink h-[100%]" />
         <Star color={"#E18EA5"} />
       </div>
       {divining === "end" && (
-        <div className='w-[48%] '>
+        <div className="w-[48%] ">
           <button
-            className='text-xl font-NT text-pink tracking-[1px] mb-7 mx-auto
+            className="text-xl font-NT text-pink tracking-[1px] mb-7 mx-auto
           flex flex-row gap-4 cursor-auto group-hover:opacity-1  p-4 bg-black/40 w-[80%] 
-          items-center justify-start'
+          items-center justify-start"
           >
             <Star color={"#F4E4C3"} />
             <div>
-              <p className='shadowPink'>Write Your Diary!</p>
-              <p className='text-base text-gray font-notoSansJP text-start'>
+              <p className="shadowPink">Write Your Diary!</p>
+              <p className="text-base text-gray font-notoSansJP text-start">
                 寫下一些筆記心得吧！
               </p>
             </div>
           </button>
 
-          <div className='w-[100%]  flex flex-col justify-center items-center'>
-            <p className='text-gray text-sm tracking-widest  self-start ml-2 mb-3'>
+          <div className="w-[100%]  flex flex-col justify-center items-center">
+            <p className="text-gray text-sm tracking-widest  self-start ml-2 mb-3">
               記得按下儲存，才能紀錄占卜結果喔！
             </p>
             <Editor

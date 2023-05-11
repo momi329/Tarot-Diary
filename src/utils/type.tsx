@@ -1,78 +1,85 @@
-import { DocumentData, Timestamp } from "firebase/firestore";
-
-export type Spread =
-  | number
-  | {
-      order: number;
-      disabled?: boolean;
-      value: string;
-      name: string;
-      card: number;
-      reverse: boolean;
-    };
+import { Timestamp } from "firebase/firestore";
+export type User = {
+  name: string;
+  image: string;
+  sign: string;
+  email: string;
+  followers: string[];
+  following: string[];
+  favorite: [];
+  userUID: string;
+};
+export type Spread = number | SpreadItem[];
 export type Comment = {
   comment: string;
   user: string;
   userName: string;
   userImage: string;
 };
+export type Diary = {
+  description: string;
+  secret: boolean;
+  image: string;
+  spreadId: string;
+  comment: {
+    comment: string;
+    user: string;
+    userName: string;
+    userImage: string;
+  }[];
+  askGpt: string;
+  docId: string;
+  question: string;
+  title: string;
+  content: string;
+  time: Timestamp;
+  like: string[];
+  userUID: string;
+  spread: Spread;
+  user: string;
+  userImg: string;
+  userName: string;
+  seeMore?: boolean;
+};
+export type FriendsPosts = {
+  content?: string;
+  image: string;
+  spread: Spread[];
+  description: string;
+  secret?: boolean;
+  time: Timestamp;
+  askGpt: string;
+  title: string;
+  like: string[];
+  docId?: string;
+  question: string;
+  spreadId: string;
+  userUID: string;
+  user: string;
+  userImg: string;
+  userName: string;
+  comment?: Comment[];
+  seeMore?: boolean;
+};
+export type UseGetDesignHooks = {
+  spreadData: SpreadData | null;
+  setSpreadData: React.Dispatch<React.SetStateAction<SpreadData | null>>;
+  divinedData: DesignSpreadData;
+  setDivinedData: React.Dispatch<React.SetStateAction<DesignSpreadData>>;
+  getDesign: () => Promise<void>;
+  pickCard: Number[];
+  setPickCard: React.Dispatch<React.SetStateAction<Number[]>>;
+};
 
-
-
-
-
-
-
-
-export interface SpreadItem {
+type SpreadItem = {
   reverse: boolean;
   disabled: boolean;
   value: string;
   order: number;
   card: number;
-}
+};
 
-export interface TarotData {
-  description: string;
-  title: string;
-  like: string[];
-  userUID: string;
-  spread: SpreadItem[];
-  comment: Comment[];
-  image: string;
-  spreadId: string;
-  secret: boolean;
-  content: string;
-  askGpt: string;
-  time: {
-    seconds: number;
-    nanoseconds: number;
-  };
-  docId: string;
-  question: string;
-  user: string;
-  userImg: string;
-  userName: string;
-  addComment: false;
-  seeMore: false;
-}
-export interface VisitedUser {
-  name?: string;
-  image?: string;
-  sign?: string;
-  favorite?: [];
-  followers?: string[];
-  following?: string[];
-  diary?: DocumentData[];
-  spread?: DocumentData[];
-  userUID?: string;
-  like?: string[];
-  docId?: string;
-  content?: string;
-  seeMore?: boolean;
-}
-//spread
-export interface SpreadData {
+export type SpreadData = {
   author?: string;
   userUID: string;
   title: string;
@@ -97,39 +104,23 @@ export interface SpreadData {
   docId?: string;
   content?: string;
   seeMore?: boolean;
-}
-export interface DraggableProps {
+};
+export type DraggableProps = {
   edit: boolean;
   setEdit: React.Dispatch<React.SetStateAction<boolean>>;
   spreadData: SpreadData | undefined;
   setSpreadData: React.Dispatch<React.SetStateAction<SpreadData | undefined>>;
-}
+};
 
-export interface DesignSpreadData {
+export type DesignSpreadData = {
   image: string;
   title: string;
-  spread:
-    | number[]
-    | {
-        disabled: boolean;
-        value: string;
-        order: number;
-        name: string;
-        card: number;
-        reverse: boolean;
-      }[];
+  spread: number[] | SpreadItem[];
   userUID?: string;
   description: string;
   spreadId: string;
   question?: string;
   secret: boolean;
-}
-export type SpreadPreviewProps = {
-  type: string;
-  spread: SpreadData;
-  index: number;
-  key?: number;
-  page?: number;
 };
 
 export type FriendsData = {
