@@ -18,11 +18,13 @@ import Star from "../../images/Star";
 import Loading from "../../components/Loading";
 import Moon from "../../images/Moon";
 import Alert from "../../components/Alert";
-import { Diary, FriendsPosts } from "../../utils/type";
+import { Diary, FriendsPosts, Spread } from "../../utils/type";
+
 type GalleryProps = {
   data: Diary[] | FriendsPosts[];
   page: Page;
 };
+
 const NewGallery = ({ data, page }: GalleryProps) => {
   const [edit, setEdit] = useState<boolean[] | null>(null);
   const [newEdit, setNewEdit] = useState({ secret: false, content: "" });
@@ -66,6 +68,7 @@ const NewGallery = ({ data, page }: GalleryProps) => {
     newData[index] = false;
     setEdit(newData);
   };
+
   const handleEdit = (index, secret) => {
     if (!edit) return;
     const newData = [...edit];
@@ -73,10 +76,12 @@ const NewGallery = ({ data, page }: GalleryProps) => {
     setEdit(newData);
     setNewEdit({ ...newEdit, secret: secret });
   };
-  const onEditorContentChanged = (content) => {
+
+  const onEditorContentChanged = (content: string) => {
     setNewEdit({ ...newEdit, content: content.markdown });
   };
-  const DeletePost = async (userUID, docID, index) => {
+
+  const deletePost = async (userUID: string, docID: string) => {
     await firebase.deleteDiary(userUID, docID);
     if (!post) return;
     const newData = [...post];
@@ -87,7 +92,6 @@ const NewGallery = ({ data, page }: GalleryProps) => {
     setAlert(false);
   };
   const seeMore = () => {
-    if (!data) return;
     if (!post) return;
     setLoading(true);
     const newData = [...data];
@@ -104,6 +108,7 @@ const NewGallery = ({ data, page }: GalleryProps) => {
       setLoading(false);
     }, 1500);
   };
+  
   const seeMoreGPT = (index: number) => {
     if (!post) return;
     const newPost = [...post];
@@ -201,7 +206,6 @@ const NewGallery = ({ data, page }: GalleryProps) => {
     }
   }
   if (userUID !== uid && post.length === 0) {
-    console.log("!!");
     return (
       <p className="text-5xl text-yellow font-NT shadowYellow mt-2">
         No Diary Yet {" : ("}
@@ -212,7 +216,7 @@ const NewGallery = ({ data, page }: GalleryProps) => {
   return (
     <>
       <div className="flex gap-4 flex-col  w-[100%] ">
-        {post.map((item, index) => (
+        {post.map((item: Diary | FriendsPosts, index: number) => (
           <div
             key={index}
             className="bg-yellow-100 px-6 py-5 relative  bg-pink bg-opacity-30 "
@@ -279,7 +283,7 @@ const NewGallery = ({ data, page }: GalleryProps) => {
                               item.docId,
                               "userUID, item.docId, index"
                             );
-                            DeletePost(userUID, item.docId, index);
+                            deletePost(userUID, item.docId);
                           },
                         },
                       ]}
@@ -328,7 +332,7 @@ const NewGallery = ({ data, page }: GalleryProps) => {
                   <SpreadPlace type={item} tarot={tarot} size={"medium"} />
                 ) : (
                   <div className="gap-2 flex-row flex   w-[100%] flex-wrap justify-center">
-                    {item.spread.map((q, i) => (
+                    {item.spread.map((q: Spread, i) => (
                       <div
                         className="w-[130px] text-yellow font-NT tracking-wider shadowYellow "
                         key={i}
@@ -412,7 +416,7 @@ const NewGallery = ({ data, page }: GalleryProps) => {
                         onChange={onEditorContentChanged}
                       />
                     ) : (
-                      <Viewer value={item.content} />
+                      <Viewer value={item.content ? item.content : ""} />
                     )}
                   </div>
                 </span>

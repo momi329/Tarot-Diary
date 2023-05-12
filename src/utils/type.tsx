@@ -35,7 +35,7 @@ export type Diary = {
   time: Timestamp;
   like: string[];
   userUID: string;
-  spread: Spread;
+  spread: Spread[];
   user: string;
   userImg: string;
   userName: string;
