@@ -7,6 +7,7 @@ import { v4 as uuidv4 } from "uuid";
 
 import { Timestamp, doc, setDoc, updateDoc } from "firebase/firestore";
 import Button from "../../components/Button";
+import MyImages from "../../components/MyImages";
 import { AuthContext } from "../../context/authContext";
 import lightCard from "../../images/card-light.png";
 import { db } from "../../utils/firebase";
@@ -337,12 +338,16 @@ function Design({ edit, setEdit, spreadData }: DesignProps) {
         <p className="font-base tracking-wider mb-10 text-yellow">
           設計你自己的牌陣，問自己想問的問題！
         </p>
-        <NewSpreadDetails
-          inputChange={inputChange}
-          onSave={onSave}
-          setOnSave={setOnSave}
-        />
-
+        <div className="flex flex-row gap-9 mb-14">
+          <NewSpreadDetails
+            inputChange={inputChange}
+            onSave={onSave}
+            setOnSave={setOnSave}
+          />
+          <div className="order-2 w-3/5">
+            <MyImages onSave={onSave} setOnSave={setOnSave} />
+          </div>
+        </div>
         <div className="flex gap-9 ">
           <div className="group relative">
             <div
