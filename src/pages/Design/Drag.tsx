@@ -1,7 +1,7 @@
 import { AiOutlineMinus } from "react-icons/ai";
 import { RxCross1 } from "react-icons/rx";
 import { VscAdd } from "react-icons/vsc";
-
+// TODO: PropsType & delete unnecessary props
 function Drag({
   dragInfo,
   shineArr,
@@ -90,9 +90,7 @@ function Drag({
                     absolute z-40 top-[8px] right-2 tracking-wider ${
                       item.disabled ? "" : "opacity-0"
                     }`}
-                      onClick={() => {
-                        editCard(item, i);
-                      }}
+                      onClick={() => {}}
                     >
                       EDIT
                     </div>

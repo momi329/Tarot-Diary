@@ -23,50 +23,17 @@ type DesignProps = {
   spreadData?: SpreadData;
 };
 function Design({ edit, setEdit, spreadData }: DesignProps) {
-  const [onSave, setOnSave] = useState({
+  const [onSave, setOnSave] = useState(() => ({
     spreadId: "",
     title: "",
     description: "",
     userUID: "",
     image: "",
-    spread: [
-      { name: uuidv4(), value: "", disabled: true, order: 1 },
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-    ],
-  });
+    spread: Array.from({ length: 35 }, (_, index) =>
+      index === 0 ? { name: uuidv4(), value: "", disabled: true, order: 1 } : 0
+    ),
+  }));
+
   const { userUID } = useContext(AuthContext);
   const navigate = useNavigate();
   const shineArr = () => new Array(onSave.spread.length).fill(false);
@@ -151,12 +118,16 @@ function Design({ edit, setEdit, spreadData }: DesignProps) {
     setOnSave({ ...onSave, spread: newState });
     return;
   };
-  const editCard = (item, i) => {
-    item.disabled = false;
-    let newState = { ...onSave }.spread;
-    newState[i] = item;
-    setOnSave({ ...onSave, spread: newState });
-  };
+  const editCard = (item, i) =>
+    setOnSave({
+      ...onSave,
+      spread: [
+        ...onSave.spread.slice(0, i),
+        { ...item, disabled: false },
+        ...onSave.spread.slice(i + 1),
+      ],
+    });
+
   const handleOptionChange = (e, item, i) => {
     item.order = e.target.value;
     let newState = { ...onSave }.spread;
@@ -202,85 +173,7 @@ function Design({ edit, setEdit, spreadData }: DesignProps) {
       image: "",
       spread: [
         { name: uuidv4(), value: "", disabled: true, order: 1 },
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
+        ...Array(99).fill(0),
       ],
     });
     setEdit(false);
