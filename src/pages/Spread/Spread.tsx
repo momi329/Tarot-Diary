@@ -69,10 +69,7 @@ function Spread() {
   }, [id, edit]);
 
   const handleClickDivine = async () => {
-    const number = spreadData?.spread.reduce(
-      (acc: any, crr) => (crr !== 0 ? acc + 1 : acc),
-      0
-    );
+    const number:number = spreadData?.spread.filter((item)=>item!==0).length
     const randomCard = getRandomCards(number);
     const randomReverse = getRandomBool(number);
     const modifiedData = spreadData?.spread.reduce(
@@ -164,7 +161,6 @@ function Spread() {
                 setEdit={setEdit}
                 edit={edit}
                 spreadData={spreadData}
-                id={id}
               />
             </div>
           )}
