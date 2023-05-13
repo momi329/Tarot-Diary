@@ -2,11 +2,8 @@ import { useContext, useEffect, useReducer, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { AuthContext } from "../../context/authContext";
 
-import AskAndNote from "../../components/AskAndNote";
-import ChooseCard from "./ChooseCard";
 import useGetDesign from "./hooks/useGetDesign";
 import SpreadInfo from "./SpreadInfo";
-import { SpreadPlace } from "./SpreadPlace";
 
 import cards from "../../tarotcard/tarot-images";
 import { getRandomBool, getRandomCards } from "../../utils/function";
@@ -157,16 +154,16 @@ function Spread() {
             </div>
           )} */}
 
-          {divining === "start" && (
+          {/* {divining === "start" && (
             <ChooseCard
               handleClickDivine={handleClickDivine}
               pickCard={pickCard}
               setPickCard={setPickCard}
               divinedData={divinedData}
             />
-          )}
+          )} */}
 
-          {(divining === "end" || divining === "preview") && (
+          {/* {(divining === "end" || divining === "preview") && (
             <SpreadPlace
               type={
                 (divining === "end" && divinedData) ||
@@ -175,9 +172,9 @@ function Spread() {
               tarot={tarot}
               size={"large"}
             />
-          )}
+          )} */}
 
-          {divining === "end" && (
+          {/* {divining === "end" && (
             <>
               <div className=" w-[100%] px-16 group relative pb-16">
                 <AskAndNote
@@ -190,7 +187,7 @@ function Spread() {
                 />
               </div>
             </>
-          )}
+          )} */}
         </div>
       </div>
     </>

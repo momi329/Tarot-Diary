@@ -1,27 +1,26 @@
-import { useContext } from "react";
-import { AuthContext } from "../context/authContext";
-import cards from "../tarotcard/tarot-images";
+import { Timestamp } from "firebase/firestore";
+import { useContext, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { openAiKey } from "../config";
+import { AuthContext } from "../context/authContext";
 import Star from "../images/Star";
-import Loading from "./Loading";
+import { ActionType } from "../pages/Spread/Spread";
+import cards from "../tarotcard/tarot-images";
+import firebase from "../utils/firebase";
 import Button from "./Button";
 import Editor, { EditorContentChanged } from "./Editor/Editor";
-import firebase from "../utils/firebase";
-import { Timestamp } from "firebase/firestore";
-import { useNavigate } from "react-router-dom";
-import { ActionType } from "../pages/Spread/Spread";
+import Loading from "./Loading";
 const tarot = cards.cards;
 const AskAndNote = ({
   divinedData,
   setDivinedData,
-  askAI,
-  setAskAI,
   divining,
   dispatch,
 }: any) => {
   const { userUID } = useContext(AuthContext);
   const { loading, setLoading } = useContext(AuthContext);
   const navigate = useNavigate();
+  const [askAI, setAskAI] = useState<boolean>(false);
 
   const handleAsk = async () => {
     setLoading(true);
