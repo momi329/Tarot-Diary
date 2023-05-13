@@ -1,13 +1,13 @@
-import firebase from "../utils/firebase";
-import Button from "./Button";
-import fill from "../images/heartfill.png";
-import like from "../images/heart.png";
+import { useContext } from "react";
+import { useNavigate } from "react-router-dom";
+import { AuthContext } from "../context/authContext";
 import commentIt from "../images/comment.png";
 import commenting from "../images/commenting.png";
-import { useContext } from "react";
-import { AuthContext } from "../context/authContext";
+import like from "../images/heart.png";
+import fill from "../images/heartfill.png";
+import firebase from "../utils/firebase";
 import Alert from "./Alert";
-import { useNavigate } from "react-router-dom";
+import Button from "./Button";
 
 const CommentAndLike = ({
   item,
@@ -66,15 +66,15 @@ const CommentAndLike = ({
     }
   };
   const deleteComment = async (item, q) => {
-    //await firebase.updateComment(item);
+    await firebase.updateComment(item);
     const newData = { ...item };
     console.log(item.comment[q], q);
     newData.comment.splice(q, 1);
-    // setPost((prev) => {
-    //   const updateData = [...prev];
-    //   updateData[index] = newData;
-    //   return updateData;
-    // });
+    setPost((prev) => {
+      const updateData = [...prev];
+      updateData[index] = newData;
+      return updateData;
+    });
   };
   const commentStatusChange = async (index) => {
     openComment === index ? setOpenComment(null) : setOpenComment(index);

@@ -11,13 +11,18 @@ import MyImages from "../components/MyImages";
 import { AuthContext } from "../context/authContext";
 import lightCard from "../images/card-light.png";
 import { db } from "../utils/firebase";
-import type { SpreadItem } from "../utils/type";
+import type { SpreadData, SpreadItem } from "../utils/type";
 type DragInfoType = {
   pastIndex: number;
   target: number | SpreadItem;
   shine: boolean[];
 };
-function Design({ edit, setEdit, spreadData, id }) {
+type DesignProps={
+  edit:boolean;
+  setEdit: React.Dispatch<React.SetStateAction<boolean>>;
+  spreadData:SpreadData;
+}
+function Design({ edit, setEdit, spreadData }:DesignProps) {
   const [onSave, setOnSave] = useState({
     spreadId: "",
     title: "",
