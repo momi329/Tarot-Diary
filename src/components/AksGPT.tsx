@@ -1,12 +1,11 @@
-import type SpreadData from "../pages/Spread/Spread";
-import { useState, useContext, useEffect } from "react";
-import { AuthContext } from "../context/authContext";
-import cards from "../tarotcard/tarot-images";
-import Quill from "./Editor/Quill";
+import { useContext, useEffect, useState } from "react";
 import { openAiKey } from "../config";
+import { AuthContext } from "../context/authContext";
 import Star from "../images/Star";
-import Loading from "./Loading";
+import cards from "../tarotcard/tarot-images";
 import type { Message } from "../utils/type";
+import Quill from "./Editor/Quill";
+import Loading from "./Loading";
 
 const tarot = cards.cards;
 const AskGPT = ({
@@ -112,16 +111,6 @@ const AskGPT = ({
             </div>
           )}
         </button>
-        {/* <button
-          onClick={() => {
-            handleAsk();
-            setAskAI(true);
-          }}
-          className='font-NT text-xl hover:underline text-yellow shadowYellow w-20'
-          value={"Ask AI"}
-        >
-          Ask AI
-        </button> */}
         {divining === 3 && askAI && (
           <>
             <div className="mt-2 ">

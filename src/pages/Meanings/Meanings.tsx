@@ -1,9 +1,9 @@
-import Sun from "../images/Sun";
-import Star from "../images/Star";
-import Moon from "../images/Moon";
-import cards from "../tarotcard/tarot-images";
 import { useNavigate } from "react-router-dom";
-import Footer from "../components/Footer";
+import Footer from "../../components/Footer";
+import Moon from "../../images/Moon";
+import Star from "../../images/Star";
+import Sun from "../../images/Sun";
+import cards from "../../tarotcard/tarot-images";
 const subTitle = " text-5xl text-pink font-NT shadowPink mt-1 mb-10";
 function Meaning() {
   const navigate = useNavigate();

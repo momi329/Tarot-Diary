@@ -1,10 +1,10 @@
-import { useParams } from "react-router-dom";
-import Sun from "../images/Sun";
-import Moon from "../images/Moon";
-import cards from "../tarotcard/tarot-images";
-import Star from "../images/Star";
 import { useEffect, useState } from "react";
-import Footer from "../components/Footer";
+import { useParams } from "react-router-dom";
+import Footer from "../../components/Footer";
+import Moon from "../../images/Moon";
+import Star from "../../images/Star";
+import Sun from "../../images/Sun";
+import cards from "../../tarotcard/tarot-images";
 export function convertToRomanNumeral(num) {
   const romanNumeralMap = [
     { value: 1000, symbol: "M" },

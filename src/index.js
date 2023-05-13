@@ -1,19 +1,18 @@
-import React from "react";
 import ReactDOM from "react-dom/client";
-import "./index.css";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
 import App from "./App";
-import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
-import Member from "./pages/Member.tsx";
-import Draggable from "./pages/Draggable";
-import Spread from "./pages/Spread/Spread";
-import TarotCard from "./pages/TarotCard";
-import Divine from "./pages/Spread/Divine";
 import AskGPT from "./components/AksGPT";
-import Profile from "./pages/Profile/Profile";
-import Meaning from "./pages/Meanings";
-import Divination from "./pages/Divination";
-import Home from "./pages/Home/Home";
 import { LoadingContextProvider } from "./context/loadingContext";
+import "./index.css";
+import Divination from "./pages/Divination";
+import Draggable from "./pages/Draggable";
+import Home from "./pages/Home/Home";
+import Meaning from "./pages/Meanings/Meanings";
+import TarotCard from "./pages/Meanings/TarotCard";
+import Member from "./pages/Member.tsx";
+import Profile from "./pages/Profile/Profile";
+import Divine from "./pages/Spread/Divine";
+import Spread from "./pages/Spread/Spread";
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <LoadingContextProvider>
