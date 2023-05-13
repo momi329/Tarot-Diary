@@ -1,11 +1,11 @@
-import { useState, useCallback } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import firebase from "../../../utils/firebase";
 import {
-  SpreadData,
   DesignSpreadData,
+  SpreadData,
   UseGetDesignHooks,
 } from "../../../utils/type";
-import firebase from "../../../utils/firebase";
 const initialDivinedData: DesignSpreadData = {
   userUID: "",
   title: "",
@@ -23,6 +23,11 @@ function useGetDesign(): UseGetDesignHooks {
   const [divinedData, setDivinedData] =
     useState<DesignSpreadData>(initialDivinedData);
   const [pickCard, setPickCard] = useState<Number[]>([0, 0]);
+
+  useEffect(
+    () => console.log(divinedData, "divinedData inside"),
+    [divinedData]
+  );
 
   const getDesign = useCallback(async () => {
     const newData = id && (await firebase.getDesign(id));

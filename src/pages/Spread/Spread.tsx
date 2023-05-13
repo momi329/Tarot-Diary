@@ -8,12 +8,9 @@ import useGetDesign from "./hooks/useGetDesign";
 import SpreadInfo from "./SpreadInfo";
 import { SpreadPlace } from "./SpreadPlace";
 
-import Button from "../../components/Button";
-import UnderlineInput from "../../components/UnderlineInput";
-import Design from "../Design";
-
 import cards from "../../tarotcard/tarot-images";
 import { getRandomBool, getRandomCards } from "../../utils/function";
+import LowerArea from "./LowerArea";
 
 export enum ActionType {
   Preview = "preview",
@@ -54,7 +51,7 @@ function Spread() {
   } = useGetDesign();
 
   const tarot = cards.cards;
-
+  // TODO: change divining to "type" if it's a props
   useEffect(() => {
     const divine = localStorage.getItem("myResult");
     if (divine) {
@@ -69,7 +66,9 @@ function Spread() {
   }, [id, edit]);
 
   const handleClickDivine = async () => {
-    const number:number = spreadData?.spread.filter((item)=>item!==0).length
+    const number: number = spreadData?.spread.filter(
+      (item) => item !== 0
+    ).length;
     const randomCard = getRandomCards(number);
     const randomReverse = getRandomBool(number);
     const modifiedData = spreadData?.spread.reduce(
@@ -116,11 +115,17 @@ function Spread() {
         >
           <SpreadInfo
             spreadData={spreadData}
-            divining={divining}
+            type={divining}
             setEdit={setEdit}
+            edit={edit}
           />
-
-          {divining === "preview" && (
+          <LowerArea
+            type={divining}
+            dispatch={dispatch}
+            data={divinedData}
+            // setDivinedData={setDivinedData}
+          />
+          {/* {divining === "preview" && (
             <div className="flex gap-3 mb-8 ml-8 w-[280px]">
               <Button
                 action={() => {
@@ -133,8 +138,8 @@ function Spread() {
                 type={"big"}
               />
             </div>
-          )}
-          {divining !== "preview" && (
+          )} */}
+          {/* {divining !== "preview" && (
             <div className="w-[25%] mb-4  ml-8">
               <UnderlineInput
                 name="請寫下你的問題："
@@ -150,20 +155,7 @@ function Spread() {
                 disabled={divining !== "start" ? true : false}
               />
             </div>
-          )}
-
-          {spreadData?.userUID === userUID && edit && (
-            <div
-              className="w-[110%] h-[100%] overflow-y-scroll p-16 bg-darkPink z-20 mx-auto fixed top-1/2 left-1/2 
-          transform -translate-x-1/2 -translate-y-1/2"
-            >
-              <Design
-                setEdit={setEdit}
-                edit={edit}
-                spreadData={spreadData}
-              />
-            </div>
-          )}
+          )} */}
 
           {divining === "start" && (
             <ChooseCard
