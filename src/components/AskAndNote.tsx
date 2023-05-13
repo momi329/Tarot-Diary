@@ -1,22 +1,18 @@
 import { Timestamp } from "firebase/firestore";
 import { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
+
 import { openAiKey } from "../config";
 import { AuthContext } from "../context/authContext";
 import Star from "../images/Star";
-import { ActionType } from "../pages/Spread/Spread";
 import cards from "../tarotcard/tarot-images";
 import firebase from "../utils/firebase";
+import { ActionEnum } from "../utils/type";
 import Button from "./Button";
 import Editor, { EditorContentChanged } from "./Editor/Editor";
 import Loading from "./Loading";
 const tarot = cards.cards;
-const AskAndNote = ({
-  divinedData,
-  setDivinedData,
-  divining,
-  dispatch,
-}: any) => {
+const AskAndNote = ({ divinedData, setDivinedData, type, dispatch }: any) => {
   const { userUID } = useContext(AuthContext);
   const { loading, setLoading } = useContext(AuthContext);
   const navigate = useNavigate();
@@ -51,7 +47,7 @@ const AskAndNote = ({
   const handleSave = () => {
     const newData = { ...divinedData, time: Timestamp.fromDate(new Date()) };
     createDivinedData(newData, userUID);
-    dispatch({ type: ActionType.Preview });
+    dispatch({ type: ActionEnum.Preview });
     setAskAI(false);
     navigate(`/profile/${userUID}`);
   };
@@ -125,7 +121,7 @@ const AskAndNote = ({
           )}
         </button>
 
-        {divining === "end" && askAI && (
+        {type === ActionEnum.End && askAI && (
           <>
             <div className="mt-2 ">
               <p className="whitespace-pre-wrap break-all text-sm leading-6 text-yellow my-2">
@@ -140,7 +136,7 @@ const AskAndNote = ({
         <div className="my-3 w-[1px] bg-pink h-[100%]" />
         <Star color={"#E18EA5"} />
       </div>
-      {divining === "end" && (
+      {type === ActionEnum.End && (
         <div className="w-[48%] ">
           <button
             className="text-xl font-NT text-pink tracking-[1px] mb-7 mx-auto

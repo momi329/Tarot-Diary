@@ -1,3 +1,5 @@
+import { ActionEnum } from "../../utils/type";
+
 import { useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import AskAndNote from "../../components/AskAndNote";
@@ -8,16 +10,15 @@ import cards from "../../tarotcard/tarot-images";
 import { getRandomBool, getRandomCards } from "../../utils/function";
 import { DesignSpreadData } from "../../utils/type";
 import ChooseCard from "./ChooseCard";
-import { ActionType } from "./Spread";
 import { SpreadPlace } from "./SpreadPlace";
 import useGetDesign from "./hooks/useGetDesign";
 
 type DispatchAction = {
-  type: ActionType;
+  type: ActionEnum;
 };
 
 type LowerAreaProps = {
-  type: ActionType;
+  type: ActionEnum;
   dispatch: (action: DispatchAction) => void;
   data: DesignSpreadData;
 };
@@ -65,7 +66,7 @@ function LowerArea({ type, dispatch }: LowerAreaProps) {
     );
     const newData = { ...divinedData, spread: modifiedData };
     setDivinedData(newData);
-    dispatch({ type: ActionType.End });
+    dispatch({ type: ActionEnum.End });
   };
   return (
     <>
@@ -76,14 +77,14 @@ function LowerArea({ type, dispatch }: LowerAreaProps) {
               if (!isLogin) {
                 navigate(`/signin`);
               }
-              dispatch({ type: ActionType.Start });
+              dispatch({ type: ActionEnum.Start });
             }}
             value={"Start"}
             type={"big"}
           />
         </div>
       )}
-      {(type === ActionType.Start || type === ActionType.End) && (
+      {(type === ActionEnum.Start || type === ActionEnum.End) && (
         <div className="w-[25%] mb-4  ml-8">
           <UnderlineInput
             name="請寫下你的問題："
@@ -96,11 +97,11 @@ function LowerArea({ type, dispatch }: LowerAreaProps) {
               })
             }
             placeholder="Write Your Question"
-            disabled={type === ActionType.End}
+            disabled={type === ActionEnum.End}
           />
         </div>
       )}
-      {type === ActionType.Start && (
+      {type === ActionEnum.Start && (
         <ChooseCard
           handleClickDivine={handleClickDivine}
           pickCard={pickCard}
@@ -108,7 +109,7 @@ function LowerArea({ type, dispatch }: LowerAreaProps) {
           divinedData={divinedData}
         />
       )}
-      {(type === ActionType.End || type === ActionType.Preview) && (
+      {(type === ActionEnum.End || type === ActionEnum.Preview) && (
         <SpreadPlace
           type={
             (type === "end" && divinedData) ||
@@ -118,13 +119,13 @@ function LowerArea({ type, dispatch }: LowerAreaProps) {
           size={"large"}
         />
       )}
-      {type === ActionType.End && (
+      {type === ActionEnum.End && (
         <>
           <div className=" w-[100%] px-16 group relative pb-16">
             <AskAndNote
               divinedData={divinedData}
               setDivinedData={setDivinedData}
-              divining={type}
+              type={type}
               dispatch={dispatch}
             />
           </div>

@@ -130,3 +130,9 @@ type friends = {
   image: string;
   uid: string;
 };
+
+export enum ActionEnum {
+  Preview = "preview",
+  Start = "start",
+  End = "end",
+}
