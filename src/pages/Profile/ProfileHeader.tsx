@@ -1,14 +1,11 @@
 import { useContext, useState } from "react";
-import { AuthContext } from "../../context/authContext";
 import { useParams } from "react-router-dom";
-
-import firebase from "../../utils/firebase";
-
 import Button from "../../components/Button";
+import { AuthContext } from "../../context/authContext";
 import Star from "../../images/Star";
-import { FriendsData } from "../../utils/type";
+import firebase from "../../utils/firebase";
+import { FriendsData, PageEnum } from "../../utils/type";
 import Friends from "./Friends";
-
 const ProfileHeader = ({
   following,
   setFollowing,
@@ -161,7 +158,7 @@ const ProfileHeader = ({
             <div className="w-[250px]">
               <Button
                 action={() => {
-                  setPage(6);
+                  setPage(PageEnum.EditProfile);
                 }}
                 type={"big"}
                 value={"Edit Profile"}

@@ -1,36 +1,24 @@
-import { useState, useEffect, useContext } from "react";
-import { AuthContext } from "../../context/authContext";
+import { useContext, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-// TODO: format
-// 1: type import type{} 2: From outside eg React, external libraries
-// 3: Not from this folder 4: From this folder
 import Diary from "../../components/Diary";
-import Toggle from "./Toggle";
-import ProfileHeader from "./ProfileHeader";
-import UserSpread from "./UserSpread";
-import ProfileEdit from "./ProfileEdit";
-
+import { AuthContext } from "../../context/authContext";
+import { PageEnum } from "../../utils/type";
 import Member from "../Member";
-import UnderlineButton from "../../components/UnderlineButton";
-import useGetUserProfile from "./hooks/useGetUserProfile.tsx";
+import { Buttons } from "./Buttons";
+import NewGallery from "./Gallery";
+import ProfileEdit from "./ProfileEdit";
+import ProfileHeader from "./ProfileHeader";
+import Toggle from "./Toggle";
+import UserSpread from "./UserSpread";
 import useGetUserDiary from "./hooks/useGetUserDiary";
-import NewGallery from "./NewGallery";
 import useGetUserExplore from "./hooks/useGetUserExplore";
+import useGetUserProfile from "./hooks/useGetUserProfile.tsx";
 import useGetUserSpread from "./hooks/useGetUserSpread";
-// TODO: enum used by different files should be in types folder
-export enum Page {
-  DiaryCalendar = "diaryCalendar",
-  DiaryPost = "diaryPost",
-  Explore = "explore",
-  EditProfile = "editProfile",
-  Design = "design",
-}
-
 function Profile(): JSX.Element {
   const { isLogin, user, userUID } = useContext(AuthContext);
   const { uid } = useParams();
-  const [page, setPage] = useState<Page>(
-    userUID === uid ? Page.Explore : Page.DiaryPost
+  const [page, setPage] = useState<PageEnum>(
+    userUID === uid ? PageEnum.Explore : PageEnum.DiaryPost
   );
   const [following, setFollowing] = useState<boolean>(false);
 
@@ -44,10 +32,10 @@ function Profile(): JSX.Element {
     initialFollowing();
     if (userUID !== uid) {
       getDiary();
-      setPage(Page.DiaryPost);
+      setPage(PageEnum.DiaryPost);
     }
     if (userUID === uid) {
-      setPage(Page.Explore);
+      setPage(PageEnum.Explore);
     }
   }, [uid]);
 
@@ -85,18 +73,23 @@ function Profile(): JSX.Element {
             <div className=" h-[100%] w-6/12">
               {isLogin &&
                 userUID === uid &&
-                (page === Page.DiaryCalendar || page === Page.DiaryPost) && (
+                (page === PageEnum.DiaryCalendar ||
+                  page === PageEnum.DiaryPost) && (
                   <Toggle page={page} setPage={setPage} />
                 )}
-              {page === Page.DiaryPost && (
+              {page === PageEnum.DiaryPost && (
                 <NewGallery data={diary} page={page} />
               )}
-              {page === Page.Explore && friendsPosts && (
+              {page === PageEnum.Explore && friendsPosts && (
                 <NewGallery data={friendsPosts} page={page} />
               )}
-              {userUID === uid && page === Page.EditProfile && <ProfileEdit />}
-              {userUID === uid && page === Page.DiaryPost && <Diary />}
-              {page === Page.Design && <UserSpread userSpread={userSpread} />}
+              {userUID === uid && page === PageEnum.EditProfile && (
+                <ProfileEdit />
+              )}
+              {userUID === uid && page === PageEnum.DiaryCalendar && <Diary />}
+              {page === PageEnum.Design && (
+                <UserSpread userSpread={userSpread} />
+              )}
             </div>
 
             <div className=" h-[100%] w-3/12 ">
@@ -115,76 +108,3 @@ function Profile(): JSX.Element {
   );
 }
 export default Profile;
-
-const Buttons = ({ page, setPage, getDiary, getUserSpread }) => {
-  const { userUID } = useContext(AuthContext);
-  const { uid } = useParams();
-
-  const switchPage = (page: string) => {
-    setPage(page);
-    return;
-  };
-  return (
-    <div
-      className="flex flex-col text-left font-NT font-light  text-yellow  
-    text-2xl items-start   ml-[3%] fixed shadowYellow gap-6"
-    >
-      {userUID === uid && (
-        <UnderlineButton
-          value={"Explore"}
-          type={"profile"}
-          action={() => {
-            switchPage("explore");
-          }}
-          selected={page === Page.Explore}
-        />
-      )}
-      <UnderlineButton
-        value={"Diary"}
-        type={"profile"}
-        action={() => {
-          getDiary();
-          if (userUID === uid) {
-            switchPage("diaryCalender");
-          } else {
-            switchPage("diaryPost");
-          }
-        }}
-        selected={page === Page.DiaryCalendar}
-      />
-      <UnderlineButton
-        value={"Design"}
-        type={"profile"}
-        action={() => {
-          getUserSpread();
-          switchPage("design");
-        }}
-        selected={page === Page.Design}
-      />
-    </div>
-  );
-};
-
-export function formatTimestamp(timestamp) {
-  const now = new Date();
-  const date = new Date(
-    timestamp.seconds * 1000 + timestamp.nanoseconds / 1000000
-  );
-  const diffInMs = now.getTime() - date.getTime();
-  if (diffInMs >= 5 * 24 * 60 * 60 * 1000) {
-    return date.toLocaleDateString();
-  }
-  if (diffInMs >= 24 * 60 * 60 * 1000) {
-    const diffInDays = Math.floor(diffInMs / (24 * 60 * 60 * 1000));
-    return `${diffInDays} day${diffInDays > 1 ? "s" : ""} ago`;
-  }
-  if (diffInMs >= 60 * 60 * 1000) {
-    const diffInHours = Math.floor(diffInMs / (60 * 60 * 1000));
-    return `${diffInHours} hour${diffInHours > 1 ? "s" : ""} ago`;
-  }
-  if (diffInMs >= 60 * 1000) {
-    const diffInMinutes = Math.floor(diffInMs / (60 * 1000));
-    return `${diffInMinutes} minute${diffInMinutes > 1 ? "s" : ""} ago`;
-  }
-  return "just now";
-}

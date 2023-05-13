@@ -9,14 +9,14 @@ export type User = {
   favorite: [];
   userUID: string;
 };
-export type Spread = number | SpreadItem[];
+export type Spread = number[] | SpreadItem[];
 export type Comment = {
   comment: string;
   user: string;
   userName: string;
   userImage: string;
 };
-export type Diary = {
+export type DiaryType = {
   description: string;
   secret: boolean;
   image: string;
@@ -41,7 +41,7 @@ export type Diary = {
   userName: string;
   seeMore?: boolean;
 };
-export type FriendsPosts = {
+export type FriendsPostsType = {
   content?: string;
   image: string;
   spread: Spread[];
@@ -71,30 +71,27 @@ export type UseGetDesignHooks = {
   setPickCard: React.Dispatch<React.SetStateAction<Number[]>>;
 };
 
-type SpreadItem = {
-  reverse: boolean;
+export type SpreadItem = {
+  reverse?: boolean;
   disabled: boolean;
   value: string;
   order: number;
-  card: number;
+  card?: number;
+  name?: string;
 };
-
+export enum PageEnum {
+  DiaryCalendar = "diaryCalendar",
+  DiaryPost = "diaryPost",
+  Explore = "explore",
+  EditProfile = "editProfile",
+  Design = "design",
+}
 export type SpreadData = {
   author?: string;
   userUID: string;
   title: string;
   image: string;
-  spread: (
-    | number
-    | {
-        order: number;
-        disabled?: boolean;
-        value: string;
-        name: string;
-        card: number;
-        reverse: boolean;
-      }
-  )[];
+  spread: Spread;
   description?: string;
   spreadId: string;
   name?: string;

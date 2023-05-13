@@ -1,4 +1,4 @@
-import { useState, useEffect, useContext, useReducer } from "react";
+import { useContext, useEffect, useReducer, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { AuthContext } from "../../context/authContext";
 
@@ -8,12 +8,12 @@ import useGetDesign from "./hooks/useGetDesign";
 import SpreadInfo from "./SpreadInfo";
 import { SpreadPlace } from "./SpreadPlace";
 
-import Draggable from "../Draggable";
 import Button from "../../components/Button";
 import UnderlineInput from "../../components/UnderlineInput";
+import Design from "../Design";
 
 import cards from "../../tarotcard/tarot-images";
-import { getRandomCards, getRandomBool } from "../../utils/function";
+import { getRandomBool, getRandomCards } from "../../utils/function";
 
 export enum ActionType {
   Preview = "preview",
@@ -160,7 +160,7 @@ function Spread() {
               className="w-[110%] h-[100%] overflow-y-scroll p-16 bg-darkPink z-20 mx-auto fixed top-1/2 left-1/2 
           transform -translate-x-1/2 -translate-y-1/2"
             >
-              <Draggable
+              <Design
                 setEdit={setEdit}
                 edit={edit}
                 spreadData={spreadData}
@@ -177,13 +177,18 @@ function Spread() {
               divinedData={divinedData}
             />
           )}
-          {(divining === "preview" || divining === "end") && (
+
+          {(divining === "end" || divining === "preview") && (
             <SpreadPlace
-              type={divining === "end" ? divinedData : spreadData}
+              type={
+                (divining === "end" && divinedData) ||
+                (divining === "preview" && spreadData)
+              }
               tarot={tarot}
               size={"large"}
             />
           )}
+
           {divining === "end" && (
             <>
               <div className=" w-[100%] px-16 group relative pb-16">

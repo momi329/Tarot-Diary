@@ -1,16 +1,16 @@
-import { formatTimestamp } from "../pages/Profile/Profile";
-import cards from "../tarotcard/tarot-images";
+import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../context/authContext";
-import Viewer from "./Editor/Viewer";
-import { useState, useEffect, useContext } from "react";
-import Editor from "./Editor/Editor";
-import firebase from "../utils/firebase";
-import Star from "../images/Star";
 import Moon from "../images/Moon";
+import Star from "../images/Star";
 import { SpreadPlace } from "../pages/Spread/SpreadPlace";
+import cards from "../tarotcard/tarot-images";
+import firebase from "../utils/firebase";
+import { formatTimestamp } from "../utils/function";
+import Editor from "./Editor/Editor";
+import Viewer from "./Editor/Viewer";
 const tarot = cards.cards;
 export function Post({ targetDiary, setTargetDiary, setDiaryData }) {
-  const { user, userUID, isLogin } = useContext(AuthContext);
+  const { userUID } = useContext(AuthContext);
   const [edit, setEdit] = useState(false);
   const [newEdit, setNewEdit] = useState(targetDiary.content);
   useEffect(() => {

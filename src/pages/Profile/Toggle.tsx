@@ -1,4 +1,4 @@
-import { Page } from "./Profile";
+import { PageEnum } from "../../utils/type";
 
 function Toggle({ page, setPage }) {
   return (
@@ -10,25 +10,25 @@ function Toggle({ page, setPage }) {
         <input
           id="switchUpload"
           type="checkbox"
-          checked={page === Page.DiaryPost}
+          checked={page === PageEnum.DiaryPost}
           onChange={() => {
             page === "diaryPost"
-              ? setPage("diaryCalender")
-              : setPage("diaryPost");
+              ? setPage(PageEnum.DiaryCalendar)
+              : setPage(PageEnum.DiaryPost);
           }}
           className="opacity-0 w-0 h-0"
         />
         <label htmlFor="switchUpload">
           <div
             className={`absolute top-0 left-0 right-0 bottom-0 rounded-full transition duration-300 ${
-              page === Page.DiaryCalendar
+              page === PageEnum.DiaryCalendar
                 ? "bg-pink bg-opacity-60"
                 : "bg-yellow bg-opacity-40"
             }`}
           >
             <div
               className={`absolute bottom-[2px] left-[2px] w-5 h-5 bg-white rounded-full transition duration-300 transform ${
-                page === Page.DiaryCalendar
+                page === PageEnum.DiaryCalendar
                   ? "translate-x-[24px]"
                   : "translate-x-0"
               }`}

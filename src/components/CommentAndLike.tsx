@@ -4,7 +4,7 @@ import fill from "../images/heartfill.png";
 import like from "../images/heart.png";
 import commentIt from "../images/comment.png";
 import commenting from "../images/commenting.png";
-import { useContext, useEffect, useState } from "react";
+import { useContext } from "react";
 import { AuthContext } from "../context/authContext";
 import Alert from "./Alert";
 import { useNavigate } from "react-router-dom";

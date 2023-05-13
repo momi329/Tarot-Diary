@@ -1,18 +1,23 @@
-import React, { useState, useEffect, useContext } from "react";
-import { useNavigate } from "react-router-dom";
-import { v4 as uuidv4 } from "uuid";
+import { useContext, useEffect, useState } from "react";
+import { AiOutlineMinus } from "react-icons/ai";
 import { RxCross1 } from "react-icons/rx";
 import { VscAdd } from "react-icons/vsc";
-import { AiOutlineMinus } from "react-icons/ai";
+import { useNavigate } from "react-router-dom";
+import { v4 as uuidv4 } from "uuid";
 
-import MyImages from "../components/MyImages";
-import { db } from "../utils/firebase";
-import { doc, updateDoc, Timestamp, setDoc } from "firebase/firestore";
-import { AuthContext } from "../context/authContext";
+import { Timestamp, doc, setDoc, updateDoc } from "firebase/firestore";
 import Button from "../components/Button";
+import MyImages from "../components/MyImages";
+import { AuthContext } from "../context/authContext";
 import lightCard from "../images/card-light.png";
-
-function Draggable({ edit, setEdit, spreadData, id }) {
+import { db } from "../utils/firebase";
+import type { SpreadItem } from "../utils/type";
+type DragInfoType = {
+  pastIndex: number;
+  target: number | SpreadItem;
+  shine: boolean[];
+};
+function Design({ edit, setEdit, spreadData, id }) {
   const [onSave, setOnSave] = useState({
     spreadId: "",
     title: "",
@@ -59,20 +64,14 @@ function Draggable({ edit, setEdit, spreadData, id }) {
   });
   const { userUID } = useContext(AuthContext);
   const navigate = useNavigate();
-  //可以拿onSave換算 todo
-  const [cardNumber, setCardNumber] = useState(() =>
-    onSave.spread.reduce((acc, curr) => {
-      return curr !== 0 ? acc + 1 : acc;
-    }, 0)
-  );
 
   //整合這三個state todo
-  const [pastIndex, setPastIndex] = useState(null);
-  const [target, setTarget] = useState(0);
-  const [shine, setShine] = useState(
-    new Array(onSave.spread.length).fill(false)
-  );
-  // const [saved, setSaved] = useState(false);
+  const shineArr = () => new Array(onSave.spread.length).fill(false);
+  const [dragInfo, setDragInfo] = useState<DragInfoType>({
+    pastIndex: 0,
+    target: 0,
+    shine: shineArr(),
+  });
 
   useEffect(() => {
     //todo 記得刪掉
@@ -91,27 +90,31 @@ function Draggable({ edit, setEdit, spreadData, id }) {
     }
   }, []);
 
-  const onDragging = (e) => {
-    const newShine = [...shine].fill(false);
-    setShine(newShine);
+  const onDragging = () => {
+    const newDragInfo = { ...dragInfo };
+    newDragInfo.shine = shineArr();
+    setDragInfo(newDragInfo);
   };
-  const onDragged = (e, i) => {
+  const onDragged = () => {
     e.preventDefault();
-    const newShine = [...shine].fill(false);
-    newShine[i] = true;
-    setShine(newShine);
+    const newDragInfo = { ...dragInfo };
+    newDragInfo.shine = shineArr();
+    newDragInfo.shine[i] = true;
+    setDragInfo(newDragInfo);
   };
-  const drop = (e, i) => {
+  const drop = (i) => {
+    const newDragInfo = { ...dragInfo };
+    const { pastIndex } = newDragInfo;
     let newState = { ...onSave }.spread;
     if (newState[i] !== 0) {
       setOnSave({ ...onSave, spread: newState });
     } else {
       newState[pastIndex] = 0;
-      newState[i] = target;
+      newState[i] = newDragInfo.target as SpreadItem;
       setOnSave({ ...onSave, spread: newState });
+      newDragInfo.shine = shineArr();
+      setDragInfo(newDragInfo);
     }
-    const newShine = [...shine].fill(false);
-    setShine(newShine);
   };
   const change = (e, item, i) => {
     item.value = e.target.value;
@@ -121,13 +124,10 @@ function Draggable({ edit, setEdit, spreadData, id }) {
       item.disabled = true;
     }
     setOnSave({ ...onSave, spread: newState });
-
     return;
   };
   const createNewCard = () => {
-    const cards = onSave.spread.reduce((acc, curr) => {
-      return curr !== 0 ? acc + 1 : acc;
-    }, 0);
+    const cards = onSave.spread.filter((curr) => curr !== 0).length;
     if (cards > 15) return;
     const zeroIndex = onSave.spread.findIndex((item) => item === 0);
     let newState = { ...onSave }.spread;
@@ -138,7 +138,6 @@ function Draggable({ edit, setEdit, spreadData, id }) {
       order: cards + 1,
     };
     setOnSave({ ...onSave, spread: newState });
-    setCardNumber((prev) => prev + 1);
     return;
   };
   const deleteCard = (item) => {
@@ -146,7 +145,6 @@ function Draggable({ edit, setEdit, spreadData, id }) {
     let newState = { ...onSave }.spread;
     newState[deletedCardIndex] = 0;
     setOnSave({ ...onSave, spread: newState });
-    setCardNumber((prev) => prev - 1);
     return;
   };
   const editCard = (item, i) => {
@@ -283,16 +281,16 @@ function Draggable({ edit, setEdit, spreadData, id }) {
     });
     setEdit(false);
   };
-  function checkUniqueOrder(arr) {
-    const orders = [];
+  function checkUniqueOrder(arr: SpreadItem[]) {
+    const orders: number[] = [];
     for (let i = 0; i < arr.length; i++) {
       const order = Number(arr[i].order);
       if (orders.includes(order)) {
-        return false; // 發現重複的 order，返回 false
+        return false;
       }
       orders.push(order);
     }
-    return true; // 所有的 order 都是唯一的
+    return true;
   }
 
   const validationWarn = () => {
@@ -303,43 +301,27 @@ function Draggable({ edit, setEdit, spreadData, id }) {
         return "!請填寫說明";
       case onSave.image === "":
         return "!請選擇主要圖片";
-      case onSave.spread.reduce(
-        (acc, curr) => (curr !== 0 ? acc + 1 : acc),
-        0
-      ) === 0:
+      case onSave.spread.filter((curr) => curr !== 0).length === 0:
         return "!至少需要一張卡片";
-      case !checkUniqueOrder(onSave.spread.filter((item) => item !== 0)):
+      case !checkUniqueOrder(
+        onSave.spread.filter((item) => typeof item !== "number") as SpreadItem[]
+      ):
         return "!抽排順序不能重複";
       default:
         return "";
     }
   };
-
-  // const validationWarn = () => {
-  //   return onSave.title === ""
-  //     ? "!請填寫標題"
-  //     : onSave.description === ""
-  //     ? "!請填寫說明"
-  //     : onSave.image === ""
-  //     ? "!請選擇主要圖片"
-  //     : onSave.spread.reduce((acc, curr) => {
-  //         return curr !== 0 ? acc + 1 : acc;
-  //       }, 0) === 0
-  //     ? "!至少需要一張卡片"
-  //     : checkUniqueOrder(onSave.spread.filter((item) => item !== 0))
-  //     ? ""
-  //     : "!抽排順序不能重複";
-  // };
   const validation = () => {
     return (
       onSave.title === "" ||
       onSave.description === "" ||
       onSave.image === "" ||
       onSave.spread.filter((item) => item !== 0).length === 0 ||
-      !checkUniqueOrder(onSave.spread.filter((item) => item !== 0))
+      !checkUniqueOrder(
+        onSave.spread.filter((item) => item !== 0) as SpreadItem[]
+      )
     );
   };
-  //onSave.spread.filter((item) => item !== 0).length === 0 可以變成一個function
   return (
     <>
       <div className="w-screen h-[80px]" />
@@ -353,7 +335,10 @@ function Draggable({ edit, setEdit, spreadData, id }) {
         <div className="flex flex-row gap-9 mb-14">
           <form className="flex flex-col gap-2 w-2/5 justify-between">
             <h1 className="font-NTalt text-yellow text-4xl mt-10 mb-10 tracking-wide font-medium">
-              Pick {cardNumber} {cardNumber === 1 ? "Card" : "Cards"}
+              Pick {onSave.spread.filter((curr) => curr !== 0).length}{" "}
+              {onSave.spread.filter((curr) => curr !== 0).length === 1
+                ? "Card"
+                : "Cards"}
             </h1>
             <div className="relative group">
               <div className="absolute bottom-0 h-[2px] bg-yellow/50 w-0 group-hover:w-full duration-500"></div>
@@ -366,7 +351,6 @@ function Draggable({ edit, setEdit, spreadData, id }) {
                 placeholder="請輸入你的標題"
                 value={onSave.title}
                 onChange={(e) => inputChange(e, "title")}
-                // disabled={saved}
               />
             </div>
             <div className="relative group">
@@ -374,20 +358,16 @@ function Draggable({ edit, setEdit, spreadData, id }) {
               <textarea
                 className="w-[100%] h-[130px] pl-2 pb-14 text-yellow bg-pink/40 pt-1 outline outline-0
                border-yellow  tracking-wider placeholder:text-gray placeholder:opacity-75 hover:bg-pink/0 duration-500"
-                type="text"
                 name="description"
                 placeholder="請描述一下此牌陣的用法"
                 value={onSave.description}
                 onChange={(e) => inputChange(e, "description")}
-                // disabled={saved}
               />
             </div>
           </form>
-          <MyImages
-            className="order-2 w-3/5"
-            onSave={onSave}
-            setOnSave={setOnSave}
-          />
+          <div className="order-2 w-3/5">
+            <MyImages onSave={onSave} setOnSave={setOnSave} />
+          </div>
         </div>
         <div className="flex gap-9 ">
           <div className="group relative">
@@ -406,11 +386,11 @@ function Draggable({ edit, setEdit, spreadData, id }) {
           <div className="group relative">
             <div
               className={`${
-                validationWarn() === false
+                validationWarn() === ""
                   ? "group-hover:opacity-0 bg-none"
-                  : "group-hover:opacity-100"
+                  : "group-hover:opacity-100 bg-pink/30"
               }
-               duration-200 opacity-0 bg-pink/30 text-yellow text-sm p-1 
+               duration-200 opacity-0  text-yellow text-sm p-1 
          font-notoSansJP text-center rounded-lg m-1 tracking-widest absolute top-[-35px] left-9 z-1 `}
             >
               {validationWarn()}
@@ -432,15 +412,21 @@ function Draggable({ edit, setEdit, spreadData, id }) {
           return (
             <div
               className={`flex justify-center box-border w-[144px] h-[113px]  ${
-                shine[i] ? "bg-pink opacity-60" : ""
+                dragInfo.shine[i] ? "bg-pink opacity-60" : ""
               }`}
               key={i}
-              onDragEnter={(e) => onDragging(e)}
-              onDragLeave={(e) => onDragging(e)}
-              onDragOver={(e) => onDragged(e, i)}
-              onDrop={(e) => drop(e, i)}
+              onDragEnter={() => onDragging()}
+              onDragLeave={() => onDragging()}
+              onDragOver={(e) => {
+                e.preventDefault();
+                const newDragInfo = { ...dragInfo };
+                newDragInfo.shine = shineArr();
+                newDragInfo.shine[i] = true;
+                setDragInfo(newDragInfo);
+              }}
+              onDrop={() => drop(i)}
             >
-              {item !== 0 && (
+              {typeof item === "object" && (
                 //todo background
                 <div
                   style={{ background: `center/contain url(${lightCard})` }}
@@ -448,23 +434,17 @@ function Draggable({ edit, setEdit, spreadData, id }) {
                   flex items-center justify-center flex-col bg-slate-800 text-yellow z-10 gap-2 bg-opacity-80`}
                   draggable={true} //TODO
                   onDragStart={(e) => {
-                    //問谷哥  有沒有更好的辦法
-                    e.target.style.opacity = "0.01";
-                    setTarget(item);
-                    setPastIndex(i);
-                    const newShine = [...shine].fill(false);
-                    setShine(newShine);
+                    (e.target as HTMLElement).style.opacity = "0.01";
+                    const newDragInfo = { ...dragInfo };
+                    newDragInfo.target = item;
+                    newDragInfo.pastIndex = i;
+                    newDragInfo.shine = shineArr();
+                    setDragInfo(newDragInfo);
                   }}
                   onDragEnd={(e) => {
-                    e.target.style.opacity = "1";
+                    (e.target as HTMLElement).style.opacity = "1";
                   }}
                 >
-                  {/* {saved ? (
-                    <div>
-                      <p>{item.value}</p>
-                      <p>{item.order}</p>
-                    </div>
-                  ) : ( */}
                   <>
                     <textarea
                       className={`p-2 outline-none opacity-100 absolute top-9 text-green rounded-lg text-center 
@@ -472,7 +452,6 @@ function Draggable({ edit, setEdit, spreadData, id }) {
                     ${
                       item.disabled ? " text-green bg-opacity-40 bg-white " : ""
                     }`}
-                      type="text"
                       disabled={item.disabled}
                       onKeyDown={(e) => change(e, item, i)}
                       onChange={(e) => change(e, item, i)}
@@ -540,14 +519,6 @@ function Draggable({ edit, setEdit, spreadData, id }) {
          hover:bg-pink hover:bg-opacity-60 hover:text-yellow hover:border-yellow hover:shadowYellow
         font-NT shadowPink text-8xl text-pink leading-4 text-center opacity-90 z-[2]"
           onClick={() => {
-            // const newOnsave = { ...onSave };
-            // if (newOnsave.spread.length > 28) {
-            //   const newArray = newOnsave.spread.slice(
-            //     0,
-            //     newOnsave.spread.length - 7
-            //   );
-            //   setOnSave({ ...newOnsave, spread: newArray });
-            // }
             setOnSave((prevState) =>
               prevState.spread.length > 28
                 ? {
@@ -568,4 +539,4 @@ function Draggable({ edit, setEdit, spreadData, id }) {
   );
 }
 
-export default Draggable;
+export default Design;

@@ -1,21 +1,21 @@
-import { useContext, useEffect, useState } from "react";
-import { AuthContext } from "../../../context/authContext";
-import { db } from "../../../utils/firebase";
 import {
   collection,
-  query,
-  where,
-  onSnapshot,
   doc,
   getDoc,
-  Timestamp,
+  onSnapshot,
+  query,
+  where,
 } from "firebase/firestore";
+import { useContext, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import type { FriendsPosts } from "../../../utils/type";
-
+import { AuthContext } from "../../../context/authContext";
+import { db } from "../../../utils/firebase";
+import { FriendsPostsType } from "../../../utils/type";
 function useGetUserExplore() {
   const { user } = useContext(AuthContext);
-  const [friendsPosts, setFriendsPosts] = useState<FriendsPosts[] | null>(null);
+  const [friendsPosts, setFriendsPosts] = useState<FriendsPostsType[] | null>(
+    null
+  );
   const { uid } = useParams();
   useEffect(() => {
     if (user.userUID !== uid) {
@@ -40,7 +40,7 @@ function useGetUserExplore() {
                 user: followingUser.userUID,
                 userImg: followingUser.image,
                 userName: followingUser.name,
-              } as FriendsPosts;
+              } as FriendsPostsType;
               setFriendsPosts((prev) =>
                 prev ? [...prev, newDocData] : [newDocData]
               );
@@ -66,7 +66,7 @@ function useGetUserExplore() {
                 user: person,
                 userImg: followingUser.image,
                 userName: followingUser.name,
-              } as FriendsPosts;
+              } as FriendsPostsType;
               setFriendsPosts((prev) => {
                 if (prev) {
                   return [...prev, newDocData];

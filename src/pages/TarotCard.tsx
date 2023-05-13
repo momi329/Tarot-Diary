@@ -1,42 +1,11 @@
-import { useParams } from "react-router-dom";
-import Sun from "../images/Sun";
-import Moon from "../images/Moon";
-import cards from "../tarotcard/tarot-images";
-import Star from "../images/Star";
 import { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
 import Footer from "../components/Footer";
-export function convertToRomanNumeral(num) {
-  const romanNumeralMap = [
-    { value: 1000, symbol: "M" },
-    { value: 900, symbol: "CM" },
-    { value: 500, symbol: "D" },
-    { value: 400, symbol: "CD" },
-    { value: 100, symbol: "C" },
-    { value: 90, symbol: "XC" },
-    { value: 50, symbol: "L" },
-    { value: 40, symbol: "XL" },
-    { value: 10, symbol: "X" },
-    { value: 9, symbol: "IX" },
-    { value: 5, symbol: "V" },
-    { value: 4, symbol: "IV" },
-    { value: 1, symbol: "I" },
-    { value: 0, symbol: "N" },
-  ];
-
-  function convertToRomanNumeralHelper(num, index) {
-    if (index >= romanNumeralMap.length || num <= 0) {
-      return "";
-    }
-    const currentSymbol = romanNumeralMap[index].symbol;
-    const currentValue = romanNumeralMap[index].value;
-    const quotient = Math.floor(num / currentValue);
-    const remainder = num % currentValue;
-    const result = currentSymbol.repeat(quotient);
-    return result + convertToRomanNumeralHelper(remainder, index + 1);
-  }
-
-  return convertToRomanNumeralHelper(num, 0);
-}
+import Moon from "../images/Moon";
+import Star from "../images/Star";
+import Sun from "../images/Sun";
+import cards from "../tarotcard/tarot-images";
+import { convertToRomanNumeral } from "../utils/function";
 
 const subTitle = " text-4xl text-pink font-NT shadowPink ";
 function TarotCard() {
