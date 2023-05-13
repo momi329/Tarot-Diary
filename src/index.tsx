@@ -4,6 +4,7 @@ import App from "./App";
 import AskGPT from "./components/AskAndNote";
 import { LoadingContextProvider } from "./context/loadingContext";
 import "./index.css";
+
 import Design from "./pages/Design/Design";
 import Divination from "./pages/Divination";
 import Home from "./pages/Home/Home";
