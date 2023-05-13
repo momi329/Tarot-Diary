@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import Button from "../../components/Button";
 import UnderlineButton from "../../components/UnderlineButton";
 import { AuthContext } from "../../context/authContext";
-import Design from "../Design";
+import Design from "../Design/Design";
 function SpreadInfo({ spreadData, type, setEdit, edit }) {
   const { userUID } = useContext(AuthContext);
   const navigate = useNavigate();
