@@ -75,10 +75,11 @@ function Design({ edit, setEdit, spreadData }: DesignProps) {
   };
 
   const saveIt = async () => {
-    if (edit && spreadData) {
+    if (edit && spreadData && setEdit) {
       const NewSpread = { ...onSave, time: Timestamp.fromDate(new Date()) };
       const spreadRef = doc(db, "spreads", spreadData.spreadId);
       await updateDoc(spreadRef, NewSpread);
+      setEdit(false);
     } else {
       let newData = { ...onSave, time: Timestamp.fromDate(new Date()) };
       if (onSave.spreadId === "") {
@@ -110,7 +111,6 @@ function Design({ edit, setEdit, spreadData }: DesignProps) {
         ...Array(99).fill(0),
       ],
     });
-    setEdit(false);
   };
   function checkUniqueOrder(arr: SpreadItem[]) {
     const orders: number[] = [];
