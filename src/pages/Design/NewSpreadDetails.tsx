@@ -1,4 +1,12 @@
-function NewSpreadDetails({ inputChange, onSave }) {
+import { ChangeEvent } from "react";
+function NewSpreadDetails({ setOnSave, onSave }) {
+  const inputChange = (
+    e: ChangeEvent<HTMLTextAreaElement> | ChangeEvent<HTMLInputElement>,
+    name: string
+  ) => {
+    setOnSave((prev) => ({ ...prev, [name]: e.target.value }));
+    return;
+  };
   return (
     <form className="flex flex-col gap-2 w-2/5 justify-between">
       <h1 className="font-NTalt text-yellow text-4xl mt-10 mb-10 tracking-wide font-medium">

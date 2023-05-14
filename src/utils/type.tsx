@@ -9,7 +9,7 @@ export type User = {
   favorite: [];
   userUID: string;
 };
-export type Spread = number[] | SpreadItem[];
+
 export type Comment = {
   comment: string;
   user: string;
@@ -35,7 +35,7 @@ export type DiaryType = {
   time: Timestamp;
   like: string[];
   userUID: string;
-  spread: Spread[];
+  spread: (number | SpreadItem)[];
   user: string;
   userImg: string;
   userName: string;
@@ -44,7 +44,7 @@ export type DiaryType = {
 export type FriendsPostsType = {
   content?: string;
   image: string;
-  spread: Spread[];
+  spread: (number | SpreadItem)[];
   description: string;
   secret?: boolean;
   time: Timestamp;
@@ -91,8 +91,8 @@ export type SpreadData = {
   userUID: string;
   title: string;
   image: string;
-  spread: Spread;
-  description?: string;
+  spread: (number | SpreadItem)[];
+  description: string;
   spreadId: string;
   name?: string;
   time?: Timestamp;
@@ -112,12 +112,12 @@ export type DraggableProps = {
 export type DesignSpreadData = {
   image: string;
   title: string;
-  spread: number[] | SpreadItem[];
+  spread: (number | SpreadItem)[];
   userUID?: string;
   description: string;
   spreadId: string;
   question?: string;
-  secret: boolean;
+  secret?: boolean;
 };
 
 export type FriendsData = {

@@ -6,7 +6,11 @@ import Button from "../../components/Button";
 import MyImages from "../../components/MyImages";
 import { AuthContext } from "../../context/authContext";
 import { db } from "../../utils/firebase";
-import type { SpreadData, SpreadItem } from "../../utils/type";
+import type {
+  DesignSpreadData,
+  SpreadData,
+  SpreadItem,
+} from "../../utils/type";
 import Drag from "./Drag";
 import NewSpreadDetails from "./NewSpreadDetails";
 
@@ -21,7 +25,7 @@ type DesignProps = {
   spreadData?: SpreadData;
 };
 function Design({ edit, setEdit, spreadData }: DesignProps) {
-  const [onSave, setOnSave] = useState(() => ({
+  const [onSave, setOnSave] = useState<DesignSpreadData>(() => ({
     spreadId: "",
     title: "",
     description: "",
@@ -43,9 +47,8 @@ function Design({ edit, setEdit, spreadData }: DesignProps) {
 
   useEffect(() => {
     const userUID = localStorage.getItem("userUID");
-    if (edit) {
-      //todo 可以在onsave裡判斷即可
-      spreadData && setOnSave(spreadData);
+    if (edit && spreadData) {
+      setOnSave(spreadData);
       return;
     }
     if (userUID) {
@@ -71,10 +74,6 @@ function Design({ edit, setEdit, spreadData }: DesignProps) {
     return;
   };
 
-  const inputChange = (e, name) => {
-    setOnSave((prev) => ({ ...prev, [name]: e.target.value }));
-    return;
-  };
   const saveIt = async () => {
     if (edit && spreadData) {
       const NewSpread = { ...onSave, time: Timestamp.fromDate(new Date()) };
@@ -165,7 +164,7 @@ function Design({ edit, setEdit, spreadData }: DesignProps) {
           設計你自己的牌陣，問自己想問的問題！
         </p>
         <div className="flex flex-row gap-9 mb-14">
-          <NewSpreadDetails inputChange={inputChange} onSave={onSave} />
+          <NewSpreadDetails setOnSave={setOnSave} onSave={onSave} />
           <div className="order-2 w-3/5">
             <MyImages onSave={onSave} setOnSave={setOnSave} />
           </div>
