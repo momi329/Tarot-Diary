@@ -4,10 +4,7 @@ module.exports = {
   content: ["./src/**/*.{js,jsx,ts,tsx}"],
   theme: {
     screens: {
-      sm: "360px",
-      md: "1080px",
-      lg: "1024px", // <-- add closing double quote here
-      xl: "1280px",
+      sm: { min: "300px", max: "880px" },
     },
     colors: {
       yellow: "#F4E4C3",

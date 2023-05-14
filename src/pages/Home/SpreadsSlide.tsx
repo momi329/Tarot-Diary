@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import { useContext } from "react";
 import { useNavigate } from "react-router-dom";
 
 import SpreadPreview from "../../components/SpreadPreview";
@@ -30,8 +30,8 @@ export default function SpreadsSlide({ scrollRef5, animated }) {
 
   return (
     <>
-      <div className='w-screen h-6 z-[2] relative' ref={scrollRef5}>
-        <div className='min-h-[80px] w-[80%] left-[20%]  top-[-50px] absolute'>
+      <div className="w-screen h-6 z-[2] relative" ref={scrollRef5}>
+        <div className="min-h-[80px] w-[80%] left-[20%]  top-[-50px] absolute">
           <div
             className={`text-yellow z-[4] font-NT  ${
               animated[4] ? "opacity-0 animate-[slideUp_1s_forwards_300ms]" : ""
@@ -49,17 +49,17 @@ export default function SpreadsSlide({ scrollRef5, animated }) {
         }`}
       >
         <div
-          className='w-[80%]  mb-24 overflow-x-auto flex flex-row gap-16 '
+          className="w-[80%]  mb-24 overflow-x-auto flex flex-row gap-16 "
           onWheel={wheelHandler}
         >
           {spreads &&
             spreads.map((item, i) => (
-              <SpreadPreview spread={item} index={i} type={"index"} />
+              <SpreadPreview spread={item} index={i} type={"carousel"} />
             ))}
         </div>
         <div
-          className='w-28 h-28 rounded-full  border-[1px] border-white bottom-[100px] left-[100px] absolute cursor-pointer
-        font-NT shadowWhite text-xl text-white leading-[112px] text-center opacity-90 z-[2] animate-pulse animate-fadeInAnimate opacity-0'
+          className="w-28 h-28 rounded-full  border-[1px] border-white bottom-[100px] left-[100px] absolute cursor-pointer
+        font-NT shadowWhite text-xl text-white leading-[112px] text-center opacity-90 z-[2] animate-pulse animate-fadeInAnimate opacity-0"
           onClick={() => navigate("/divination")}
         >
           More

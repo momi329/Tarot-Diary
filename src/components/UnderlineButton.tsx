@@ -40,7 +40,7 @@ function UnderlineButton({
   }
   return (
     <div
-      className='flex flex-row gap-3 items-center relative group bg-none '
+      className="flex flex-row gap-3 items-center relative group bg-none "
       onClick={() => action()}
     >
       <button className={`tracking-wider duration-200 ${style.a}`}>
