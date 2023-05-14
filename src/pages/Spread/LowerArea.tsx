@@ -1,4 +1,4 @@
-import { ActionEnum } from "../../utils/type";
+import { ActionEnum, SpreadItem } from "../../utils/type";
 
 import { useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
@@ -39,19 +39,14 @@ function LowerArea({ type, dispatch }: LowerAreaProps) {
     getDesign();
   }, []);
   const handleClickDivine = async () => {
-    const number: number = spreadData?.spread.filter(
+    if (!spreadData) return;
+    const number: number = spreadData.spread.filter(
       (item) => item !== 0
     ).length;
     const randomCard = getRandomCards(number);
     const randomReverse = getRandomBool(number);
     const modifiedData = spreadData?.spread.reduce(
-      (
-        acc: any,
-        item:
-          | number
-          | { name: string; order: number; card: number; reverse: boolean },
-        i: number
-      ) => {
+      (acc: (number | SpreadItem)[], item: number | SpreadItem) => {
         if (typeof item === "number") {
           acc.push(0);
         } else {
