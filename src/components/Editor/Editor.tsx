@@ -1,16 +1,14 @@
-import { useRef, useState } from "react";
 import BlotFormatter from "quill-blot-formatter";
+import { useRef, useState } from "react";
 
-import ReactQuill, { Quill } from "react-quill";
-import * as Emoji from "quill-emoji";
-import { markdownToHtml, htmlToMarkdown } from "./Parser";
-import { ImageDrop } from "quill-image-drop-module";
-import "react-quill/dist/quill.snow.css";
 import "quill-emoji/dist/quill-emoji.css";
+import { ImageDrop } from "quill-image-drop-module";
+import ReactQuill, { Quill } from "react-quill";
+import "react-quill/dist/quill.snow.css";
+import { htmlToMarkdown, markdownToHtml } from "./Parser";
 
 Quill.register("modules/blotFormatter", BlotFormatter);
 Quill.register("modules/imageDrop", ImageDrop);
-Quill.register("modules/emoji", Emoji);
 export interface EditorContentChanged {
   html: string;
   markdown: string;
@@ -24,10 +22,6 @@ export interface EditorProps {
 const TOOLBAR_OPTIONS = [
   [{ header: [1, 2, 3, false] }],
   ["bold", "italic", "underline", "blockquote"],
-  //[{ list: "ordered" }, { list: "bullet" }],
-  //[{ indent: "-1" }, { indent: "+1" }],
-  // ["link", "image"],
-  //["emoji"],
 ];
 
 export default function Editor(props: EditorProps) {

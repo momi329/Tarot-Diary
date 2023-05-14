@@ -90,6 +90,7 @@ const AskAndNote = ({ divinedData, setDivinedData, type, dispatch }: any) => {
 
   const onEditorContentChanged = (content: EditorContentChanged) => {
     setDivinedData({ ...divinedData, content: content.markdown });
+    console.log("Editor content changed:", content.markdown);
   };
   return (
     <div className="flex flex-row ">

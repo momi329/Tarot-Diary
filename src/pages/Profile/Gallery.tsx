@@ -10,14 +10,19 @@ import UnderlineButton from "../../components/UnderlineButton";
 import { AuthContext } from "../../context/authContext";
 import Star from "../../images/Star";
 import cards from "../../tarotcard/tarot-images";
-import { DiaryType, FriendsPostsType, PageEnum } from "../../utils/type";
+import {
+  DiaryType,
+  FriendsPostsType,
+  PageEnum,
+  SpreadData,
+} from "../../utils/type";
 import { SpreadPlace } from "../Spread/SpreadPlace";
 import GalleryHeader from "./GalleryHeader";
 import GalleryNoDiary from "./GalleryNoDiary";
 import GallerySkeleton from "./GallerySkeleton";
 
 type GalleryProps = {
-  data: DiaryType[] | FriendsPostsType[] | null;
+  data: DiaryType[] | FriendsPostsType[] | null | SpreadData[];
   page: PageEnum;
 };
 
@@ -45,14 +50,14 @@ const Gallery = ({ data, page }: GalleryProps) => {
     const newData = [...data];
     newData
       .sort(function (a, b) {
-        return a.time.seconds - b.time.seconds;
+        return (a.time?.seconds || 0) - (b.time?.seconds || 0);
       })
       .reverse();
     newData && setEdit(Array(newData.length).fill(false));
     if (newData.length < 5) {
-      setPost(newData as Diary[] | FriendsPosts[]);
+      setPost(newData as DiaryType[] | FriendsPostsType[]);
     } else {
-      setPost(newData.slice(0, 5) as Diary[] | FriendsPosts[]);
+      setPost(newData.slice(0, 5) as DiaryType[] | FriendsPostsType[]);
     }
   }, [data, page]);
 
@@ -62,18 +67,19 @@ const Gallery = ({ data, page }: GalleryProps) => {
 
   const seeMore = () => {
     if (!post) return;
+    if (!data) return;
     setLoading(true);
     const newData = [...data];
     newData
       .sort(function (a, b) {
-        return a.time.seconds - b.time.seconds;
+        return (a.time?.seconds || 0) - (b.time?.seconds || 0);
       })
       .reverse();
     const more = post?.length + 5;
     newData?.length < 5 && setIfMore(false);
     setTimeout(() => {
       newData?.length < more && setIfMore(false);
-      setPost(newData?.slice(0, more) as Diary[] | FriendsPosts[]);
+      setPost(newData?.slice(0, more) as DiaryType[] | FriendsPostsType[]);
       setLoading(false);
     }, 1500);
   };
@@ -82,7 +88,7 @@ const Gallery = ({ data, page }: GalleryProps) => {
     if (!post) return;
     const newPost = [...post];
     newPost[index].seeMore = !newPost[index].seeMore;
-    setPost(newPost as Diary[] | FriendsPosts[]);
+    setPost(newPost as DiaryType[] | FriendsPostsType[]);
   };
 
   if (!post) return <GallerySkeleton />;
@@ -256,18 +262,7 @@ const Gallery = ({ data, page }: GalleryProps) => {
                         {" "}
                         {item.description && item.description.slice(0, 60)}...
                       </span>
-                      {/* <span className='w-[50px]'>
-                        <UnderlineButton
-                          value={"GO TAROT"}
-                          icon={
-                            <AiOutlineArrowRight className='text-pink scale-100 cursor-pointer' />
-                          }
-                          type={"meanings"}
-                          action={() => {
-                            navigate(`/spread/${item.spreadId}`);
-                          }}
-                        />
-                      </span> */}
+
                       <span
                         className="text-pink cursor-pointer relative group font-NT shadowPink tracking-widest"
                         onClick={() => navigate(`/spread/${item.spreadId}`)}
