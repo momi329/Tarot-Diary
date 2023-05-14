@@ -1,15 +1,13 @@
+import { Timestamp, doc, setDoc, updateDoc } from "firebase/firestore";
 import { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { v4 as uuidv4 } from "uuid";
-import Drag from "./Drag";
-
-import { Timestamp, doc, setDoc, updateDoc } from "firebase/firestore";
 import Button from "../../components/Button";
 import MyImages from "../../components/MyImages";
 import { AuthContext } from "../../context/authContext";
-import lightCard from "../../images/card-light.png";
 import { db } from "../../utils/firebase";
 import type { SpreadData, SpreadItem } from "../../utils/type";
+import Drag from "./Drag";
 import NewSpreadDetails from "./NewSpreadDetails";
 
 type DragInfoType = {
@@ -44,59 +42,20 @@ function Design({ edit, setEdit, spreadData }: DesignProps) {
   });
 
   useEffect(() => {
-    //todo 記得刪掉
     const userUID = localStorage.getItem("userUID");
     if (edit) {
       //todo 可以在onsave裡判斷即可
-      setOnSave(spreadData);
+      spreadData && setOnSave(spreadData);
       return;
     }
     if (userUID) {
-      console.log("???");
       const spreadId = uuidv4();
       setOnSave({ ...onSave, userUID: userUID, spreadId: spreadId });
     } else {
-      //改成無訪問權限
-      alert("請先登入");
+      navigate("/signin");
     }
   }, []);
 
-  const onDragging = () => {
-    const newDragInfo = { ...dragInfo };
-    newDragInfo.shine = shineArr();
-    setDragInfo(newDragInfo);
-  };
-  const onDragged = () => {
-    e.preventDefault();
-    const newDragInfo = { ...dragInfo };
-    newDragInfo.shine = shineArr();
-    newDragInfo.shine[i] = true;
-    setDragInfo(newDragInfo);
-  };
-  const drop = (i) => {
-    const newDragInfo = { ...dragInfo };
-    const { pastIndex } = newDragInfo;
-    let newState = { ...onSave }.spread;
-    if (newState[i] !== 0) {
-      setOnSave({ ...onSave, spread: newState });
-    } else {
-      newState[pastIndex] = 0;
-      newState[i] = newDragInfo.target as SpreadItem;
-      setOnSave({ ...onSave, spread: newState });
-      newDragInfo.shine = shineArr();
-      setDragInfo(newDragInfo);
-    }
-  };
-  const change = (e, item, i) => {
-    item.value = e.target.value;
-    let newState = { ...onSave }.spread;
-    newState[i] = item;
-    if (e.key === "Enter") {
-      item.disabled = true;
-    }
-    setOnSave({ ...onSave, spread: newState });
-    return;
-  };
   const createNewCard = () => {
     const cards = onSave.spread.filter((curr) => curr !== 0).length;
     if (cards > 15) return;
@@ -111,36 +70,13 @@ function Design({ edit, setEdit, spreadData }: DesignProps) {
     setOnSave({ ...onSave, spread: newState });
     return;
   };
-  const deleteCard = (item) => {
-    const deletedCardIndex = onSave.spread.findIndex((i) => i === item);
-    let newState = { ...onSave }.spread;
-    newState[deletedCardIndex] = 0;
-    setOnSave({ ...onSave, spread: newState });
-    return;
-  };
-  const editCard = (item, i) =>
-    setOnSave({
-      ...onSave,
-      spread: [
-        ...onSave.spread.slice(0, i),
-        { ...item, disabled: false },
-        ...onSave.spread.slice(i + 1),
-      ],
-    });
 
-  const handleOptionChange = (e, item, i) => {
-    item.order = e.target.value;
-    let newState = { ...onSave }.spread;
-    newState[i] = item;
-    setOnSave({ ...onSave, spread: newState });
-    return;
-  };
   const inputChange = (e, name) => {
     setOnSave((prev) => ({ ...prev, [name]: e.target.value }));
     return;
   };
   const saveIt = async () => {
-    if (edit) {
+    if (edit && spreadData) {
       const NewSpread = { ...onSave, time: Timestamp.fromDate(new Date()) };
       const spreadRef = doc(db, "spreads", spreadData.spreadId);
       await updateDoc(spreadRef, NewSpread);
@@ -153,7 +89,6 @@ function Design({ edit, setEdit, spreadData }: DesignProps) {
           spreadId: id,
           time: Timestamp.fromDate(new Date()),
         };
-        // navigate(`/spread/${id}`);
       }
       if (onSave.userUID === "") {
         newData = {
@@ -230,11 +165,7 @@ function Design({ edit, setEdit, spreadData }: DesignProps) {
           設計你自己的牌陣，問自己想問的問題！
         </p>
         <div className="flex flex-row gap-9 mb-14">
-          <NewSpreadDetails
-            inputChange={inputChange}
-            onSave={onSave}
-            setOnSave={setOnSave}
-          />
+          <NewSpreadDetails inputChange={inputChange} onSave={onSave} />
           <div className="order-2 w-3/5">
             <MyImages onSave={onSave} setOnSave={setOnSave} />
           </div>
@@ -278,12 +209,6 @@ function Design({ edit, setEdit, spreadData }: DesignProps) {
         dragInfo={dragInfo}
         shineArr={shineArr}
         setDragInfo={setDragInfo}
-        drop={drop}
-        lightCard={lightCard}
-        change={change}
-        deleteCard={deleteCard}
-        editCard={editCard}
-        handleOptionChange={handleOptionChange}
         onSave={onSave}
         setOnSave={setOnSave}
       />

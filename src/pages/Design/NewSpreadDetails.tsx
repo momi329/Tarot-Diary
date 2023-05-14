@@ -1,8 +1,8 @@
-function NewSpreadDetails({ inputChange, onSave, setOnSave }) {
+function NewSpreadDetails({ inputChange, onSave }) {
   return (
     <form className="flex flex-col gap-2 w-2/5 justify-between">
       <h1 className="font-NTalt text-yellow text-4xl mt-10 mb-10 tracking-wide font-medium">
-        Pick {onSave.spread.filter((curr) => curr !== 0).length}
+        Pick {onSave.spread.filter((curr) => curr !== 0).length}{" "}
         {onSave.spread.filter((curr) => curr !== 0).length === 1
           ? "Card"
           : "Cards"}

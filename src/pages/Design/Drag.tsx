@@ -1,24 +1,74 @@
+import { ChangeEvent, KeyboardEvent } from "react";
 import { AiOutlineMinus } from "react-icons/ai";
 import { RxCross1 } from "react-icons/rx";
 import { VscAdd } from "react-icons/vsc";
-// TODO: PropsType & delete unnecessary props
-function Drag({
-  dragInfo,
-  shineArr,
-  setDragInfo,
-  drop,
-  lightCard,
-  change,
-  deleteCard,
-  editCard,
-  handleOptionChange,
-  onSave,
-  setOnSave,
-}) {
+import lightCard from "../../images/card-light.png";
+import { SpreadItem } from "../../utils/type";
+function Drag({ dragInfo, shineArr, setDragInfo, onSave, setOnSave }) {
+  const drop = (i: number) => {
+    const newDragInfo = { ...dragInfo };
+    const { pastIndex } = newDragInfo;
+    let newState = { ...onSave }.spread;
+    if (newState[i] !== 0) {
+      setOnSave({ ...onSave, spread: newState });
+    } else {
+      newState[pastIndex] = 0;
+      newState[i] = newDragInfo.target as SpreadItem;
+      setOnSave({ ...onSave, spread: newState });
+      newDragInfo.shine = shineArr();
+      setDragInfo(newDragInfo);
+    }
+  };
+  const handleChange = (
+    e: ChangeEvent<HTMLTextAreaElement>,
+    item: SpreadItem,
+    i: number
+  ): void => {
+    item.value = e.target.value;
+    let newState = { ...onSave }.spread;
+    newState[i] = item;
+    setOnSave({ ...onSave, spread: newState });
+  };
+  const handleKeyDown = (
+    e: KeyboardEvent<HTMLTextAreaElement>,
+    item: SpreadItem,
+    i: number
+  ): void => {
+    if (e.key === "Enter") {
+      item.disabled = true;
+    }
+  };
   const onDragging = () => {
     const newDragInfo = { ...dragInfo };
     newDragInfo.shine = shineArr();
     setDragInfo(newDragInfo);
+  };
+  const deleteCard = (item: SpreadItem) => {
+    const deletedCardIndex = onSave.spread.findIndex((i) => i === item);
+    let newState = { ...onSave }.spread;
+    newState[deletedCardIndex] = 0;
+    setOnSave({ ...onSave, spread: newState });
+    return;
+  };
+  const editCard = (item: SpreadItem, i: number) =>
+    setOnSave({
+      ...onSave,
+      spread: [
+        ...onSave.spread.slice(0, i),
+        { ...item, disabled: false },
+        ...onSave.spread.slice(i + 1),
+      ],
+    });
+  const handleOptionChange = (
+    e: ChangeEvent<HTMLSelectElement>,
+    item: SpreadItem,
+    i: number
+  ) => {
+    item.order = Number(e.target.value);
+    let newState = { ...onSave }.spread;
+    newState[i] = item;
+    setOnSave({ ...onSave, spread: newState });
+    return;
   };
   return (
     <>
@@ -26,7 +76,7 @@ function Drag({
         className="flex flex-wrap justify-center max-w-screen-md border border-yellow z-1 
       mx-auto  border-opacity-50 mb-14 p-[30px] pb-[133px] backdrop-blur-sm bg-white/10 "
       >
-        {onSave.spread.map((item, i) => {
+        {onSave.spread.map((item: number | SpreadItem, i: number) => {
           return (
             <div
               className={`flex justify-center box-border w-[144px] h-[113px]  ${
@@ -44,14 +94,14 @@ function Drag({
               }}
               onDrop={() => drop(i)}
             >
-              {typeof item === "object" && ( //todo background
+              {typeof item === "object" && (
                 <div
                   style={{
                     background: `center/contain url(${lightCard})`,
                   }}
                   className={` rounded-xl w-[138px] h-[220px]  relative box-border cursor-grab
                   flex items-center justify-center flex-col bg-slate-800 text-yellow z-10 gap-2 bg-opacity-80`}
-                  draggable={true} //TODO
+                  draggable
                   onDragStart={(e) => {
                     (e.target as HTMLElement).style.opacity = "0.01";
                     const newDragInfo = { ...dragInfo };
@@ -72,8 +122,8 @@ function Drag({
                       item.disabled ? " text-green bg-opacity-40 bg-white " : ""
                     }`}
                       disabled={item.disabled}
-                      onKeyDown={(e) => change(e, item, i)}
-                      onChange={(e) => change(e, item, i)}
+                      onChange={(e) => handleChange(e, item, i)}
+                      onKeyDown={(e) => handleKeyDown(e, item, i)}
                       value={item.value}
                       readOnly={item.disabled}
                     />
@@ -90,7 +140,9 @@ function Drag({
                     absolute z-40 top-[8px] right-2 tracking-wider ${
                       item.disabled ? "" : "opacity-0"
                     }`}
-                      onClick={() => {}}
+                      onClick={() => {
+                        editCard(item, i);
+                      }}
                     >
                       EDIT
                     </div>
@@ -101,8 +153,8 @@ function Drag({
                          pl-7 pr-6 pt-[5px] pb-[4px] rounded-sm bg-opacity-30 absolute font-NT text-base"
                     >
                       {onSave.spread
-                        .filter((item) => item !== 0)
-                        .map((_, i) => (
+                        .filter((item: number | SpreadItem) => item !== 0)
+                        .map((_, i: number) => (
                           <option key={i + 1} value={i + 1}>
                             {i + 1}
                           </option>
