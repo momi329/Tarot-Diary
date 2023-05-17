@@ -10,7 +10,6 @@ export default function SpreadsSlide({ scrollRef5, animated }) {
   const { spreads } = useContext(AuthContext);
 
   function wheelHandler(event) {
-    event.preventDefault();
     const element = event.currentTarget;
     const scrollWidth = element.scrollWidth;
     const clientWidth = element.clientWidth;

@@ -1,15 +1,15 @@
-import { createContext, useState, useEffect, useContext } from "react";
-import { LoadingContext } from "./loadingContext";
-import firebase from "../utils/firebase";
-import { useLocation, useNavigate } from "react-router-dom";
-import { SpreadData } from "../utils/type";
 import {
   Auth,
+  FacebookAuthProvider,
+  GoogleAuthProvider,
   getAuth,
   onAuthStateChanged,
-  GoogleAuthProvider,
-  FacebookAuthProvider,
 } from "firebase/auth";
+import { createContext, useContext, useEffect, useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
+import firebase from "../utils/firebase";
+import { SpreadData } from "../utils/type";
+import { LoadingContext } from "./loadingContext";
 
 import type { User } from "../utils/type";
 

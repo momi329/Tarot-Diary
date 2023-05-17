@@ -1,10 +1,10 @@
-import React, { useContext } from "react";
+import { useContext } from "react";
 import { useNavigate } from "react-router-dom";
 
-import SelectCardHomePage from "./SelectCardHomePage";
 import Button from "../../components/Button";
 import { AuthContext } from "../../context/authContext";
 import { getRandomBool, getRandomCards } from "../../utils/function";
+import SelectCardHomePage from "./SelectCardHomePage";
 
 import pinkFlower1 from "../../images/pinkflower1.jpeg";
 
@@ -16,21 +16,22 @@ export default function Circle({ scrollRef4, animated }) {
     <>
       <div
         ref={scrollRef4}
-        className='relative min-h-[1000px] flex flex-col w-screen justify-center items-center overflow-hidden'
+        className="relative min-h-[1000px] flex flex-col w-screen justify-center items-center overflow-hidden"
       >
         <div
-          className='w-[2300px] h-[2300px] rounded-t-full  bg-black absolute  top-0
-          bg-clip-content  flex justify-center items-center  overflow-hidden'
+          className="sm:w-[1300px] sm:h-[1300px]
+          w-[2300px] h-[2300px] rounded-t-full  bg-black absolute  top-0
+          bg-clip-content  flex justify-center items-center  overflow-hidden"
         >
           <img
             src={pinkFlower1}
-            alt='pinkflower1'
-            className='opacity-60  rounded-3xl transform  w-[900px] absolute right-[300px] 
-          top-[-100px] z-[2] rotate-[-10deg] blur-sm hover:blur-none downThenUp transition duration-700 ease-in-out'
+            alt="pinkflower1"
+            className="sm:w-[600px] sm:right-[100px]  opacity-60  rounded-3xl transform  w-[900px] absolute right-[300px] 
+          top-[-100px] z-[2] rotate-[-10deg] blur-sm hover:blur-none downThenUp transition duration-700 ease-in-out"
           />
         </div>
         <p
-          className={`font-sygma text-[120px] text-white shadowWhite z-[2] text-center 
+          className={` tiny:text-6xl tiny:mt-0 tinyL:text-7xl sm:leading-normal tinyL:mt-20 font-sygma text-[120px] text-white shadowWhite z-[2] text-center 
         leading-snug tracking-wider mt-36 ${
           animated[3] ? "opacity-0 animate-[slideUp_1s_forwards_800ms]" : ""
         }`}
@@ -38,7 +39,7 @@ export default function Circle({ scrollRef4, animated }) {
           PICK YOUR <br></br> DAILY <br></br> TAROT
         </p>
         <p
-          className={`font-notoSansJP tracking-widest text-2xl text-pink z-[2] mb-24 ${
+          className={`sm:text-xl sm:mb-7 font-notoSansJP tracking-widest text-2xl text-pink z-[2] mb-24  ${
             animated[3] ? "opacity-0 animate-[slideUp_1s_forwards_1200ms]" : ""
           }`}
         >
@@ -50,7 +51,7 @@ export default function Circle({ scrollRef4, animated }) {
           }`}
         >
           <SelectCardHomePage number={1} />
-          <div className='w-[250px]'>
+          <div className="w-[250px]">
             <Button
               type={"big"}
               action={async () => {
@@ -88,10 +89,10 @@ export default function Circle({ scrollRef4, animated }) {
           </div>
         </div>
       </div>
-      <div className='w-screen h-[300px] z-[1] relative'>
+      <div className="w-screen h-[300px] z-[1] relative">
         <div
-          className='blur-lg  w-screen h-80 bg-gradient-to-b
-          from-black to-green absolute top-[-160px] z-1'
+          className="blur-lg  w-screen h-80 bg-gradient-to-b
+          from-black to-green absolute top-[-160px] z-1"
         ></div>
       </div>
     </>

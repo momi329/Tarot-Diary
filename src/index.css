@@ -132,31 +132,6 @@ input {
 .ql-toolbar {
   background: white;
 }
-/* 
-
-.ql-container {
-  z-index: -1;
-} */
-/* .ql-editor .ql-container .ql-snow {
-  border: 0px solid #e18ea5;
-  padding-bottom: 40px;
-  opacity: 1;
-  z-index: 1;
-}
-
-.ql-formats {
-  opacity: 0.9;
-}
-
-.container {
-  width: 70px;
-  margin-top: auto;
-  margin-bottom: auto;
-}
-.ql-picker-item {
-  z-index: 10;
-  cursor: pointer;
-} */
 
 .block {
   position: relative;

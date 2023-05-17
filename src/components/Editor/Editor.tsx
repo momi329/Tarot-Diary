@@ -1,7 +1,6 @@
 import BlotFormatter from "quill-blot-formatter";
 import { useRef, useState } from "react";
 
-import "quill-emoji/dist/quill-emoji.css";
 import { ImageDrop } from "quill-image-drop-module";
 import ReactQuill, { Quill } from "react-quill";
 import "react-quill/dist/quill.snow.css";

@@ -1,13 +1,13 @@
-import { useContext, useEffect, useState, useRef } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 
 import { AuthContext } from "../../context/authContext";
 
-import Member from "../Member";
-import Main from "./Main";
-import Intro from "./Intro";
-import Circle from "./Circle";
-import SpreadsSlide from "./SpreadsSlide";
 import Footer from "../../components/Footer";
+import Member from "../Member";
+import Circle from "./Circle";
+import Intro from "./Intro";
+import Main from "./Main";
+import SpreadsSlide from "./SpreadsSlide";
 
 function Home() {
   const { openSignIn, setOpenSignIn } = useContext(AuthContext);
@@ -108,7 +108,9 @@ function Home() {
         animated={animated}
       />
       <Circle scrollRef4={scrollRef4} animated={animated} />
-      <SpreadsSlide scrollRef5={scrollRef5} animated={animated} />
+      {window.innerWidth > 500 && (
+        <SpreadsSlide scrollRef5={scrollRef5} animated={animated} />
+      )}
       <Footer />
     </>
   );

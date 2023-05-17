@@ -16,13 +16,13 @@ function Background() {
       {!isProfile && (
         <img
           src={pinkFlower1}
-          alt='pinkflower1'
-          className='opacity-60 rounded-3xl transform rotate-[162] w-[980px] absolute left-[-80px] top-[-500px] z-[-1]'
+          alt="pinkflower1"
+          className="opacity-60 rounded-3xl transform rotate-[162] w-[980px] absolute left-[-80px] top-[-500px] z-[-1]"
         />
       )}
       <div
-        className='bg-pink rounded-full opacity-50 blur-[250px] w-[900px] h-[600px] 
-      fixed bottom-[-100px] right-[-300px] rotate-12 z-[-1]'
+        className="bg-pink rounded-full opacity-50 blur-[250px] w-[900px] h-[600px] sm:w-full
+      fixed bottom-[-100px] right-[-300px] rotate-12 z-[-1]"
       ></div>
     </>
   );

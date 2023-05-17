@@ -88,13 +88,17 @@ function Header() {
           <div
             className={`${
               openHamburger ? "h-screen opacity-95" : ""
-            } w-screen h-0 bg-pink fixed  top-0 left-0  duration-300 opacity-0 flex flex-col gap-4`}
+            } w-screen h-0 bg-black fixed  top-0 left-0  duration-500 opacity-0 flex flex-col gap-4`}
           >
-            <div className="ml-[8%] mt-28 flex flex-col gap-14 tracking-widest">
+            <div
+              className={`ml-[8%] mt-28 flex flex-col gap-14 tracking-widest duration-1000 ${
+                openHamburger ? " opacity-100" : "opacity-0 hidden"
+              }`}
+            >
               {headerItems(isLogin, userUID).map((item, index) => {
                 return (
                   <Link to={item.link} key={index}>
-                    <div className="font-NT text-black shadowBlack text-4xl">
+                    <div className="font-NT text-pink shadowBlack text-4xl">
                       {item.title}
                     </div>
                   </Link>
@@ -102,14 +106,14 @@ function Header() {
               })}
               {isLogin ? (
                 <div
-                  className="font-NT text-black shadowBlack text-4xl"
+                  className="font-NT text-pink shadowBlack text-4xl"
                   onClick={() => signOut(auth)}
                 >
                   Log Out
                 </div>
               ) : (
                 <div
-                  className="font-NT text-black shadowBlack text-4xl"
+                  className="font-NT text-pink shadowBlack text-4xl"
                   onClick={() => {
                     navigate("/signin");
                   }}

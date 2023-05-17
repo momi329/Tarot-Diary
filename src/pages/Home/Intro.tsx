@@ -1,7 +1,6 @@
-import React from "react";
+import Moon from "../../images/Moon";
 import DesignVideo from "../../images/design.mp4";
 import DivineVideo from "../../images/divine.mp4";
-import Moon from "../../images/Moon";
 
 export default function Intro({
   scrollRef1,
@@ -10,32 +9,45 @@ export default function Intro({
   animated,
 }) {
   return (
-    <div className=' w-screen  relative bg-clip-content  flex justify-center items-center'>
-      <div className='min-h-[2050px] w-[70%] mt-36'>
+    <div className=" w-screen  relative bg-clip-content  flex justify-center items-center">
+      <div className="sm:mt-10 sm:w-[90%] tinyL:h-[500px] tiny:h-[600px] h-[2100px]  w-[70%] mt-36 ">
         <div ref={scrollRef1}>
           <div
-            className={`text-yellow font-NT text-4xl tracker-wider flex flex-row shadowYellow items-center gap-2 ${
+            className={`sm:hidden
+            text-yellow font-NT text-4xl tracker-wider flex flex-row shadowYellow items-center gap-2 ${
               animated[0] ? "opacity-0 animate-[slideUp_1s_forwards_300ms]" : ""
             } `}
           >
             <Moon color={"#E18EA5"} width={"56px"} height={"62px"} />
             <p>ABOUT US</p>
           </div>
+          <div
+            className={`sm:block hidden
+            text-yellow font-NT text-3xl tracker-wider flex flex-row shadowYellow items-center gap-2 ${
+              animated[0] ? "opacity-0 animate-[slideUp_1s_forwards_300ms]" : ""
+            } `}
+          >
+            {/* <Moon color={"#E18EA5"} width={"36px"} height={"40px"} /> */}
+            <p>・ABOUT US</p>
+          </div>
           <div>
             <p
-              className={`ml-20 text-pink text-2xl tracking-widest font-normal mt-20 
+              className={`sm:ml-6 sm:mt-10 sm:text-base    ml-20 text-pink text-2xl tracking-widest font-normal mt-20 
         ${animated[0] ? "opacity-0 animate-[slideUp_1s_forwards_600ms]" : ""}`}
             >
               設計X紀錄X占卜
             </p>
             <p
-              className={`ml-20 text-5xl  text-pink tracking-widest mt-2 font-normal leading-normal
+              className={`sm:ml-6 sm:text-4xl sm:leading-relaxed
+              ml-20 text-5xl  text-pink tracking-widest mt-2 font-normal 
         ${animated[0] ? "opacity-0 animate-[slideUp_1s_forwards_900ms]" : ""}`}
             >
               讓所有<br></br>塔羅學習者都愛上
             </p>
             <p
-              className={`leading-loose ml-20 text-yellow font-notoSansJP text-base tracking-wider  mt-16 w-[60%] 
+              className={`sm:ml-6  sm:text-sm  sm:w-[80%] sm:mt-10 sm:leading-loose
+              leading-loose ml-20 text-yellow font-notoSansJP text-base
+               tracking-wider  mt-16 w-[60%] 
         ${animated[0] ? "opacity-0 animate-[slideUp_1s_forwards_1300ms]" : ""}`}
             >
               占卜後留下紀錄，方便你在現實生活中驗證！<br></br>{" "}
@@ -50,18 +62,18 @@ export default function Intro({
         </div>
 
         <div
-          className='flex items-end flex-row relative mt-[200px] gap-[8%]'
+          className="sm:hidden sm:flex-col sm:mt-32 flex items-end flex-row relative mt-[200px] gap-[8%]"
           ref={scrollRef2}
         >
-          <div className='flex flex-col w-[40%] mr-10'>
+          <div className="sm:ml-6 sm:w-[90%] flex flex-col w-[40%] mr-10">
             <p
-              className={`ml- 20 text-6xl  text-pink tracking-widest mt-2 font-normal leading-normal text-end font-NT shadowPink
+              className={`sm:text-5xl   ml-20 text-6xl  text-pink tracking-widest mt-2 font-normal leading-normal text-end font-NT shadowPink
         ${animated[1] ? "opacity-0 animate-[slideUp_1s_forwards_400ms]" : ""}`}
             >
               Enjoy & Design
             </p>
             <p
-              className={`leading-loose ml-20 text-yellow font-notoSansJP
+              className={`sm:text-sm  leading-loose ml-20 text-yellow font-notoSansJP
           text-base  tracking-wider  mt-10  text-end ${
             animated[1] ? "opacity-0 animate-[slideUp_1s_forwards_800ms]" : ""
           }`}
@@ -70,9 +82,9 @@ export default function Intro({
               客製化的設計讓你可以隨時問自己想問的<br></br> 更能客製化需求喔！
             </p>
           </div>
-          <div className='w-[45%]'>
+          <div className=" w-[45%]">
             <video
-              width='100%'
+              width="100%"
               loop
               playsInline
               autoPlay
@@ -83,17 +95,18 @@ export default function Intro({
                   : ""
               }`}
             >
-              <source src={DesignVideo} type='video/mp4' />
+              <source src={DesignVideo} type="video/mp4" />
             </video>
           </div>
         </div>
+
         <div
-          className='flex items-end flex-row relative mt-[200px] gap-[8%]'
+          className="sm:hidden sm:ml-6 sm:flex-col flex items-end flex-row relative mt-[200px] gap-[8%]"
           ref={scrollRef3}
         >
-          <div className='flex flex-col w-[45%] mr-10'>
+          <div className="flex flex-col w-[45%] mr-10">
             <video
-              width='100%'
+              width="100%"
               loop
               playsInline
               autoPlay
@@ -104,18 +117,18 @@ export default function Intro({
                   : ""
               }`}
             >
-              <source src={DivineVideo} type='video/mp4' />
+              <source src={DivineVideo} type="video/mp4" />
             </video>
           </div>
-          <div className='w-[40%]'>
+          <div className="sm:w-[90%] w-[40%]">
             <p
-              className={`ml- 20 text-6xl  text-pink tracking-widest mt-2 font-normal leading-normal text-start font-NT shadowPink
+              className={` sm:text-5xl  ml- 20 text-6xl  text-pink tracking-widest mt-2 font-normal leading-normal text-start font-NT shadowPink
         ${animated[2] ? "opacity-0 animate-[slideUp_1s_forwards_1000ms]" : ""}`}
             >
               Divine & Diary
             </p>
             <p
-              className={`leading-loose  text-yellow font-notoSansJP text-start text-base 
+              className={`sm:text-sm leading-loose  text-yellow font-notoSansJP text-start text-base 
         tracking-wider  mt-10 ${
           animated[2] ? "opacity-0 animate-[slideUp_1s_forwards_2000ms]" : ""
         }`}

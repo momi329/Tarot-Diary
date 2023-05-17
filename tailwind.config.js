@@ -4,7 +4,10 @@ module.exports = {
   content: ["./src/**/*.{js,jsx,ts,tsx}"],
   theme: {
     screens: {
+      tiny: { min: "200px", max: "500px" },
+      tinyL: { min: "500px", max: "880px" },
       sm: { min: "300px", max: "880px" },
+      lg: { min: "880px", max: "1280px" },
     },
     colors: {
       yellow: "#F4E4C3",
