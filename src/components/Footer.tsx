@@ -9,7 +9,8 @@ function Footer() {
       const inToView1 = footerRef.current?.getBoundingClientRect();
       const windowHeight = window.innerHeight;
       if (footerRef.current && inToView1?.top < windowHeight) {
-        setAnimated(!animated);
+        setAnimated(true);
+        console.log("?");
       }
     }
     window.addEventListener("scroll", handleScroll);
@@ -20,7 +21,7 @@ function Footer() {
   return (
     <div>
       <div
-        className="h-[800px] sm:w-full overflow-hidden bg-black animate-pulse
+        className="h-[800px] sm:h-screen overflow-hidden bg-black animate-pulse
        w-screen  relative bg-clip-content  flex justify-center items-center"
       >
         <img
@@ -33,7 +34,7 @@ function Footer() {
           ref={footerRef}
           className={`capitalize font-NT text-5xl text-yellow z-[3]  text-center 
          w-[60%] shadowYellow  leading-normal mb-10 tinyL:text-4xl 
-         tinyL:leading-relaxed tiny:text-2xl tiny:leading-7 opacity-0 
+         tinyL:leading-relaxed tiny:text-3xl tiny:leading-relaxed opacity-0 
          ${animated ? "opacity-0 animate-[slideUp_1s_forwards_400ms]" : ""}
          `}
         >
