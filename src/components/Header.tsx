@@ -98,7 +98,10 @@ function Header() {
               {headerItems(isLogin, userUID).map((item, index) => {
                 return (
                   <Link to={item.link} key={index}>
-                    <div className="font-NT text-pink shadowBlack text-4xl">
+                    <div
+                      className="font-NT text-pink shadowBlack text-4xl"
+                      onClick={() => setOpenHamburger(false)}
+                    >
                       {item.title}
                     </div>
                   </Link>

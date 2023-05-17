@@ -10,7 +10,6 @@ function Footer() {
       const windowHeight = window.innerHeight;
       if (footerRef.current && inToView1?.top < windowHeight) {
         setAnimated(true);
-        console.log("?");
       }
     }
     window.addEventListener("scroll", handleScroll);

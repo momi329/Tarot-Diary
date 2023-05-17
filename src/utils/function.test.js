@@ -3,7 +3,7 @@ import {
   getRandomBool,
   getRandomCards,
 } from "./function";
-
+/* eslint-env jest */
 describe("getRandomCards", () => {
   it("returns an array of random card indexes", () => {
     const result = getRandomCards(5);
