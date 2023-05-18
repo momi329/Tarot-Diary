@@ -153,7 +153,7 @@ const firebase = {
     return docRef.id;
   },
   async getProfile(userUID) {
-    const docRef = doc(db, "users", `${userUID}`);
+    const docRef = doc(db, "users", userUID);
     const docSnap = await getDoc(docRef);
     if (docSnap.exists()) {
       const data = docSnap.data();

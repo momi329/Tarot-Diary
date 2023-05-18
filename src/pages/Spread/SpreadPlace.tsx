@@ -27,8 +27,7 @@ export const SpreadPlace = ({ type, tarot, size }: SpreadPlaceProps) => {
       a: " w-[542px] mb-5 p-5 bg-black/40",
       b: " w-[71px] h-[60px] ",
       c: " w-[70px] h-[120px] gap-2 ",
-      scale:
-        " hover:transform hover:scale-125 transition duration-300 hover:z-10 ",
+      scale: " hover:transform  transition duration-300 hover:z-10 ",
     };
   }
   if (!type) return <></>;
@@ -51,10 +50,10 @@ export const SpreadPlace = ({ type, tarot, size }: SpreadPlaceProps) => {
               <div
                 className={` rounded-xl ${
                   widthAndHeight.c
-                } cursor-default relative box-border  hover:scale-1 10 hover:shadow-lg hover:shadow-green/60 hover:duration-200
+                } cursor-default relative box-border  hover:scale-110 hover:shadow-lg hover:shadow-green/60 hover:duration-200
                flex items-center justify-center flex-col bg-slate-800 text-yellow z-0 over:z-10  bg-opacity-80
                ${widthAndHeight.scale}  ${
-                  type.userUID === "all" ? "scale-110" : ""
+                  type.userUID === "all" ? "scale-150" : ""
                 }`}
               >
                 {(item as SpreadItem).card === undefined ? (
@@ -73,7 +72,7 @@ export const SpreadPlace = ({ type, tarot, size }: SpreadPlaceProps) => {
                     <img
                       src={lightCard}
                       alt={"lightCard"}
-                      className={` w-[100%] h-[100%] absolute z-0`}
+                      className={`hover:scale-150 w-[100%] h-[100%] absolute z-0`}
                     />
                   </>
                 ) : (
@@ -100,8 +99,8 @@ export const SpreadPlace = ({ type, tarot, size }: SpreadPlaceProps) => {
                     className={`w-full h-full bg-white/60 backdrop-blur-sm absolute 
                    opacity-0 leading-tight p-2 ${
                      (item as SpreadItem).card === undefined
-                       ? "hover:opacity-100 duration-500"
-                       : ""
+                       ? ""
+                       : "hover:opacity-100 duration-500 hover:scale-150"
                    }`}
                   >
                     {(item as SpreadItem)?.card !== undefined &&

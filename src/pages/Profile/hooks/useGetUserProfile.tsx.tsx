@@ -7,6 +7,7 @@ const useGetUserProfile = () => {
   const [userProfile, setUserProfile] = useState<ProfileType>();
   const { uid } = useParams();
   const getUserProfile = useCallback(async () => {
+    if (!uid) return;
     const profile = await firebase.getProfile(uid);
     if (!profile) return;
     setUserProfile(profile);

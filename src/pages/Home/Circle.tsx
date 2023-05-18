@@ -1,14 +1,16 @@
-import { useContext } from "react";
+import React, { useContext } from "react";
 import { useNavigate } from "react-router-dom";
-
 import Button from "../../components/Button";
 import { AuthContext } from "../../context/authContext";
 import { getRandomBool, getRandomCards } from "../../utils/function";
 import SelectCardHomePage from "./SelectCardHomePage";
 
 import pinkFlower1 from "../../images/pinkflower1.jpeg";
-
-export default function Circle({ scrollRef4, animated }) {
+type CircleProps = {
+  scrollRef4: React.MutableRefObject<HTMLDivElement | null>;
+  animated: boolean[];
+};
+export default function Circle({ scrollRef4, animated }: CircleProps) {
   const { isLogin, setOpenSignIn } = useContext(AuthContext);
   const navigate = useNavigate();
 
@@ -50,7 +52,7 @@ export default function Circle({ scrollRef4, animated }) {
             animated[3] ? "opacity-0 animate-[slideUp_1s_forwards_1400ms]" : ""
           }`}
         >
-          <SelectCardHomePage number={1} />
+          <SelectCardHomePage />
           <div className="w-[250px]">
             <Button
               type={"big"}

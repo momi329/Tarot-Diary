@@ -13,8 +13,8 @@ function Member() {
     password: "",
   });
   const [signInData, setSignInData] = useState({
-    email: "",
-    password: "",
+    email: "TestAccount@gmail.com",
+    password: "123123",
   });
   const auth: Auth = getAuth();
   const provider: GoogleAuthProvider = new GoogleAuthProvider();

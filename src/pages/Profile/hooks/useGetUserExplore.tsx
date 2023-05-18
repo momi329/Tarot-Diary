@@ -18,6 +18,7 @@ function useGetUserExplore() {
   );
   const { uid } = useParams();
   useEffect(() => {
+    if (!uid) return;
     if (user.userUID !== uid) {
       setFriendsPosts(null);
     }
@@ -26,7 +27,6 @@ function useGetUserExplore() {
       allPerson.map(async (person) => {
         const docRef = doc(db, "users", person);
         const getFollowingUser = await getDoc(docRef);
-        // TODO: any
         const followingUser: any = getFollowingUser.data();
         const q = query(
           collection(db, "users", person, "diary"),

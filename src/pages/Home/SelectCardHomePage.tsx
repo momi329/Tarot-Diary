@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import lightCard from "../../images/card-light.png";
-const SelectCardHomePage = ({ number }) => {
+
+const SelectCardHomePage = () => {
   const [cardArr, setCardArr] = useState<boolean[] | null>(null);
   const handleResize = () => {
     if (window.innerWidth < 400) {

@@ -286,6 +286,7 @@ export const AuthContextProvider = ({ children }: AuthContextProviderProps) => {
     setTimeout(() => {
       setAlert(false);
     }, 5000);
+    navigate("/");
   };
   return (
     <AuthContext.Provider

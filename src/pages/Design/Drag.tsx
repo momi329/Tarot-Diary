@@ -93,7 +93,7 @@ function Drag({
   return (
     <>
       <div
-        className="flex flex-wrap justify-center max-w-screen-md border border-yellow z-1 
+        className="w-[1080px] flex flex-wrap justify-center max-w-screen-md border border-yellow z-1 
       mx-auto  border-opacity-50 mb-14 p-[30px] pb-[133px] backdrop-blur-sm bg-white/10 "
       >
         {onSave.spread.map((item: number | SpreadItem, i: number) => {

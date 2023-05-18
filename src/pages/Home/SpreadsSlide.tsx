@@ -1,11 +1,13 @@
-import { useContext } from "react";
+import React, { useContext } from "react";
 import { useNavigate } from "react-router-dom";
-
 import SpreadPreview from "../../components/SpreadPreview";
 import { AuthContext } from "../../context/authContext";
 import Star from "../../images/Star";
-
-export default function SpreadsSlide({ scrollRef5, animated }) {
+type SpreadsSlide = {
+  scrollRef5: React.MutableRefObject<HTMLDivElement | null>;
+  animated: boolean[];
+};
+export default function SpreadsSlide({ scrollRef5, animated }: SpreadsSlide) {
   const navigate = useNavigate();
   const { spreads } = useContext(AuthContext);
 
@@ -53,7 +55,12 @@ export default function SpreadsSlide({ scrollRef5, animated }) {
         >
           {spreads &&
             spreads.map((item, i) => (
-              <SpreadPreview spread={item} index={i} type={"carousel"} />
+              <SpreadPreview
+                spread={item}
+                index={i}
+                type={"carousel"}
+                key={i}
+              />
             ))}
         </div>
         <div

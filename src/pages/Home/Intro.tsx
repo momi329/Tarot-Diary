@@ -1,13 +1,19 @@
+import React from "react";
 import Moon from "../../images/Moon";
 import DesignVideo from "../../images/design.mp4";
 import DivineVideo from "../../images/divine.mp4";
-
+type IntroProps = {
+  scrollRef1: React.MutableRefObject<HTMLDivElement | null>;
+  scrollRef2: React.MutableRefObject<HTMLDivElement | null>;
+  scrollRef3: React.MutableRefObject<HTMLDivElement | null>;
+  animated: boolean[];
+};
 export default function Intro({
   scrollRef1,
   scrollRef2,
   scrollRef3,
   animated,
-}) {
+}: IntroProps) {
   return (
     <div className=" w-screen  relative bg-clip-content  flex justify-center items-center">
       <div className="sm:mt-10 sm:w-[90%] tinyL:h-[600px] tiny:h-[600px] h-[2100px]  w-[70%] mt-36 ">
@@ -27,7 +33,7 @@ export default function Intro({
               animated[0] ? "opacity-0 animate-[slideUp_1s_forwards_300ms]" : ""
             } `}
           >
-            {/* <Moon color={"#E18EA5"} width={"36px"} height={"40px"} /> */}
+            <Moon color={"#E18EA5"} width={"36px"} height={"40px"} />
             <p>・ABOUT US</p>
           </div>
           <div>
@@ -38,7 +44,7 @@ export default function Intro({
               設計X紀錄X占卜
             </p>
             <p
-              className={`sm:ml-6 sm:text-4xl sm:leading-relaxed
+              className={`sm:ml-6 sm:text-4xl sm:leading-relaxed leading-loose
               ml-20 text-5xl  text-pink tracking-widest mt-2 font-normal 
         ${animated[0] ? "opacity-0 animate-[slideUp_1s_forwards_900ms]" : ""}`}
             >

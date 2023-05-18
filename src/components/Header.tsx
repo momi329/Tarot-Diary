@@ -16,7 +16,7 @@ function Header() {
     { title: "Tarot Meanings", link: "/meanings", route: "meanings" },
     {
       title: "Personal Page",
-      link: `/profile/${userUID}`,
+      link: `${userUID ? `/profile/${userUID}` : "/signin"}`,
       route: `/profile/${userUID}`,
     },
     {

@@ -154,7 +154,7 @@ function Design({ edit, setEdit, spreadData }: DesignProps) {
   return (
     <>
       <div className="w-screen h-[80px]" />
-      <div className="w-ml max-w-screen-md mx-auto mt-16 mb-8">
+      <div className="w-ml w-[1080px] mx-auto mt-16 mb-8">
         <h1 className="font-NT text-8xl text-yellow  tracking-wide mb-6">
           Design Your Spread!
         </h1>

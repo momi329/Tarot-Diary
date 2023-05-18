@@ -1,17 +1,18 @@
-import { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { MdKeyboardArrowRight } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../../context/authContext";
 import pinkFlower1 from "../../images/pinkflower1.jpeg";
-
-export default function Main({ scrollRef1 }) {
+type MainProps = {
+  scrollRef1: React.MutableRefObject<HTMLDivElement | null>;
+};
+export default function Main({ scrollRef1 }: MainProps) {
   const { isLogin, setOpenSignIn } = useContext(AuthContext);
   const navigate = useNavigate();
   const [showFourthParagraph, setShowFourthParagraph] = useState(false);
 
   useEffect(() => {
     setTimeout(() => {
-      // TODO: wrap in tailwind animation delay
       setShowFourthParagraph(true);
     }, 2000);
   }, []);

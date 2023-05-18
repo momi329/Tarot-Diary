@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import Diary from "../../components/Diary/Diary";
 import { AuthContext } from "../../context/authContext";
 import { PageEnum } from "../../utils/type";
@@ -25,8 +25,11 @@ function Profile() {
   const { diary, getDiary } = useGetUserDiary();
   const { friendsPosts } = useGetUserExplore();
   const { userSpread, getUserSpread } = useGetUserSpread();
-
+  const navigate = useNavigate();
   useEffect(() => {
+    if (!uid) {
+      navigate("/");
+    }
     getUserProfile();
     initialFollowing();
     if (userUID !== uid) {

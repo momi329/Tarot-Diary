@@ -82,7 +82,7 @@ const Gallery = ({ data, page }: GalleryProps) => {
   };
 
   if (!post) return <GallerySkeleton />;
-  if (userUID === uid && !data) return <GalleryNoDiary />;
+  if (post && userUID === uid && !data) return <GalleryNoDiary />;
   if (userUID !== uid && post.length === 0) {
     return (
       <p className="sm:text-4xl text-5xl text-yellow font-NT shadowYellow mt-2">

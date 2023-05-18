@@ -1,5 +1,5 @@
 import ReactDOM from "react-dom/client";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import App from "./App";
 import AskGPT from "./components/AskAndNote";
 import { LoadingContextProvider } from "./context/loadingContext";
@@ -31,7 +31,7 @@ root.render(
           <Route path="/ask" element={<AskGPT />} />
           <Route path="/meanings" element={<Meaning />} />
           <Route path="/divination" element={<Divination />} />
-          {/* <Route path="*" element={<Navigate to="/" replace />} /> */}
+          <Route path="*" element={<Navigate to="/" replace />} />
         </Route>
       </Routes>
     </BrowserRouter>

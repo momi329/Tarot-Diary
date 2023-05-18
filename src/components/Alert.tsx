@@ -20,7 +20,7 @@ function Alert({ value, buttonValue }: AlertProps) {
       />
 
       <div
-        className="w-1/3 h-1/3 bg-pink/20 z-[60] relative flex flex-col items-center justify-center gap-4"
+        className="w-1/3 h-1/3 bg-darkPink/80 z-[60] relative flex flex-col items-center justify-center gap-4"
         onClick={() => {
           setAlert(false);
         }}

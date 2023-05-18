@@ -7,6 +7,7 @@ const useGetUserDiary = () => {
   const [diary, setDiary] = useState<DiaryType[] | null>(null);
   const { uid } = useParams();
   const getDiary = useCallback(async () => {
+    if (!uid) return;
     const userDiary = (await firebase.getOtherUserDiary(uid)) as DiaryType[];
     userDiary
       .sort((a, b) => {
