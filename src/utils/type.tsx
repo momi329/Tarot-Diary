@@ -1,78 +1,90 @@
-import { DocumentData, Timestamp } from "firebase/firestore";
-
-//profile
-export interface Comment {
-  comment: string;
-  userImage: string;
-  userName: string;
-  user: string;
-}
-
-export interface SpreadItem {
-  reverse: boolean;
-  disabled: boolean;
-  value: string;
-  order: number;
-  card: number;
-}
-
-export interface TarotData {
-  description: string;
-  title: string;
-  like: string[];
+import { Timestamp } from "firebase/firestore";
+/* eslint-disable */
+export type User = {
+  name: string;
+  image: string;
+  sign: string;
+  email: string;
+  followers: string[];
+  following: string[];
+  favorite: [];
   userUID: string;
-  spread: SpreadItem[];
-  comment: Comment[];
+};
+
+export type Comment = {
+  comment: string;
+  user: string;
+  userName: string;
+  userImg: string;
+};
+export type DiaryType = {
+  description: string;
+  secret: boolean;
   image: string;
   spreadId: string;
-  secret: boolean;
-  content: string;
+  comment: {
+    comment: string;
+    user: string;
+    userName: string;
+    userImg: string;
+  }[];
   askGpt: string;
-  time: {
-    seconds: number;
-    nanoseconds: number;
-  };
   docId: string;
   question: string;
+  title: string;
+  content: string;
+  time: Timestamp;
+  like: string[];
+  userUID: string;
+  spread: (number | SpreadItem)[];
   user: string;
   userImg: string;
   userName: string;
-  addComment: false;
-  seeMore: false;
-}
-export interface VisitedUser {
-  name?: string;
-  image?: string;
-  sign?: string;
-  favorite?: [];
-  followers?: string[];
-  following?: string[];
-  diary?: DocumentData[];
-  spread?: DocumentData[];
-  userUID?: string;
-  like?: string[];
-  docId?: string;
-  content?: string;
   seeMore?: boolean;
+};
+export type FriendsPostsType = {
+  content?: string;
+  image: string;
+  spread: (number | SpreadItem)[];
+  description: string;
+  secret?: boolean;
+  time: Timestamp;
+  askGpt: string;
+  title: string;
+  like: string[];
+  docId?: string;
+  question: string;
+  spreadId: string;
+  userUID: string;
+  user: string;
+  userImg: string;
+  userName: string;
+  comment?: Comment[];
+  seeMore?: boolean;
+};
+
+export type SpreadItem = {
+  reverse?: boolean;
+  disabled: boolean;
+  value: string;
+  order: number;
+  card?: number;
+  name?: string;
+};
+export enum PageEnum {
+  DiaryCalendar = "diaryCalendar",
+  DiaryPost = "diaryPost",
+  Explore = "explore",
+  EditProfile = "editProfile",
+  Design = "design",
 }
-//spread
-export interface SpreadData {
+export type SpreadData = {
   author?: string;
   userUID: string;
   title: string;
   image: string;
-  spread: (
-    | number
-    | {
-        order: number;
-        disabled?: boolean;
-        value: string;
-        name: string;
-        card: number;
-        reverse: boolean;
-      }
-  )[];
-  description?: string;
+  spread: (number | SpreadItem)[];
+  description: string;
   spreadId: string;
   name?: string;
   time?: Timestamp;
@@ -81,49 +93,25 @@ export interface SpreadData {
   docId?: string;
   content?: string;
   seeMore?: boolean;
-}
-export interface DraggableProps {
+};
+export type DraggableProps = {
   edit: boolean;
   setEdit: React.Dispatch<React.SetStateAction<boolean>>;
   spreadData: SpreadData | undefined;
   setSpreadData: React.Dispatch<React.SetStateAction<SpreadData | undefined>>;
-}
+};
 
-export interface DesignSpreadData {
+export type DesignSpreadData = {
   image: string;
   title: string;
-  spread:
-    | number[]
-    | {
-        disabled: boolean;
-        value: string;
-        order: number;
-        name: string;
-        card: number;
-        reverse: boolean;
-      }[];
+  spread: (number | SpreadItem)[];
   userUID?: string;
   description: string;
   spreadId: string;
   question?: string;
-  secret: boolean;
-}
-export type SpreadPreviewProps = {
-  type: string;
-  spread: SpreadData;
-  index: number;
-  key?: number;
-  page?: number;
+  secret?: boolean;
 };
-//gpt
-export interface Message {
-  value: string;
-  name: string;
-  order: number;
-  disabled: boolean;
-  card: number;
-  reverse: boolean;
-}
+
 export type FriendsData = {
   followers: friends[];
   following: friends[];
@@ -134,9 +122,64 @@ type friends = {
   image: string;
   uid: string;
 };
-export type comment = {
-  userName: string;
-  userImage: string;
-  comment: string;
-  user: string;
+
+export enum ActionEnum {
+  Preview = "preview",
+  Start = "start",
+  End = "end",
+}
+export type GalleryProps = {
+  data: DiaryType[] | FriendsPostsType[] | null | SpreadData[];
+  page: PageEnum;
 };
+
+export type Day = {
+  title: string;
+  card: number;
+  reverse: boolean;
+  secret: boolean;
+  time: Timestamp;
+  content: string;
+};
+export type TarotCardType = {
+  name: string;
+  number: string;
+  arcana: string;
+  suit: string;
+  img: string;
+  fortune_telling: string[];
+  keywords: string[];
+  meanings: {
+    light: string[];
+    shadow: string[];
+  };
+  Archetype?: string;
+  Hebrew_Alphabet?: string;
+  Numerology?: string;
+  Elemental?: string;
+  Mythical_Spiritual?: string;
+  Questions_to_Ask?: string[];
+  Astrology?: string;
+  Affirmation?: string;
+};
+export type UserSpreadType = {
+  time: Timestamp;
+  image: string;
+  spreadId: string;
+  userUID: string;
+  comment: Comment[];
+  spread: (SpreadItem | number)[];
+  like: string[];
+  description: string;
+  title: string;
+};
+export type ProfileType =
+  | {
+      name: string;
+      image: string;
+      sign: string;
+      followers: string[];
+      following: string[];
+      favorite: [];
+    }
+  | undefined;

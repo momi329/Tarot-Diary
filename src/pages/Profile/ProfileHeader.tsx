@@ -1,26 +1,27 @@
-import { useContext, useEffect, useState } from "react";
-import { AuthContext } from "../../context/authContext";
-import { Link, useNavigate } from "react-router-dom";
-
-import firebase from "../../utils/firebase";
-
+import React, { useContext, useState } from "react";
+import { useParams } from "react-router-dom";
 import Button from "../../components/Button";
+import { AuthContext } from "../../context/authContext";
 import Star from "../../images/Star";
-import { FriendsData } from "../../utils/type";
+import firebase from "../../utils/firebase";
+import { FriendsData, PageEnum, ProfileType } from "../../utils/type";
 import Friends from "./Friends";
-
-import type { VisitedUser } from "../../utils/type";
-import type { User } from "../../context/authContext";
+type ProfileHeaderProps = {
+  following: boolean;
+  setFollowing: React.Dispatch<React.SetStateAction<boolean>>;
+  setPage: React.Dispatch<React.SetStateAction<PageEnum>>;
+  userProfile: ProfileType;
+  setUserProfile: React.Dispatch<React.SetStateAction<ProfileType>>;
+};
 const ProfileHeader = ({
-  uid,
-  visitedUser,
-  setVisitedUser,
   following,
   setFollowing,
   setPage,
-}) => {
+  userProfile,
+  setUserProfile,
+}: ProfileHeaderProps) => {
+  const { uid } = useParams();
   const { user, userUID, isLogin } = useContext(AuthContext);
-  const navigate = useNavigate();
   const [openFriends, setOpenFriends] = useState({
     following: false,
     followers: false,
@@ -29,52 +30,45 @@ const ProfileHeader = ({
     following: [],
     followers: [],
   });
-  const [data, setData] = useState<VisitedUser | User>({});
 
-  async function follow(uid, userUID) {
+  async function follow() {
     if (!isLogin) return;
     if (userUID === uid) return;
     await firebase.follow(uid, userUID);
     setFollowing(true);
+    if (!userProfile) return;
     if (userUID !== uid) {
-      const newData = { ...visitedUser };
-      newData.followers = [...newData.followers, userUID];
-      setVisitedUser(newData);
+      const newData = { ...userProfile };
+      userProfile.followers = [...newData.followers, userUID];
+      setUserProfile(newData);
     }
   }
-  async function unfollow(uid, userUID) {
+  async function unfollow() {
     await firebase.unfollow(uid, userUID);
     setFollowing(false);
+    if (!userProfile) return;
     if (userUID !== uid) {
-      const newData = { ...visitedUser };
+      const newData = { ...userProfile };
       const index = newData.followers.indexOf(userUID);
       if (index > -1) {
         newData.followers.splice(index, 1);
       }
-      setVisitedUser(newData);
+      setUserProfile(newData);
     }
   }
-  async function getFriends(followers, following) {
-    const profile = await firebase.getFriendsProfile(followers, following);
+  async function getFriends(a, b) {
+    const profile = await firebase.getFriendsProfile(a, b);
     setFriends(profile);
   }
-  useEffect(() => {
+  const handleGetFriends = () => {
     if (userUID === uid) {
       getFriends(user.followers, user.following);
     } else {
-      getFriends(visitedUser.followers, visitedUser.following);
+      getFriends(userProfile?.followers, userProfile?.following);
     }
-  }, [uid, visitedUser, user, userUID, following]);
+  };
 
-  useEffect(() => {
-    if (userUID === uid) {
-      setData(user);
-    } else {
-      setData(visitedUser);
-    }
-  }, [uid, user, userUID, visitedUser]);
-
-  if (Object.keys(data).length === 0)
+  if (!userProfile)
     return (
       <div className="bg-black bg-opacity-30 w-[304px] fixed">
         <div className="flex flex-row pt-6 mx-auto justify-center gap-4 animate-pulse">
@@ -106,34 +100,35 @@ const ProfileHeader = ({
     );
   return (
     <>
-      {openFriends.followers || openFriends.following ? (
+      {(openFriends.followers || openFriends.following) && (
         <Friends
           openFriends={openFriends}
           setOpenFriends={setOpenFriends}
           friends={friends}
         />
-      ) : null}
+      )}
       <div className=" bg-black bg-opacity-30  fixed">
         <div className="flex flex-row pt-6 mx-auto justify-center gap-4 ">
           <img
-            src={data.image}
-            alt={data.name}
+            src={userProfile.image}
+            alt={userProfile.name}
             className="rounded-full w-[70px] h-[70px]"
           />
           <div>
             <h5 className="font-notoSansJP font-medium text-lg tracking-wider text-pink mt-2 truncate w-[180px]">
-              {data.name}
+              {userProfile.name}
             </h5>
             <p className="font-notoSansJP font-medium text-sm tracking-wider text-yellow mt-1 w-[180px] ">
-              {data.sign}
+              {userProfile.sign}
             </p>
           </div>
         </div>
-        {data.followers && (
+        {userProfile.followers && (
           <div className="flex flex-row gap-3 justify-center my-5 items-center py-[10px] px-[15px]">
             <span
               className="flex flex-col items-center cursor-pointer"
               onClick={() => {
+                handleGetFriends();
                 setOpenFriends({
                   ...openFriends,
                   followers: !openFriends.followers,
@@ -141,7 +136,7 @@ const ProfileHeader = ({
               }}
             >
               <h3 className="text-3xl font-NT text-yellow">
-                {data.followers.length}
+                {userProfile?.followers.length}
               </h3>
               <p className="text-lg font-NT text-gold uppercase shadowGold cursor-pointer tracking-wider">
                 Followers
@@ -151,6 +146,7 @@ const ProfileHeader = ({
             <span
               className="flex flex-col items-center"
               onClick={() => {
+                handleGetFriends();
                 setOpenFriends({
                   ...openFriends,
                   following: !openFriends.following,
@@ -158,7 +154,7 @@ const ProfileHeader = ({
               }}
             >
               <h3 className="text-3xl font-NT text-yellow cursor-pointer">
-                {data.following && data.following.length}
+                {userProfile?.following.length}
               </h3>
               <p className="text-lg font-NT text-gold uppercase shadowGold tracking-wider cursor-pointer tracking-wider">
                 Following
@@ -171,7 +167,7 @@ const ProfileHeader = ({
             <div className="w-[250px]">
               <Button
                 action={() => {
-                  setPage(6);
+                  setPage(PageEnum.EditProfile);
                 }}
                 type={"big"}
                 value={"Edit Profile"}
@@ -181,7 +177,7 @@ const ProfileHeader = ({
             <div className="w-[250px]">
               <Button
                 action={() => {
-                  following ? unfollow(uid, userUID) : follow(uid, userUID);
+                  uid && following ? unfollow() : follow();
                 }}
                 type={"big"}
                 value={following ? "Unfollow" : "Follow"}

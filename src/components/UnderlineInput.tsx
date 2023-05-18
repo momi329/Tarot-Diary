@@ -1,9 +1,10 @@
+import React from "react";
 type UnderlineInputProps = {
   name?: string;
   value: string;
   inputType: string;
-  action: (e?: any) => void | {};
-  keyAction?: (e?: any) => void | {};
+  action: (e: React.ChangeEvent<HTMLInputElement>) => void | object;
+  keyAction?: (e: React.KeyboardEvent<HTMLInputElement>) => void | object;
   placeholder?: string;
   disabled?: boolean;
 };

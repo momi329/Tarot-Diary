@@ -1,70 +1,70 @@
-# Getting Started with Create React App
+# Tarot Diary
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+A personal website about tarot card within 5 weeks, with features of divination, recording, and card spreads designing (牌陣設計).
 
-## Available Scripts
+-Link:https://tarot-diary.web.app/
 
-In the project directory, you can run:
+-Demo Video: https://youtu.be/zbDKTk4x_E4
 
-### `npm start`
+## Features
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+- Divination
+- Spread Design
+- Record
+- Social Media
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+## Tech
 
-### `npm test`
+Using React, TypeScript, and Tailwind CSS, utilizing Figma for designing a user-friendly UI with optimized user flow.
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+- Implemented Drag and Drop API, allowing users to customize their card spread.
+- Created a carousel using React's useRef and Web API without relying on libraries.
+- Provided users with a better experience with rich CSS Animations and Transitions.
+- Conducted unit testing to test various test cases with Jest.
+- Implemented skeleton UI loading when fetching data.
+- Increased code readability and reusability with a custom hook.
+- Created a calendar for users to view their divination records without libraries.
+- Utilized Firebase Firestore to build a database and implemented CRUD operations.
+- Integrated OpenAI API to interpret the divination results and connected the Unsplash API to allow users to customize the background of their card spreads by selecting themed backgrounds.
+- Used useContext to efficiently manage shared state and optimize cross-component data sharing in the project.
+- Created reusable components, fostering code reusability.
+- Applied Firebase's onSnapshot for real-time data updates.
 
-### `npm run build`
+## Flow chart
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+![App Screenshot](https://firebasestorage.googleapis.com/v0/b/tarot-diary.appspot.com/o/images%2F%E6%88%AA%E5%9C%96%202023-05-19%20%E4%B8%8A%E5%8D%885.46.27.png?alt=media&token=ea80faeb-b865-4fe6-99ec-4d8e661d8c8c)
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+## Demo
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+![App Screenshot](https://firebasestorage.googleapis.com/v0/b/tarot-diary.appspot.com/o/images%2F1.gif?alt=media&token=bcb7d4be-c621-4e1b-8245-451eefc378fa)
 
-### `npm run eject`
+- My Beautiful Home Page!
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+![App Screenshot](https://firebasestorage.googleapis.com/v0/b/tarot-diary.appspot.com/o/images%2F2.gif?alt=media&token=a3b962f6-414b-48af-8198-974e63b94b40)
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+- Daily Tarot(Home Page)
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+![App Screenshot](https://firebasestorage.googleapis.com/v0/b/tarot-diary.appspot.com/o/images%2F3.gif?alt=media&token=98662d94-adb1-44f5-be3c-fa19988bad62)
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+- Tarot Spread carousel/gallery
 
-## Learn More
+![App Screenshot](https://firebasestorage.googleapis.com/v0/b/tarot-diary.appspot.com/o/images%2F4.gif?alt=media&token=4afdcd92-3832-41d3-812b-48cc242454ab)
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+- Design your own Spread
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+![App Screenshot](https://firebasestorage.googleapis.com/v0/b/tarot-diary.appspot.com/o/images%2F6.gif?alt=media&token=83dcebb3-4676-4e5c-8ba6-77d3b797f5f1)
 
-### Code Splitting
+- Divine
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+![App Screenshot](https://firebasestorage.googleapis.com/v0/b/tarot-diary.appspot.com/o/images%2F5.gif?alt=media&token=3d33d447-d59f-4bea-bc20-1ed56cb19099)
 
-### Analyzing the Bundle Size
+- Social Media
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+## 🔗 Links
 
-### Making a Progressive Web App
+[![linkedin](https://img.shields.io/badge/linkedin-0A66C2?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/macymacy/)
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+## TestAccount
 
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+Account:TestAccount@gmail.com
+Password:123123

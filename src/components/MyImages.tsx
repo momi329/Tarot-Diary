@@ -1,30 +1,30 @@
-import { useState, useEffect } from "react";
-import { createApi } from "unsplash-js";
-import { FiX } from "react-icons/fi";
-import { FiChevronLeft } from "react-icons/fi";
-import { FiImage } from "react-icons/fi";
-import { FiSearch } from "react-icons/fi";
+import React, { useEffect, useState } from "react";
 import { AiOutlinePlus } from "react-icons/ai";
+import { FiImage, FiSearch, FiX } from "react-icons/fi";
+import { createApi } from "unsplash-js";
+import { Random } from "unsplash-js/dist/methods/photos/types";
+import { DesignSpreadData } from "../utils/type";
 const Key = process.env.REACT_APP_UNSPLASH_API_KEY;
-function MyImages({ onSave, setOnSave }) {
-  const [photos, setPhotos] = useState();
-  const [isOpen, setIsOpen] = useState(false);
+type MyImagesProps = {
+  onSave: DesignSpreadData;
+  setOnSave: React.Dispatch<React.SetStateAction<DesignSpreadData>>;
+};
+function MyImages({ onSave, setOnSave }: MyImagesProps) {
+  const [photos, setPhotos] = useState<null | Random[] | Random>();
+  const [isOpen, setIsOpen] = useState<boolean>(false);
   const [input, setInput] = useState("");
   const fetchPhotos = async (search) => {
-    const unsplash = createApi({ accessKey: Key });
+    const unsplash = createApi({ accessKey: Key } as any);
     unsplash.photos
       .getRandom({
         count: 26,
-        page: 1,
         query: search,
         orientation: "portrait",
       })
-      //"portrait"
       .then((result) => {
         if (result.errors) {
-          // handle error here
+          window.alert(`An error occurred: ${result.errors}`);
         } else {
-          // handle success here
           const photo = result.response;
           setPhotos(photo);
         }
@@ -33,17 +33,14 @@ function MyImages({ onSave, setOnSave }) {
   useEffect(() => {
     fetchPhotos(" flowers dark background ");
   }, [isOpen]);
-  //暫時關掉
   const chooseImg = (img) => {
     setOnSave({ ...onSave, image: img });
-    return;
   };
   const searchImg = (e) => {
     if (e.key === "Enter") {
       fetchPhotos(input);
     }
   };
-  // if (!photos) return;
   return (
     <>
       <div
@@ -52,7 +49,7 @@ function MyImages({ onSave, setOnSave }) {
         style={{ backgroundImage: `url(${onSave.image})` }}
       >
         <AiOutlinePlus
-          className="text-yellow top-1 absolute  w-[30px] h-[30px]"
+          className="text-yellow top-1 absolute  w-[30px] h-[30px] cursor-pointer"
           onClick={() => setIsOpen(!isOpen)}
         />
         <span className="absolute left-6 top-[6px] tracking-widest ml-2 font-NT text-lg text-yellow shadowYellow">
@@ -67,7 +64,6 @@ function MyImages({ onSave, setOnSave }) {
               className="w-[100%] flex flex-wrap  flex-row items-center 
             justify-between p-3 mb-3 border-b-[1px] border-slate-300"
             >
-              {/* <FiChevronLeft className="w-5 h-5" /> */}
               <div className="tracking-widest ml-2 font-NT text-lg shadowYellow">
                 Change Main Picture
               </div>
@@ -96,7 +92,7 @@ function MyImages({ onSave, setOnSave }) {
 
             <div className="h-[400px] flex flex-wrap justify-center gap-2  overflow-auto ">
               {photos &&
-                photos.map((photo) => (
+                (photos as Random[]).map((photo) => (
                   <>
                     <div
                       key={photo.id}
@@ -119,7 +115,7 @@ function MyImages({ onSave, setOnSave }) {
           </div>
         ) : (
           <FiImage
-            className="w-5 h-5 absolute top-1 right-1 text-yellow opacity-90 cursor-pointer"
+            className="w-6 h-6 absolute top-1 right-1 text-yellow opacity-90 cursor-pointer"
             onClick={() => {
               setIsOpen(true);
             }}

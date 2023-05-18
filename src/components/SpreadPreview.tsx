@@ -1,5 +1,13 @@
-import { Link, useNavigate } from "react-router-dom";
-import type { SpreadPreviewProps } from "../utils/type";
+import { useNavigate } from "react-router-dom";
+import type { SpreadData } from "../utils/type";
+type SpreadPreviewProps = {
+  type: string;
+  spread: SpreadData;
+  index: number;
+  key?: number;
+  page?: number;
+};
+
 function SpreadPreview({ spread, index, type }: SpreadPreviewProps) {
   const navigate = useNavigate();
   let style;
@@ -9,7 +17,7 @@ function SpreadPreview({ spread, index, type }: SpreadPreviewProps) {
       b: "top-2 left-3",
     };
   }
-  if (type === "index") {
+  if (type === "carousel") {
     style = {
       a: `w-[350px] h-0 pt-[32%] inline-block shrink-0 relative mb-[50px] `,
       b: "top-8 left-5",
@@ -38,8 +46,8 @@ function SpreadPreview({ spread, index, type }: SpreadPreviewProps) {
         PICK A CARD
       </p>
       <div
-        className="min-h-[25%] w-[100%]  bg-darkPink bg-opacity-40 cursor-pointer 
-p-3 pl-4 absolute bottom-0 tracking-widest font-NT text-base text-yellow"
+        className="min-h-[25%] w-[100%]  bg-darkPink bg-opacity-40 cursor-pointer p-3 pl-4 
+        absolute bottom-0 tracking-widest font-NT text-base text-yellow"
       >
         {" "}
         <p className="cursor-pointer">{spread.title}</p>
