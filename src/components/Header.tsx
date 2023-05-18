@@ -36,8 +36,8 @@ function Header() {
           ]}
         />
       )}
-      <div className=" h-[70px] w-screen flex flex-row items-center  justify-between fixed z-20">
-        <div className="h-[70px] w-screen fixed top-0 right-0 bg-black opacity-20 tracking-widest"></div>
+      <div className=" h-[70px] w-full flex flex-row items-center  justify-between fixed z-20">
+        <div className="h-[70px] w-full fixed top-0 left-0 bg-black opacity-20 tracking-widest"></div>
         <div
           className="w-[105px] h-[60px] text-yellow text-2xl font-NT text-center 
           tracking-wider z-10 ml-16 cursor-pointer 

@@ -14,12 +14,12 @@ export function Post({ targetDiary, setTargetDiary, setDiaryData }) {
   const [edit, setEdit] = useState(false);
   const [newEdit, setNewEdit] = useState(targetDiary.content);
   useEffect(() => {
-    async function getUserDiary(userUID: string) {
+    async function getUserDiary() {
       const docSnap = await firebase.getUserDiary(userUID);
       setDiaryData(docSnap);
     }
     if (!edit) {
-      getUserDiary(userUID);
+      getUserDiary();
     }
   }, [edit]);
 
@@ -29,7 +29,6 @@ export function Post({ targetDiary, setTargetDiary, setDiaryData }) {
       content: newEdit,
     });
     setTargetDiary({ ...targetDiary, content: newEdit });
-    // alert("更新成功");
     setEdit(false);
   };
   const onEditorContentChanged = (content) => {
@@ -83,7 +82,9 @@ export function Post({ targetDiary, setTargetDiary, setDiaryData }) {
             </p>
           </div>
           <div className="flex flex-row gap-3 justify-center p-2">
-            {!targetDiary.spread.includes(0) ? (
+            {targetDiary.spread.includes(0) ? (
+              <SpreadPlace type={targetDiary} tarot={tarot} size={"medium"} />
+            ) : (
               targetDiary.spread.map((q, i) => (
                 <div
                   className="w-[130px] text-yellow font-NT tracking-wider shadowYellow "
@@ -92,9 +93,6 @@ export function Post({ targetDiary, setTargetDiary, setDiaryData }) {
                   <img
                     src={tarot[q.card] && tarot[q.card].img}
                     alt={tarot[q.card] && tarot[q.card].name}
-                    // className={`opacity-70 z-0  ${
-                    //   q.card.reserve ? "rotate-180" : ""
-                    // }`}
                   />
                   <p className="mt-3">{tarot[q.card] && tarot[q.card].name}</p>
                   <p className="text-sm font-notoSansJP font-light tracking-widest">
@@ -102,8 +100,6 @@ export function Post({ targetDiary, setTargetDiary, setDiaryData }) {
                   </p>
                 </div>
               ))
-            ) : (
-              <SpreadPlace type={targetDiary} tarot={tarot} size={"medium"} />
             )}
           </div>
           <span className="flex flex-row justify-between mt-8 mb-9">
@@ -144,7 +140,7 @@ export function Post({ targetDiary, setTargetDiary, setDiaryData }) {
                   key={q}
                 >
                   <img
-                    src={comment.userImage}
+                    src={comment.userImg}
                     alt={comment.user}
                     className="w-8 h-8 rounded-full"
                   />

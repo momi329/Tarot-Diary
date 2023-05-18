@@ -28,11 +28,11 @@ const CommentAndLike = ({
       user: user.userUID,
       comment: e.target.value,
       userName: user.name,
-      userImage: user.image,
+      userImg: user.image,
     });
   };
-  const comment = async (item, index: number) => {
-    const newItem = { ...item };
+  const commented = async (comments, i: number) => {
+    const newItem = { ...comments };
     newItem.comment.push(commentChange);
     await firebase.updateComment(newItem);
     setCommentChange({
@@ -42,12 +42,12 @@ const CommentAndLike = ({
     });
     setPost((prev) => {
       const updateData = [...prev];
-      updateData[index] = newItem;
+      updateData[i] = newItem;
       return updateData;
     });
   };
-  const likeOrUnlike = async (item, index) => {
-    const newData = { ...item };
+  const likeOrUnlike = async (liking, likeIndex) => {
+    const newData = { ...liking };
     if (newData.like && newData.like.includes(user.userUID)) {
       const remove = (i) => i === user.userUID;
       const removeIndex = newData?.like.findIndex(remove);
@@ -61,23 +61,22 @@ const CommentAndLike = ({
       }
       await firebase.updateLike(newData);
       const newPost = [...post];
-      newPost[index] = newData;
+      newPost[likeIndex] = newData;
       setPost(newPost);
     }
   };
-  const deleteComment = async (item, q) => {
+  const deleteComment = async (deleted, deletedIndex) => {
     await firebase.updateComment(item);
-    const newData = { ...item };
-    console.log(item.comment[q], q);
-    newData.comment.splice(q, 1);
+    const newData = { ...deleted };
+    newData.comment.splice(deletedIndex, 1);
     setPost((prev) => {
       const updateData = [...prev];
       updateData[index] = newData;
       return updateData;
     });
   };
-  const commentStatusChange = async (index) => {
-    openComment === index ? setOpenComment(null) : setOpenComment(index);
+  const commentStatusChange = async (changedIndex) => {
+    openComment === changedIndex ? setOpenComment(null) : setOpenComment(index);
   };
 
   return (
@@ -124,7 +123,7 @@ const CommentAndLike = ({
                   key={`${q + 1}`}
                 >
                   <img
-                    src={comment.userImage}
+                    src={comment.userImg}
                     alt={comment.user}
                     className="w-8 h-8 rounded-full cursor-pointer"
                     onClick={() => navigate(`/profile/${comment.user}`)}
@@ -195,7 +194,7 @@ const CommentAndLike = ({
                 type={"tiny"}
                 value={"Enter"}
                 disabled={commentChange.comment === ""}
-                action={() => comment(item, index)}
+                action={() => commented(item, index)}
               />
               <div
                 className={`${

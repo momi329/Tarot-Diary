@@ -11,7 +11,7 @@ function Background() {
       <div
         className={`${
           isProfile ? "bg-green" : "bg-black"
-        } m-0   text-white font-notoSansJP h-[100%] w-[100vw] fixed z-[-1]`}
+        } m-0   text-white font-notoSansJP h-[100%] w-[100%] fixed z-[-1]`}
       ></div>
       {!isProfile && (
         <img

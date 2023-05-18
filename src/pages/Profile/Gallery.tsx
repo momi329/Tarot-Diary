@@ -10,21 +10,11 @@ import UnderlineButton from "../../components/UnderlineButton";
 import { AuthContext } from "../../context/authContext";
 import Star from "../../images/Star";
 import cards from "../../tarotcard/tarot-images";
-import {
-  DiaryType,
-  FriendsPostsType,
-  PageEnum,
-  SpreadData,
-} from "../../utils/type";
+import { DiaryType, FriendsPostsType, GalleryProps } from "../../utils/type";
 import { SpreadPlace } from "../Spread/SpreadPlace";
 import GalleryHeader from "./GalleryHeader";
 import GalleryNoDiary from "./GalleryNoDiary";
 import GallerySkeleton from "./GallerySkeleton";
-
-type GalleryProps = {
-  data: DiaryType[] | FriendsPostsType[] | null | SpreadData[];
-  page: PageEnum;
-};
 
 const Gallery = ({ data, page }: GalleryProps) => {
   const [edit, setEdit] = useState<boolean[] | null>(null);
@@ -32,7 +22,7 @@ const Gallery = ({ data, page }: GalleryProps) => {
   const [commentChange, setCommentChange] = useState({
     user: "",
     userName: "",
-    userImage: "",
+    userImg: "",
     comment: "",
   });
   const [openComment, setOpenComment] = useState<number | null>(null);
@@ -95,7 +85,7 @@ const Gallery = ({ data, page }: GalleryProps) => {
   if (userUID === uid && !data) return <GalleryNoDiary />;
   if (userUID !== uid && post.length === 0) {
     return (
-      <p className="text-5xl text-yellow font-NT shadowYellow mt-2">
+      <p className="sm:text-4xl text-5xl text-yellow font-NT shadowYellow mt-2">
         No Diary Yet {" : ("}
       </p>
     );
@@ -107,7 +97,7 @@ const Gallery = ({ data, page }: GalleryProps) => {
         {post.map((item: DiaryType | FriendsPostsType, index: number) => (
           <div
             key={index}
-            className="bg-yellow-100 px-6 py-5 relative  bg-pink bg-opacity-30 "
+            className="bg-yellow-100 sm:px-3 sm:py-2 px-6 py-5 relative  bg-pink bg-opacity-30 "
           >
             <GalleryHeader
               item={item}
@@ -120,47 +110,55 @@ const Gallery = ({ data, page }: GalleryProps) => {
               setNewEdit={setNewEdit}
             />
             {item.user && (
-              <div className="w-[100%] h-[1px] bg-white bg-opacity-40  mt-3 " />
+              <div className="sm:mt-2 w-[100%] h-[1px] bg-white bg-opacity-40  mt-3 " />
             )}
             {item.question ? (
               <>
-                <h1 className="ml-4 mt-4 mb-4 h-4 pb-10 font-notoSansJP text-base text-yellow font-normal tracking-widest">
+                <h1 className="sm:mt-3 sm:text-sm ml-4 mt-4 mb-4 h-4 pb-10 font-notoSansJP text-base text-yellow font-normal tracking-widest">
                   {item.question === "" ? "" : item.question}
                 </h1>
 
                 {item.spread.includes(0) ? (
-                  <SpreadPlace type={item} tarot={tarot} size={"medium"} />
+                  <div className="tinyL:scale-90 tiny:hidden">
+                    <SpreadPlace type={item} tarot={tarot} size={"medium"} />
+                  </div>
                 ) : (
                   <div className="gap-2 flex-row flex   w-[100%] flex-wrap justify-center">
-                    {item.spread.map((q, i: number) => (
-                      <div
-                        className="w-[130px] text-yellow font-NT tracking-wider shadowYellow"
-                        key={i}
-                      >
-                        <img
-                          src={tarot[q.card] && tarot[q.card].img}
-                          alt={tarot[q.card] && tarot[q.card].name}
-                          className={`opacity-70 z-0 ${
-                            q.reverse ? "rotate-180" : ""
-                          }`}
-                        />
-                        <p className="mt-3">
-                          {tarot[q.card] && tarot[q.card].name}
-                        </p>
-                        <p className="text-sm font-notoSansJP font-light tracking-widest">
-                          {q.value}
-                        </p>
-                      </div>
-                    ))}
+                    {item.spread
+                      .filter((value) => typeof value !== "number")
+                      .map((q, i) => {
+                        if (typeof q !== "number") {
+                          return (
+                            <div
+                              className="sm:scale-90 w-[130px] text-yellow font-NT tracking-wider shadowYellow"
+                              key={i}
+                            >
+                              <img
+                                src={(q.card && tarot[q.card].img) || ""}
+                                alt={(q.card && tarot[q.card].name) || ""}
+                                className={`opacity-70 z-0 ${
+                                  q.reverse ? "rotate-180" : ""
+                                }`}
+                              />
+                              <p className="mt-3">
+                                {q.card && tarot[q.card].name}
+                              </p>
+                              <p className="text-sm font-notoSansJP font-light tracking-widest">
+                                {q.value}
+                              </p>
+                            </div>
+                          );
+                        }
+                      })}
                   </div>
                 )}
 
-                <span className="flex flex-row justify-between mt-8">
-                  <div className="flex flex-col w-[48%] items-center">
+                <span className="sm:flex-col flex flex-row justify-between mt-8">
+                  <div className="sm:w-full flex flex-col w-[48%] items-center">
                     <p className="ml-3 mb-2 shadowYellow text-yellow font-NT  tracking-wider text-lg">
                       Ask AI
                     </p>
-                    <div className="ml-3 text-sm font-notoSansJP leading-6 text-gray whitespace-pre-line ">
+                    <div className=" sm:w-full ml-3 text-sm font-notoSansJP leading-6 text-gray whitespace-pre-line ">
                       {" "}
                       {item.askGpt && item.seeMore
                         ? item.askGpt && (
@@ -201,12 +199,12 @@ const Gallery = ({ data, page }: GalleryProps) => {
                           )}
                     </div>
                   </div>
-                  <div className="flex flex-col gap-2 justify-between items-center ">
+                  <div className="sm:hidden flex flex-col gap-2 justify-between items-center ">
                     <Star color={"#E18EA5"} />
-                    <div className="my-3 w-[1px] bg-pink h-[100%]" />
+                    <div className=" my-3 w-[1px] bg-pink h-full" />
                     <Star color={"#E18EA5"} />
                   </div>
-                  <div className="flex flex-col w-[48%] items-center">
+                  <div className="sm:mt-5 sm:w-full  flex flex-col w-[48%] items-center">
                     <p className="ml-3 mb-2 shadowYellow text-yellow font-NT  tracking-wider text-lg">
                       Memo
                     </p>

@@ -49,20 +49,20 @@ function GalleryHeader({
   };
 
   return (
-    <div className="flex flex-row justify-between items-center">
+    <div className="w-full flex flex-row justify-between items-center">
       {item.user && (
         <Link to={`/profile/${item.user}`}>
           <div className="flex flex-row  align-center ">
             <img
               src={item.userName && item.userImg}
               alt={item.userName}
-              className="rounded-full w-[50px] h-[50px] mr-[16px]"
+              className="sm:y-10 sm:mr-4 rounded-full w-[50px] h-[50px] mr-[16px]"
             />
-            <p className="font-notoSansJP text-yellow self-center">
+            <p className="sm:text-sm font-notoSansJP text-yellow self-center">
               {item.userName}
             </p>
             <p
-              className="font-NT text-gray shadowGray self-center
+              className="sm:text-sm font-NT text-gray shadowGray self-center
         leading-normal tracking-widest mt-1"
             >
               ・{formatTimestamp(item.time)}
@@ -73,7 +73,7 @@ function GalleryHeader({
 
       {userUID === item.user && item.docId && (
         <>
-          <div className="absolute top-[90px] right-8  ">
+          <div className="tiny:scale-90 tiny:top-16 tiny:right-3 absolute top-[90px] right-8  ">
             <UnderlineButton
               type={"meanings"}
               action={() => {
@@ -85,7 +85,7 @@ function GalleryHeader({
             />
           </div>
 
-          <div className="absolute top-[90px] right-[90px] ">
+          <div className="tiny:scale-90 tiny:top-16 tiny:right-12 absolute top-[90px] right-[90px] ">
             <UnderlineButton
               type={"meanings"}
               action={() => setAlert(true)}
@@ -114,7 +114,7 @@ function GalleryHeader({
           )}
           {edit && edit[index] ? (
             <select
-              className="outline-none font-NT text-yellow pl-2 pr-20 bg-green ml-auto
+              className="sm:text-sm outline-none font-NT text-yellow pl-2 pr-20 bg-green ml-auto
        w-[30%] h-[38px] pt-1 text-base item-end bg-opacity-90 rounded-md tracking-widest inline-block"
               disabled={!edit[index]}
               onChange={(e) => {
@@ -130,11 +130,11 @@ function GalleryHeader({
             </select>
           ) : (
             <div
-              className="font-NT text-yellow tracking-widest shadowYellow text-base flex
+              className="tiny:hidden sm:text-sm font-NT text-yellow tracking-widest shadowYellow text-base flex
           flex-row items-center justify-center"
             >
               {item.secret ? "Private" : "Public"}・
-              <div className="pb-[2px]">
+              <div className="pb-[2px] ">
                 <Moon color={"#9F8761"} width={20} height={20} />
               </div>
             </div>

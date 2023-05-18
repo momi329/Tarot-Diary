@@ -14,7 +14,7 @@ export type Comment = {
   comment: string;
   user: string;
   userName: string;
-  userImage: string;
+  userImg: string;
 };
 export type DiaryType = {
   description: string;
@@ -25,7 +25,7 @@ export type DiaryType = {
     comment: string;
     user: string;
     userName: string;
-    userImage: string;
+    userImg: string;
   }[];
   askGpt: string;
   docId: string;
@@ -136,3 +136,7 @@ export enum ActionEnum {
   Start = "start",
   End = "end",
 }
+export type GalleryProps = {
+  data: DiaryType[] | FriendsPostsType[] | null | SpreadData[];
+  page: PageEnum;
+};

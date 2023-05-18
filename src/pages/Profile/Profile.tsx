@@ -5,7 +5,8 @@ import { AuthContext } from "../../context/authContext";
 import { PageEnum } from "../../utils/type";
 import Member from "../Member";
 import { Buttons } from "./Buttons";
-import NewGallery from "./Gallery";
+import Gallery from "./Gallery";
+import MobileFooter from "./MoileFooter";
 import ProfileEdit from "./ProfileEdit";
 import ProfileHeader from "./ProfileHeader";
 import Toggle from "./Toggle";
@@ -58,8 +59,8 @@ function Profile(): JSX.Element {
         {!uid ? (
           <Member />
         ) : (
-          <div className="flex flex-row w-[1180px] z-20 h-[300px] justify-center gap-[2%] mx-auto ">
-            <div className="h-[100%] w-2/12">
+          <div className="sm:w-full tiny:w-full flex flex-row w-[1180px] z-20 h-[300px] justify-center gap-[2%] mx-auto ">
+            <div className="sm:hidden tiny:hidden  h-[100%] w-2/12">
               {userUID && (
                 <Buttons
                   setPage={setPage}
@@ -70,7 +71,7 @@ function Profile(): JSX.Element {
               )}
             </div>
 
-            <div className=" h-[100%] w-6/12">
+            <div className=" h-[100%] w-6/12 sm:w-full">
               {isLogin &&
                 userUID === uid &&
                 (page === PageEnum.DiaryCalendar ||
@@ -78,10 +79,10 @@ function Profile(): JSX.Element {
                   <Toggle page={page} setPage={setPage} />
                 )}
               {page === PageEnum.DiaryPost && (
-                <NewGallery data={diary} page={page} />
+                <Gallery data={diary} page={page} />
               )}
               {page === PageEnum.Explore && friendsPosts && (
-                <NewGallery data={friendsPosts} page={page} />
+                <Gallery data={friendsPosts} page={page} />
               )}
               {userUID === uid && page === PageEnum.EditProfile && (
                 <ProfileEdit />
@@ -92,7 +93,7 @@ function Profile(): JSX.Element {
               )}
             </div>
 
-            <div className=" h-[100%] w-3/12 ">
+            <div className="sm:hidden tiny:hidden  h-[100%] w-3/12 ">
               <ProfileHeader
                 userProfile={userProfile}
                 setUserProfile={setUserProfile}
@@ -104,6 +105,7 @@ function Profile(): JSX.Element {
           </div>
         )}
       </div>
+      <MobileFooter page={page} setPage={setPage} />
     </>
   );
 }

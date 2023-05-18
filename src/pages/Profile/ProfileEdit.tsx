@@ -1,8 +1,8 @@
-import { AuthContext } from "../../context/authContext";
-import { useState, useEffect, useContext } from "react";
-import firebase from "../../utils/firebase";
-import Button from "../../components/Button";
+import { useContext, useState } from "react";
 import Alert from "../../components/Alert";
+import Button from "../../components/Button";
+import { AuthContext } from "../../context/authContext";
+import firebase from "../../utils/firebase";
 
 function ProfileEdit() {
   const { user, userUID, setUser, alert, setAlert } = useContext(AuthContext);
@@ -23,7 +23,7 @@ function ProfileEdit() {
   };
   const inputImageChange = async (e) => {
     const file: File | null = e.target.files[0];
-    const url = await firebase.uploadUserImage(userUID, file);
+    const url = await firebase.uploaduserImg(userUID, file);
     if (typeof url === "string") {
       setModify({ ...modify, image: url });
     }

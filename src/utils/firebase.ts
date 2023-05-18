@@ -1,27 +1,31 @@
 import { initializeApp } from "firebase/app";
-import type { Comment, FriendsData, SpreadData } from "./type";
 import {
-  arrayRemove,
+  Auth,
+  FacebookAuthProvider,
+  GoogleAuthProvider,
+  UserCredential,
+  signInWithPopup,
+  signOut,
+} from "firebase/auth";
+import {
   DocumentData,
+  addDoc,
+  arrayRemove,
+  arrayUnion,
+  collection,
+  deleteDoc,
+  doc,
+  getDoc,
+  getDocs,
   getFirestore,
   onSnapshot,
-} from "firebase/firestore";
-import { signOut, signInWithPopup, Auth, UserCredential } from "firebase/auth";
-import { doc, getDoc, addDoc } from "firebase/firestore";
-import {
-  collection,
-  setDoc,
-  getDocs,
-  updateDoc,
-  arrayUnion,
-  serverTimestamp,
   query,
+  setDoc,
+  updateDoc,
   where,
-  deleteDoc,
-  Timestamp,
 } from "firebase/firestore";
-import { GoogleAuthProvider, FacebookAuthProvider } from "firebase/auth";
-import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { getDownloadURL, getStorage, ref, uploadBytes } from "firebase/storage";
+import type { Comment, FriendsData, SpreadData } from "./type";
 const firebaseConfig = {
   apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
   authDomain: "tarot-diary.firebaseapp.com",
@@ -32,7 +36,6 @@ const firebaseConfig = {
   measurementId: "G-L8RC14KPQY",
 };
 
-// Initialize Firebase
 export const app = initializeApp(firebaseConfig);
 export const db = getFirestore(app);
 const storage = getStorage();
@@ -75,7 +78,7 @@ const firebase = {
       sign: data.sign,
     });
   },
-  async uploadUserImage(userUID, file) {
+  async uploaduserImg(userUID, file) {
     try {
       const storageRef = ref(storage, `image/${userUID + file.name}`);
       await uploadBytes(storageRef, file);
@@ -396,7 +399,7 @@ const firebase = {
         if (docSnap.exists()) {
           const comment: Comment = {
             userName: docSnap.data().name,
-            userImage: docSnap.data().image,
+            userImg: docSnap.data().image,
             comment: i.comment,
             user: i.user,
           };

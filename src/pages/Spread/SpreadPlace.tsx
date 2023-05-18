@@ -9,7 +9,8 @@ export const SpreadPlace = ({ type, tarot, size }) => {
       c: " w-[138px] h-[220px] gap-2 ",
       scale: "",
     };
-  } else if (size === "medium") {
+  }
+  if (size === "medium") {
     widthAndHeight = {
       a: " w-[542px] mb-5 p-5 bg-black/40",
       b: " w-[71px] h-[60px] ",
@@ -19,12 +20,15 @@ export const SpreadPlace = ({ type, tarot, size }) => {
     };
   }
   if (!type) return <></>;
+
   return (
     <div
       className={`flex flex-wrap justify-center  border border-yellow z-1 
   mx-auto  border-opacity-50  ${widthAndHeight.a} border-none  ${
         widthAndHeight.scale
-      } min-h-[350px] ${type?.userUID === "all" ? "pt-[60px]" : ""}`}
+      } min-h-[450px] tiny:min-h-[250px] tinyL:min-h-[450px] ${
+        type?.userUID === "all" ? "pt-[60px]" : ""
+      }`}
     >
       {type.spread?.map((item: any, i: number) => {
         return (
