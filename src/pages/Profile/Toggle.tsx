@@ -1,10 +1,13 @@
 import React from "react";
 import { PageEnum } from "../../utils/type";
+import useGetUserDiary from "./hooks/useGetUserDiary";
 type ToggleProps = {
   page: PageEnum;
   setPage: React.Dispatch<React.SetStateAction<PageEnum>>;
 };
 function Toggle({ page, setPage }: ToggleProps) {
+  const { getDiary } = useGetUserDiary();
+
   return (
     <div className="flex flex-row items-center self-end gap-2">
       <p className="text-yellow font-NT text-lg shadowYellow tracking-widest">
@@ -16,9 +19,12 @@ function Toggle({ page, setPage }: ToggleProps) {
           type="checkbox"
           checked={page === PageEnum.DiaryPost}
           onChange={() => {
-            page === "diaryPost"
-              ? setPage(PageEnum.DiaryCalendar)
-              : setPage(PageEnum.DiaryPost);
+            if (page === "diaryPost") {
+              setPage(PageEnum.DiaryCalendar);
+            } else {
+              setPage(PageEnum.DiaryPost);
+              getDiary();
+            }
           }}
           className="opacity-0 w-0 h-0"
         />

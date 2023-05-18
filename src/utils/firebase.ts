@@ -179,8 +179,9 @@ const firebase = {
       const querySnapshot = await getDocs(q);
       querySnapshot.forEach((diaryItem) => {
         const otherUserData = diaryItem.data();
-        otherUserData.push({
-          ...data,
+
+        diary.push({
+          ...otherUserData,
           user: uid,
           userImg: userData.image,
           userName: userData.name,
@@ -295,8 +296,7 @@ const firebase = {
   async getAllSpread(): Promise<SpreadData[]> {
     const querySnapshot = await getDocs(collection(db, "spreads"));
     const spread: SpreadData[] = [];
-
-    await querySnapshot.forEach((allSpread) => {
+    querySnapshot.forEach((allSpread) => {
       spread.push(allSpread.data() as SpreadData);
     });
     return spread;

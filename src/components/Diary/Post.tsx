@@ -1,13 +1,13 @@
 import React, { useContext, useEffect, useState } from "react";
-import { AuthContext } from "../context/authContext";
-import Moon from "../images/Moon";
-import Star from "../images/Star";
-import cards from "../tarotcard/tarot-images";
-import firebase from "../utils/firebase";
-import { formatTimestamp } from "../utils/function";
-import { DiaryType } from "../utils/type";
-import Editor from "./Editor/Editor";
-import Viewer from "./Editor/Viewer";
+import { AuthContext } from "../../context/authContext";
+import Moon from "../../images/Moon";
+import Star from "../../images/Star";
+import cards from "../../tarotcard/tarot-images";
+import firebase from "../../utils/firebase";
+import { formatTimestamp } from "../../utils/function";
+import { DiaryType } from "../../utils/type";
+import Editor from "../Editor/Editor";
+import Viewer from "../Editor/Viewer";
 const tarot = cards.cards;
 type PostProps = {
   targetDiary: DiaryType | null;

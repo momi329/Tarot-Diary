@@ -21,7 +21,6 @@ function Profile() {
     userUID === uid ? PageEnum.Explore : PageEnum.DiaryPost
   );
   const [following, setFollowing] = useState<boolean>(false);
-
   const { userProfile, setUserProfile, getUserProfile } = useGetUserProfile();
   const { diary, getDiary } = useGetUserDiary();
   const { friendsPosts } = useGetUserExplore();
@@ -81,6 +80,7 @@ function Profile() {
               {page === PageEnum.Explore && friendsPosts && (
                 <Gallery data={friendsPosts} page={page} />
               )}
+
               {userUID === uid && page === PageEnum.EditProfile && (
                 <ProfileEdit />
               )}

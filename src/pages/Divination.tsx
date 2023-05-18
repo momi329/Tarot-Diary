@@ -104,18 +104,19 @@ function Divination() {
                 ref={listRef}
               >
                 <div className="w-[200px] h-1/2   shrink-0" />
-                {spreads?.map(
-                  (spread, spreadCount) =>
-                    spreadCount < 6 && (
-                      <SpreadPreview
-                        type={"carousel"}
-                        spread={spread}
-                        index={spreadCount}
-                        page={page}
-                        key={spreadCount}
-                      />
-                    )
-                )}
+                {spreads &&
+                  spreads.map(
+                    (spread, spreadCount) =>
+                      spreadCount < 6 && (
+                        <SpreadPreview
+                          type={"carousel"}
+                          spread={spread}
+                          index={spreadCount}
+                          page={page}
+                          key={spreadCount}
+                        />
+                      )
+                  )}
                 <div className="w-[200px] h-1/2 shrink-0" />
               </div>
             </div>
@@ -139,7 +140,7 @@ function Divination() {
                 (spread, spreadCount) =>
                   spreadCount > 5 && (
                     <SpreadPreview
-                      type={"carousel"}
+                      type={"personal"}
                       spread={spread}
                       index={spreadCount}
                       page={page}

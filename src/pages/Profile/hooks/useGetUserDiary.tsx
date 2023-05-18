@@ -13,7 +13,7 @@ const useGetUserDiary = () => {
         return a.time.seconds - b.time.seconds;
       })
       .reverse();
-    setDiary(diary);
+    setDiary(userDiary);
   }, [uid]);
 
   return { diary, setDiary, getDiary };

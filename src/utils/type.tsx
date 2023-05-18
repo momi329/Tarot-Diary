@@ -162,7 +162,7 @@ export type TarotCardType = {
   Astrology?: string;
   Affirmation?: string;
 };
-export type UserSpread = {
+export type UserSpreadType = {
   time: Timestamp;
   image: string;
   spreadId: string;

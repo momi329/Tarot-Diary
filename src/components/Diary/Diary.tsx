@@ -3,10 +3,10 @@ import { AuthContext } from "../../context/authContext";
 import firebase from "../../utils/firebase";
 import { DiaryType } from "../../utils/type";
 
-import { Post } from "../Post";
 import CalendarDays from "./CalendarDays";
 import { CalendarHeader } from "./CalendarHeader";
 import { CalendarWeekdays } from "./CalendarWeekdays";
+import { Post } from "./Post";
 
 function Diary() {
   const { userUID } = useContext(AuthContext);

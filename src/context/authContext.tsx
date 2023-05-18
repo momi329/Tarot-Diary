@@ -109,7 +109,7 @@ export const AuthContextProvider = ({ children }: AuthContextProviderProps) => {
   async function getAllSpread() {
     const Allspreads: SpreadData[] = await firebase.getAllSpread();
     const addNameSpreads = await firebase.getAllUserName(Allspreads);
-    if (spreads) {
+    if (addNameSpreads) {
       setSpread(shuffle(addNameSpreads));
     }
   }

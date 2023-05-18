@@ -1,9 +1,9 @@
 import { AiOutlineArrowRight } from "react-icons/ai";
 import { Link } from "react-router-dom";
 import SpreadPreview from "../../components/SpreadPreview";
-import { UserSpread } from "../../utils/type";
+import { UserSpreadType } from "../../utils/type";
 type UserSpreadProps = {
-  userSpread: UserSpread[] | null;
+  userSpread: UserSpreadType[] | null;
 };
 const UserSpread = ({ userSpread }: UserSpreadProps) => {
   if (!userSpread) return <></>;
