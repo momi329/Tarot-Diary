@@ -115,12 +115,19 @@ const firebase = {
       });
       const newData = data.filter((i) => i.spreadId === id);
       const spreadData = [...newData];
-      if (!spreadData[0].userUID) return (spreadData[0].author = "預設");
+
+      if (spreadData[0].userUID === "all") {
+        spreadData[0].author = "預設";
+        return spreadData;
+      }
 
       const docRef = doc(db, "users", `${spreadData[0]?.userUID}`);
       const docSnap = await getDoc(docRef);
+
       if (!docSnap.exists()) return null;
+
       spreadData[0].author = docSnap.data().name;
+
       return spreadData;
     } catch (e) {
       window.alert(`error ${e}`);

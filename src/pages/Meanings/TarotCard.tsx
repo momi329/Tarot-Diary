@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import Footer from "../components/Footer";
-import Moon from "../images/Moon";
-import Star from "../images/Star";
-import Sun from "../images/Sun";
-import cards from "../tarotcard/tarot-images";
-import { convertToRomanNumeral } from "../utils/function";
-import { TarotCardType } from "../utils/type";
+import Footer from "../../components/Footer";
+import Moon from "../../images/Moon";
+import Star from "../../images/Star";
+import Sun from "../../images/Sun";
+import cards from "../../tarotcard/tarot-images";
+import { convertToRomanNumeral } from "../../utils/function";
+import { TarotCardType } from "../../utils/type";
 
 const subTitle = " text-4xl text-pink font-NT shadowPink ";
 function TarotCard() {

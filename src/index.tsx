@@ -8,11 +8,11 @@ import "./index.css";
 import Design from "./pages/Design/Design";
 import Divination from "./pages/Divination";
 import Home from "./pages/Home/Home";
-import Meaning from "./pages/Meanings";
+import Meaning from "./pages/Meanings/Meanings";
+import TarotCard from "./pages/Meanings/TarotCard";
 import Member from "./pages/Member";
 import Profile from "./pages/Profile/Profile";
 import Spread from "./pages/Spread/Spread";
-import TarotCard from "./pages/TarotCard";
 const root = ReactDOM.createRoot(
   document.getElementById("root") as Element | DocumentFragment
 );

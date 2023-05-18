@@ -30,6 +30,7 @@ function useGetDesign(): UseGetDesignHooks {
 
   const getDesign = useCallback(async () => {
     const newData = id && (await firebase.getDesign(id));
+
     if (!newData || typeof newData === "string") return;
     if (newData) {
       setSpreadData(newData[0] as SpreadData);
