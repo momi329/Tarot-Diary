@@ -2,8 +2,10 @@ import {
   Auth,
   FacebookAuthProvider,
   GoogleAuthProvider,
+  createUserWithEmailAndPassword,
   getAuth,
   onAuthStateChanged,
+  signInWithEmailAndPassword,
 } from "firebase/auth";
 import { createContext, useContext, useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -20,11 +22,23 @@ type AuthContextType = {
   setLoading: React.Dispatch<React.SetStateAction<boolean>>;
   userUID: string;
   setUser: (user: User) => void;
-  signIn: (
+  googleSignIn: (
     auth: Auth,
     provider: GoogleAuthProvider | FacebookAuthProvider
   ) => Promise<void>;
+  nativeSignIn: (
+    auth: Auth,
+
+    email: string,
+    password: string
+  ) => Promise<void>;
   signOut: (auth: Auth) => Promise<void>;
+  signUp: (
+    auth: Auth,
+    name: string,
+    email: string,
+    password: string
+  ) => Promise<void>;
   spreads: SpreadData[] | null;
   openSignIn: boolean;
   setOpenSignIn: React.Dispatch<React.SetStateAction<boolean>>;
@@ -51,8 +65,10 @@ export const AuthContext = createContext<AuthContextType>({
   loading: true,
   setLoading: () => {},
   userUID: "",
-  signIn: async () => {},
+  googleSignIn: async () => {},
+  nativeSignIn: async () => {},
   signOut: async () => {},
+  signUp: async () => {},
   spreads: null,
   openSignIn: false,
   setOpenSignIn: () => {},
@@ -138,7 +154,7 @@ export const AuthContextProvider: React.FC = ({ children }: any) => {
     setTimeout(() => setIsLoading(false), 1500);
   }, []);
 
-  const signIn = async (
+  const googleSignIn = async (
     auth: ReturnType<typeof getAuth>,
     provider: GoogleAuthProvider | FacebookAuthProvider
   ) => {
@@ -187,6 +203,74 @@ export const AuthContextProvider: React.FC = ({ children }: any) => {
       }
     }
   };
+  const signUp = async (
+    auth: Auth,
+    name: string,
+    email: string,
+    password: string
+  ) => {
+    try {
+      const userCredential = await createUserWithEmailAndPassword(
+        auth,
+        email,
+        password
+      );
+      const user = userCredential.user;
+      const data: User = {
+        name: name,
+        image:
+          "https://images.unsplash.com/photo-1520763185298-1b434c919102?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1632&q=80",
+        sign: "",
+        email: user.email || "",
+        followers: [],
+        following: [],
+        favorite: [],
+        userUID: user.uid || "",
+      };
+      await firebase.setUserDoc(data);
+      setUser(data);
+      setUserUID(data.userUID);
+      setIsLogin(true);
+      if (location.pathname.includes("signin")) {
+        navigate(`/profile/${data.userUID}`, { replace: true });
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+  const nativeSignIn = async (auth: Auth, email: string, password: string) => {
+    const userCredential = await signInWithEmailAndPassword(
+      auth,
+      email,
+      password
+    );
+    const user = userCredential.user;
+    setUserUID(user.uid);
+    const getUser = await getUsers(user.uid);
+    if (getUser) {
+      const data: User = {
+        name: getUser.name || "",
+        image: getUser.image || "",
+        sign: getUser.sign || "",
+        email: getUser.email || "",
+        followers: getUser.followers,
+        following: getUser.following,
+        favorite: getUser.favorite,
+        userUID: getUser.userUID || "",
+      };
+      await firebase.setUserDoc(data);
+      setUser(data);
+      setUserUID(data.userUID);
+      setIsLogin(true);
+      setOpenSignIn(false);
+      if (
+        location.pathname.includes("sign") ||
+        location.pathname.includes("profile")
+      ) {
+        navigate(`/profile/${data.userUID}`, { replace: true });
+      }
+    }
+  };
 
   const signOut = async (auth: Auth): Promise<void> => {
     setAlert(true);
@@ -198,7 +282,6 @@ export const AuthContextProvider: React.FC = ({ children }: any) => {
       setAlert(false);
     }, 5000);
   };
-
   return (
     <AuthContext.Provider
       value={{
@@ -208,13 +291,15 @@ export const AuthContextProvider: React.FC = ({ children }: any) => {
         loading,
         setLoading,
         userUID,
-        signIn,
+        googleSignIn,
+        nativeSignIn,
         signOut,
         spreads,
         openSignIn,
         setOpenSignIn,
         alert,
         setAlert,
+        signUp,
       }}
     >
       {children}

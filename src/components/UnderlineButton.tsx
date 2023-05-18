@@ -3,6 +3,7 @@ type UnderlineButtonProps = {
   icon?: any;
   type: string;
   selected?: boolean;
+  disabled?: boolean;
   action: (() => {}) | (() => void);
 };
 
@@ -12,6 +13,7 @@ function UnderlineButton({
   type,
   action,
   selected,
+  disabled,
 }: UnderlineButtonProps) {
   let style;
   if (type === "memberPage") {
@@ -43,7 +45,10 @@ function UnderlineButton({
       className="flex flex-row gap-3 items-center relative group bg-none "
       onClick={() => action()}
     >
-      <button className={`tracking-wider duration-200 ${style.a}`}>
+      <button
+        disabled={disabled}
+        className={`tracking-wider duration-200 ${style.a}`}
+      >
         {value}
       </button>
       {icon}
