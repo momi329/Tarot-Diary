@@ -70,9 +70,8 @@ function useGetUserExplore() {
               setFriendsPosts((prev) => {
                 if (prev) {
                   return [...prev, newDocData];
-                } else {
-                  return [newDocData];
                 }
+                return [newDocData];
               });
             }
           });

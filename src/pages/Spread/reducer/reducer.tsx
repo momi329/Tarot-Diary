@@ -12,5 +12,5 @@ export function reducer(_, action: { type: ActionEnum }): ActionEnum {
       return ActionEnum.End;
     }
   }
-  throw Error("Unknown action: " + action.type);
+  throw Error(`Unknown action: ${action.type}`);
 }

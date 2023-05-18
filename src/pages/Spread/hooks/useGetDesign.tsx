@@ -1,11 +1,7 @@
-import { useCallback, useState } from "react";
+import React, { useCallback, useState } from "react";
 import { useParams } from "react-router-dom";
 import firebase from "../../../utils/firebase";
-import {
-  DesignSpreadData,
-  SpreadData,
-  UseGetDesignHooks,
-} from "../../../utils/type";
+import { DesignSpreadData, SpreadData, SpreadItem } from "../../../utils/type";
 const initialDivinedData: DesignSpreadData = {
   userUID: "",
   title: "",
@@ -16,18 +12,27 @@ const initialDivinedData: DesignSpreadData = {
   question: "",
   secret: false,
 };
-
+export type UseGetDesignHooks = {
+  spreadData: SpreadData | null;
+  setSpreadData: React.Dispatch<React.SetStateAction<SpreadData | null>>;
+  divinedData: DesignSpreadData;
+  setDivinedData: React.Dispatch<React.SetStateAction<DesignSpreadData>>;
+  getDesign: () => Promise<void>;
+  pickCard: number[];
+  setPickCard: React.Dispatch<React.SetStateAction<number[]>>;
+};
 function useGetDesign(): UseGetDesignHooks {
   const { id } = useParams();
   const [spreadData, setSpreadData] = useState<SpreadData | null>(null);
   const [divinedData, setDivinedData] =
     useState<DesignSpreadData>(initialDivinedData);
-  const [pickCard, setPickCard] = useState<Number[]>([0, 0]);
+  const [pickCard, setPickCard] = useState<number[]>([0, 0]);
 
   const getDesign = useCallback(async () => {
     const newData = id && (await firebase.getDesign(id));
+    if (!newData || typeof newData === "string") return;
     if (newData) {
-      setSpreadData(newData[0]);
+      setSpreadData(newData[0] as SpreadData);
       setDivinedData({
         userUID: newData[0].userUID,
         title: newData[0].title,
@@ -41,7 +46,8 @@ function useGetDesign(): UseGetDesignHooks {
       setPickCard([
         0,
         newData[0].spread.reduce(
-          (acc: any, crr) => (crr !== 0 ? acc + 1 : acc),
+          (acc: number, crr: number | SpreadItem) =>
+            crr === 0 ? acc : acc + 1,
           0
         ),
       ]);

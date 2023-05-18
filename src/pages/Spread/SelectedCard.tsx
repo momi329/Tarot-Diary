@@ -1,11 +1,14 @@
 import React, { useState } from "react";
 import lightCard from "../../images/card-light.png";
-
-function SelectedCard({ setPickCard, pickCard }) {
+type SelectedCardProps = {
+  setPickCard: React.Dispatch<React.SetStateAction<number[]>>;
+  pickCard: number[];
+};
+function SelectedCard({ setPickCard, pickCard }: SelectedCardProps) {
   const [cardArr, setCardArr] = useState(new Array(24).fill(false));
 
   return (
-    <div className='flex flex-row w-[90%] h-[350px] justify-center relative mt-5 '>
+    <div className="flex flex-row w-[90%] h-[350px] justify-center relative mt-5 ">
       {cardArr.map((card, index) => {
         return (
           <div
@@ -42,7 +45,7 @@ function SelectedCard({ setPickCard, pickCard }) {
               }
             }}
           >
-            <img src={lightCard} alt='card' className='w-[100%]' />
+            <img src={lightCard} alt="card" className="w-[100%]" />
           </div>
         );
       })}

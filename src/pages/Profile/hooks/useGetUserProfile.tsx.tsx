@@ -1,13 +1,14 @@
 import { useCallback, useState } from "react";
-import firebase from "../../../utils/firebase";
 import { useParams } from "react-router-dom";
+import firebase from "../../../utils/firebase";
+import { ProfileType } from "../../../utils/type";
 
 const useGetUserProfile = () => {
-  //TODO: any
-  const [userProfile, setUserProfile] = useState<any>();
+  const [userProfile, setUserProfile] = useState<ProfileType>();
   const { uid } = useParams();
   const getUserProfile = useCallback(async () => {
     const profile = await firebase.getProfile(uid);
+    if (!profile) return;
     setUserProfile(profile);
   }, [uid]);
 

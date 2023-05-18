@@ -156,7 +156,7 @@ function GalleryHeader({
             >
               {item.secret ? "Private" : "Public"}・
               <div className="pb-[2px] ">
-                <Moon color={"#9F8761"} width={20} height={20} />
+                <Moon color={"#9F8761"} width={"20"} height={"20"} />
               </div>
             </div>
           )}

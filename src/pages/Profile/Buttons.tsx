@@ -1,16 +1,25 @@
-import { useContext } from "react";
+import React, { useContext } from "react";
 import { useParams } from "react-router-dom";
 import UnderlineButton from "../../components/UnderlineButton";
 import { AuthContext } from "../../context/authContext";
 import { PageEnum } from "../../utils/type";
-
-export const Buttons = ({ page, setPage, getDiary, getUserSpread }) => {
+type ButtonsProps = {
+  page: PageEnum;
+  setPage: React.Dispatch<React.SetStateAction<PageEnum>>;
+  getDiary: () => void;
+  getUserSpread: () => void;
+};
+export const Buttons = ({
+  page,
+  setPage,
+  getDiary,
+  getUserSpread,
+}: ButtonsProps) => {
   const { userUID } = useContext(AuthContext);
   const { uid } = useParams();
 
-  const switchPage = (page: string) => {
-    setPage(page);
-    return;
+  const switchPage = (pageSwitched: PageEnum) => {
+    setPage(pageSwitched);
   };
   return (
     <div
@@ -22,7 +31,7 @@ export const Buttons = ({ page, setPage, getDiary, getUserSpread }) => {
           value={"Explore"}
           type={"profile"}
           action={() => {
-            switchPage("explore");
+            switchPage(PageEnum.Explore);
           }}
           selected={page === PageEnum.Explore}
         />

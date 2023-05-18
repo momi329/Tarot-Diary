@@ -62,15 +62,6 @@ export type FriendsPostsType = {
   comment?: Comment[];
   seeMore?: boolean;
 };
-export type UseGetDesignHooks = {
-  spreadData: SpreadData | null;
-  setSpreadData: React.Dispatch<React.SetStateAction<SpreadData | null>>;
-  divinedData: DesignSpreadData;
-  setDivinedData: React.Dispatch<React.SetStateAction<DesignSpreadData>>;
-  getDesign: () => Promise<void>;
-  pickCard: Number[];
-  setPickCard: React.Dispatch<React.SetStateAction<Number[]>>;
-};
 
 export type SpreadItem = {
   reverse?: boolean;
@@ -141,3 +132,54 @@ export type GalleryProps = {
   data: DiaryType[] | FriendsPostsType[] | null | SpreadData[];
   page: PageEnum;
 };
+
+export type Day = {
+  title: string;
+  card: number;
+  reverse: boolean;
+  secret: boolean;
+  time: Timestamp;
+  content: string;
+};
+export type TarotCardType = {
+  name: string;
+  number: string;
+  arcana: string;
+  suit: string;
+  img: string;
+  fortune_telling: string[];
+  keywords: string[];
+  meanings: {
+    light: string[];
+    shadow: string[];
+  };
+  Archetype?: string;
+  Hebrew_Alphabet?: string;
+  Numerology?: string;
+  Elemental?: string;
+  Mythical_Spiritual?: string;
+  Questions_to_Ask?: string[];
+  Astrology?: string;
+  Affirmation?: string;
+};
+export type UserSpread = {
+  time: Timestamp;
+  image: string;
+  spreadId: string;
+  userUID: string;
+  comment: Comment[];
+  spread: (SpreadItem | number)[];
+  like: string[];
+  description: string;
+  title: string;
+};
+export type ProfileType =
+  | {
+      name: string;
+      image: string;
+      sign: string;
+      followers: string[];
+      following: string[];
+      favorite: [];
+    }
+  | undefined;

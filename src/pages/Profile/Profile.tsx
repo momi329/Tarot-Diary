@@ -1,6 +1,6 @@
 import { useContext, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import Diary from "../../components/Diary";
+import Diary from "../../components/Diary/Diary";
 import { AuthContext } from "../../context/authContext";
 import { PageEnum } from "../../utils/type";
 import Member from "../Member";
@@ -14,7 +14,7 @@ import useGetUserDiary from "./hooks/useGetUserDiary";
 import useGetUserExplore from "./hooks/useGetUserExplore";
 import useGetUserProfile from "./hooks/useGetUserProfile.tsx";
 import useGetUserSpread from "./hooks/useGetUserSpread";
-function Profile(): JSX.Element {
+function Profile() {
   const { isLogin, user, userUID } = useContext(AuthContext);
   const { uid } = useParams();
   const [page, setPage] = useState<PageEnum>(
@@ -55,9 +55,7 @@ function Profile(): JSX.Element {
     <>
       {uid && <div className="w-screen h-[110px] mx-auto" />}
       <div className="mx-auto w-screen">
-        {!uid ? (
-          <Member />
-        ) : (
+        {uid ? (
           <div className="sm:w-full tiny:w-full flex flex-row w-[1180px] z-20 h-[300px] justify-center gap-[2%] mx-auto ">
             <div className="sm:hidden tiny:hidden  h-[100%] w-2/12">
               {userUID && (
@@ -102,6 +100,8 @@ function Profile(): JSX.Element {
               />
             </div>
           </div>
+        ) : (
+          <Member />
         )}
       </div>
     </>

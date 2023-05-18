@@ -1,6 +1,18 @@
 import { Link } from "react-router-dom";
 import lightCard from "../../images/card-light.png";
-export const SpreadPlace = ({ type, tarot, size }) => {
+import {
+  DesignSpreadData,
+  SpreadData,
+  SpreadItem,
+  TarotCardType,
+} from "../../utils/type";
+
+type SpreadPlaceProps = {
+  type: DesignSpreadData | SpreadData | null | false;
+  tarot: TarotCardType[];
+  size: string;
+};
+export const SpreadPlace = ({ type, tarot, size }: SpreadPlaceProps) => {
   let widthAndHeight;
   if (size === "large") {
     widthAndHeight = {
@@ -20,7 +32,6 @@ export const SpreadPlace = ({ type, tarot, size }) => {
     };
   }
   if (!type) return <></>;
-
   return (
     <div
       className={`flex flex-wrap justify-center  border border-yellow z-1 
@@ -30,7 +41,7 @@ export const SpreadPlace = ({ type, tarot, size }) => {
         type?.userUID === "all" ? "pt-[60px]" : ""
       }`}
     >
-      {type.spread?.map((item: any, i: number) => {
+      {type.spread.map((item: number | SpreadItem, i: number) => {
         return (
           <div
             className={`flex justify-center box-border ${widthAndHeight.b} `}
@@ -46,27 +57,17 @@ export const SpreadPlace = ({ type, tarot, size }) => {
                   type.userUID === "all" ? "scale-110" : ""
                 }`}
               >
-                {item.card !== undefined ? (
-                  <Link to={`/card/${item.card}`}>
-                    <img
-                      src={tarot[item.card].img}
-                      alt={tarot[item.card].name}
-                      className={`${
-                        item.reverse ? "" : "rotate-180"
-                      } w-[100%] h-[100%] absolute top-0 left-0 `}
-                    />
-                  </Link>
-                ) : (
+                {(item as SpreadItem).card === undefined ? (
                   <>
                     <div className="absolute top-3 left-2 z-10 cursor-default">
                       <p className="text-5xl font-NT text-green ml-2">
-                        {item.order}
+                        {(item as SpreadItem).order}
                       </p>
                       <p
                         className="text-sm font-notoSansJP text-green mt-[70px] w-[100%] bg-cream/20 backdrop-blur-sm
                       tracking-widest px-2 py-2 bg-cream bg-opacity-30 "
                       >
-                        {item.value}
+                        {(item as SpreadItem).value}
                       </p>
                     </div>
                     <img
@@ -75,37 +76,56 @@ export const SpreadPlace = ({ type, tarot, size }) => {
                       className={` w-[100%] h-[100%] absolute z-0`}
                     />
                   </>
+                ) : (
+                  <Link to={`/card/${(item as SpreadItem)?.card}`}>
+                    <img
+                      src={
+                        ((item as SpreadItem)?.card &&
+                          tarot[(item as SpreadItem).card!].img) ||
+                        ""
+                      }
+                      alt={
+                        ((item as SpreadItem)?.card &&
+                          tarot[(item as SpreadItem).card!].name) ||
+                        ""
+                      }
+                      className={`${
+                        (item as SpreadItem)?.reverse ? "" : "rotate-180"
+                      } w-[100%] h-[100%] absolute top-0 left-0 `}
+                    />
+                  </Link>
                 )}
-                {item.card !== undefined && (
+                {(item as SpreadItem)?.card !== undefined && (
                   <div
                     className={`w-full h-full bg-white/60 backdrop-blur-sm absolute 
                    opacity-0 leading-tight p-2 ${
-                     item.card !== undefined
+                     (item as SpreadItem).card === undefined
                        ? "hover:opacity-100 duration-500"
                        : ""
                    }`}
                   >
-                    {item.card !== undefined && size === "large" ? (
+                    {(item as SpreadItem)?.card !== undefined &&
+                    size === "large" ? (
                       <>
                         <p
                           className="absolute top-1 left-2 z-8 font-NT text-8xl w-[10%] text-green
                       shadowGreen text-center tracking-wide leading-tight"
                         >
-                          {item.order}
+                          {(item as SpreadItem)?.order}
                         </p>
                         <p
                           className="absolute top-[100px] left-2 leading-tight 
                      text-sm  w-[90%] tracking-wide text-green"
                         >
-                          {item.value}
+                          {(item as SpreadItem)?.value}
                         </p>
 
                         <div className="text-lg font-NT bottom-7 absolute leading-none text-green shadowGreen">
-                          {tarot[item.card].name}{" "}
+                          {tarot[(item as SpreadItem).card!].name}{" "}
                         </div>
                         {""}
                         <div className="z-10 text-sm mt-[1px] leading-none text-gray bottom-2 absolute text-green">
-                          {item.reverse ? "正位" : "逆位"}
+                          {(item as SpreadItem)?.reverse ? "正位" : "逆位"}
                         </div>
                       </>
                     ) : (
@@ -114,21 +134,21 @@ export const SpreadPlace = ({ type, tarot, size }) => {
                           className="absolute top-1 left-2 z-8 font-NT text-2xl w-[10%] text-green
                       shadowGreen text-center tracking-wide leading-tight"
                         >
-                          {item.order}
+                          {(item as SpreadItem)?.order}
                         </p>
                         <p
                           className="absolute bottom-2 left-2 leading-none
                      text-[6px]  w-[80%] tracking-wide text-green"
                         >
-                          {item.value}
+                          {(item as SpreadItem).value}
                         </p>
 
                         <div className="text-[9px] font-NT top-8 left-2 absolute leading-none text-green shadowGreen">
-                          {tarot[item.card].name}{" "}
+                          {tarot[(item as SpreadItem).card!].name}{" "}
                         </div>
                         {""}
                         <span className="z-10 text-[6px] font-notoSansJP mt-[1px] leading-none text-gray top-2 right-1 absolute text-green">
-                          {item.reverse ? "正位" : "逆位"}
+                          {(item as SpreadItem)?.reverse ? "正位" : "逆位"}
                         </span>
                       </>
                     )}

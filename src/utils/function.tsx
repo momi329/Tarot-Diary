@@ -1,8 +1,8 @@
 export function getRandomCards(n: number) {
-  const indexes = Array.from({ length: 78 }, (_, i) => i); // 創建包含 0 到 77 的陣列
+  const indexes = Array.from({ length: 78 }, (_, i) => i);
   for (let i = indexes.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1)); // 生成 0 到 i 之間的隨機整數
-    [indexes[i], indexes[j]] = [indexes[j], indexes[i]]; // 交換 indexes[i] 和 indexes[j] 的位置
+    const j = Math.floor(Math.random() * (i + 1));
+    [indexes[i], indexes[j]] = [indexes[j], indexes[i]];
   }
   return indexes.slice(0, n);
 }
@@ -57,14 +57,14 @@ export function convertToRomanNumeral(num) {
     { value: 0, symbol: "N" },
   ];
 
-  function convertToRomanNumeralHelper(num, index) {
-    if (index >= romanNumeralMap.length || num <= 0) {
+  function convertToRomanNumeralHelper(number: number, index: number) {
+    if (index >= romanNumeralMap.length || number <= 0) {
       return "";
     }
     const currentSymbol = romanNumeralMap[index].symbol;
     const currentValue = romanNumeralMap[index].value;
-    const quotient = Math.floor(num / currentValue);
-    const remainder = num % currentValue;
+    const quotient = Math.floor(number / currentValue);
+    const remainder = number % currentValue;
     const result = currentSymbol.repeat(quotient);
     return result + convertToRomanNumeralHelper(remainder, index + 1);
   }

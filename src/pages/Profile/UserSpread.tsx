@@ -1,8 +1,11 @@
-import { Link } from "react-router-dom";
 import { AiOutlineArrowRight } from "react-icons/ai";
+import { Link } from "react-router-dom";
 import SpreadPreview from "../../components/SpreadPreview";
-
-const UserSpread = ({ userSpread }) => {
+import { UserSpread } from "../../utils/type";
+type UserSpreadProps = {
+  userSpread: UserSpread[] | null;
+};
+const UserSpread = ({ userSpread }: UserSpreadProps) => {
   if (!userSpread) return <></>;
   return (
     <section className="flex flex-wrap gap-[8px] w-[100%] mx-auto">

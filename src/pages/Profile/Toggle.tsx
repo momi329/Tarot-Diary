@@ -1,6 +1,10 @@
+import React from "react";
 import { PageEnum } from "../../utils/type";
-
-function Toggle({ page, setPage }) {
+type ToggleProps = {
+  page: PageEnum;
+  setPage: React.Dispatch<React.SetStateAction<PageEnum>>;
+};
+function Toggle({ page, setPage }: ToggleProps) {
   return (
     <div className="flex flex-row items-center self-end gap-2">
       <p className="text-yellow font-NT text-lg shadowYellow tracking-widest">

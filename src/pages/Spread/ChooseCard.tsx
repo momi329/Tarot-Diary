@@ -1,23 +1,28 @@
-import { useEffect } from "react";
+import React from "react";
 import Button from "../../components/Button";
+import { DesignSpreadData } from "../../utils/type";
 import SelectedCard from "./SelectedCard";
+type ChooseCardProps = {
+  pickCard: number[];
+  setPickCard: React.Dispatch<React.SetStateAction<number[]>>;
+  handleClickDivine: () => void;
+  divinedData: DesignSpreadData;
+};
 export default function ChooseCard({
   pickCard,
   setPickCard,
   handleClickDivine,
   divinedData,
-}) {
-  useEffect(() => console.log(pickCard, "pickcard in lower area"), [pickCard]);
-
+}: ChooseCardProps) {
   return (
     <div className="flex flex-col gap-6 justify-center mb-18 mt-5 items-center">
       <SelectedCard pickCard={pickCard} setPickCard={setPickCard} />
       <span className="flex flex-row items-end">
         <span className="text-5xl text-pink font-NT shadowPink tracking-widest">
-          {pickCard[0] + ""}
+          {`${pickCard[0]}`}
         </span>
         <p className="text-3xl text-pink font-NT shadowPink tracking-widest mb-1">
-          {`/` + pickCard[1]}
+          {`/${pickCard[1]}`}
         </p>
       </span>
       <div className="w-[300px] group">

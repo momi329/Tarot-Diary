@@ -38,7 +38,7 @@ function Spread() {
         <div className="bg-black bg-opacity-50 fixed w-full h-full" />
         <div
           className={`fixed w-full h-full bg-cover bg-center  p-[40px]`}
-          style={{ backgroundImage: `url(${spreadData?.image})` }}
+          style={{ backgroundImage: `url(${spreadData?.image || ""})` }}
         />
         <div className="fixed w-full h-full bg-cover bg-center  bg-black/20 p-[40px]" />
 

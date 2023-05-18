@@ -1,12 +1,20 @@
-import { useContext } from "react";
+import React, { useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import Button from "../../components/Button";
 import UnderlineButton from "../../components/UnderlineButton";
 import { AuthContext } from "../../context/authContext";
+import { ActionEnum, SpreadData } from "../../utils/type";
 import Design from "../Design/Design";
-function SpreadInfo({ spreadData, type, setEdit, edit }) {
+type SpreadInfoProps = {
+  spreadData: SpreadData | null;
+  type: ActionEnum;
+  setEdit: React.Dispatch<React.SetStateAction<boolean>>;
+  edit: boolean;
+};
+function SpreadInfo({ spreadData, type, setEdit, edit }: SpreadInfoProps) {
   const { userUID } = useContext(AuthContext);
   const navigate = useNavigate();
+  if (!spreadData) return <></>;
   return (
     <>
       <div className="flex flex-row justify-between mx-8 mt-8">
@@ -23,13 +31,13 @@ function SpreadInfo({ spreadData, type, setEdit, edit }) {
           <div className="font-NT text-yellow text-2xl mt-8 mb-5 tracking-widest shadowYellow ">
             PICK{" "}
             {spreadData?.spread.reduce(
-              (acc: any, crr) => (crr !== 0 ? acc + 1 : acc),
+              (acc: number, crr) => (crr === 0 ? acc : acc + 1),
               0
             )}{" "}
             CARDS
           </div>
         </span>
-        {type === "preview" && userUID === spreadData?.userUID ? (
+        {type === ActionEnum.Preview && userUID === spreadData?.userUID ? (
           <Button
             action={() => {
               setEdit(true);

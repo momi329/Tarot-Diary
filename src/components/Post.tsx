@@ -17,7 +17,7 @@ type PostProps = {
 export function Post({ targetDiary, setTargetDiary, setDiaryData }: PostProps) {
   const { userUID } = useContext(AuthContext);
   const [edit, setEdit] = useState(false);
-  const [newEdit, setNewEdit] = useState(targetDiary?.content);
+  const [newEdit, setNewEdit] = useState(targetDiary?.content || "");
   useEffect(() => {
     async function getUserDiary() {
       const docSnap = await firebase.getUserDiary(userUID);
@@ -121,7 +121,7 @@ export function Post({ targetDiary, setTargetDiary, setDiaryData }: PostProps) {
               </p>
               <p className="ml-3 text-sm font-notoSansJP leading-6 text-gray">
                 {" "}
-                {targetDiary.askGpt}
+                {targetDiary?.askGpt}
               </p>
             </div>
             <div className="flex flex-col gap-2 justify-between items-center ">
@@ -136,16 +136,16 @@ export function Post({ targetDiary, setTargetDiary, setDiaryData }: PostProps) {
 
               {edit ? (
                 <Editor
-                  value={targetDiary.content}
+                  value={targetDiary?.content}
                   onChange={onEditorContentChanged}
                 />
               ) : (
-                <Viewer value={targetDiary.content} />
+                <Viewer value={targetDiary?.content || ""} />
               )}
             </div>
           </span>
-          {targetDiary.comment &&
-            targetDiary.comment.map((comment, q) => (
+          {targetDiary?.comment &&
+            targetDiary?.comment.map((comment, q) => (
               <>
                 <div
                   className="flex flex-row items-center ml-2 my-3 text-sm"

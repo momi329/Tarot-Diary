@@ -1,4 +1,5 @@
 /* eslint-disable */
+
 const cards = {
   description:
     "tarot cards and basic information about them, as well as references to corresponding scans",

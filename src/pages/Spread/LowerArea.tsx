@@ -35,7 +35,6 @@ function LowerArea({ type, dispatch }: LowerAreaProps) {
     getDesign,
   } = useGetDesign();
   useEffect(() => {
-    // TODO: Ask why we need this?
     getDesign();
   }, []);
   const handleClickDivine = async () => {
@@ -107,8 +106,8 @@ function LowerArea({ type, dispatch }: LowerAreaProps) {
       {(type === ActionEnum.End || type === ActionEnum.Preview) && (
         <SpreadPlace
           type={
-            (type === "end" && divinedData) ||
-            (type === "preview" && spreadData)
+            (type === ActionEnum.End && divinedData) ||
+            (type === ActionEnum.Preview && spreadData)
           }
           tarot={cards.cards}
           size={"large"}

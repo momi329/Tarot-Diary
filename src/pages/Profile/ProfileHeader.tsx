@@ -1,18 +1,25 @@
-import { useContext, useState } from "react";
+import React, { useContext, useState } from "react";
 import { useParams } from "react-router-dom";
 import Button from "../../components/Button";
 import { AuthContext } from "../../context/authContext";
 import Star from "../../images/Star";
 import firebase from "../../utils/firebase";
-import { FriendsData, PageEnum } from "../../utils/type";
+import { FriendsData, PageEnum, ProfileType } from "../../utils/type";
 import Friends from "./Friends";
+type ProfileHeaderProps = {
+  following: boolean;
+  setFollowing: React.Dispatch<React.SetStateAction<boolean>>;
+  setPage: React.Dispatch<React.SetStateAction<PageEnum>>;
+  userProfile: ProfileType;
+  setUserProfile: React.Dispatch<React.SetStateAction<ProfileType>>;
+};
 const ProfileHeader = ({
   following,
   setFollowing,
   setPage,
   userProfile,
   setUserProfile,
-}) => {
+}: ProfileHeaderProps) => {
   const { uid } = useParams();
   const { user, userUID, isLogin } = useContext(AuthContext);
   const [openFriends, setOpenFriends] = useState({
@@ -24,20 +31,22 @@ const ProfileHeader = ({
     followers: [],
   });
 
-  async function follow(uid, userUID) {
+  async function follow() {
     if (!isLogin) return;
     if (userUID === uid) return;
     await firebase.follow(uid, userUID);
     setFollowing(true);
+    if (!userProfile) return;
     if (userUID !== uid) {
       const newData = { ...userProfile };
       userProfile.followers = [...newData.followers, userUID];
       setUserProfile(newData);
     }
   }
-  async function unfollow(uid: string, userUID: string) {
+  async function unfollow() {
     await firebase.unfollow(uid, userUID);
     setFollowing(false);
+    if (!userProfile) return;
     if (userUID !== uid) {
       const newData = { ...userProfile };
       const index = newData.followers.indexOf(userUID);
@@ -47,15 +56,15 @@ const ProfileHeader = ({
       setUserProfile(newData);
     }
   }
-  async function getFriends(followers: string[], following: string[]) {
-    const profile = await firebase.getFriendsProfile(followers, following);
+  async function getFriends(a, b) {
+    const profile = await firebase.getFriendsProfile(a, b);
     setFriends(profile);
   }
   const handleGetFriends = () => {
     if (userUID === uid) {
       getFriends(user.followers, user.following);
     } else {
-      getFriends(userProfile.followers, userProfile.following);
+      getFriends(userProfile?.followers, userProfile?.following);
     }
   };
 
@@ -168,9 +177,7 @@ const ProfileHeader = ({
             <div className="w-[250px]">
               <Button
                 action={() => {
-                  uid && following
-                    ? unfollow(uid, userUID)
-                    : follow(uid, userUID);
+                  uid && following ? unfollow() : follow();
                 }}
                 type={"big"}
                 value={following ? "Unfollow" : "Follow"}

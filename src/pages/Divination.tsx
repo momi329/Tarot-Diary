@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef, useContext } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import SpreadPreview from "../components/SpreadPreview";
 import Arrow from "../images/Arrow";
 import Star from "../images/Star";
@@ -41,21 +41,21 @@ function Divination() {
   const addPage = () => {
     if (spreads) {
       const newPage = page;
-      let addPage;
+      let add;
       if (newPage < 5) {
-        addPage = newPage + 1;
+        add = newPage + 1;
       } else {
-        addPage = 0;
+        add = 0;
       }
-      scrollToIndex(addPage);
-      setPage(addPage);
+      scrollToIndex(add);
+      setPage(add);
     }
   };
   const minusPage = () => {
     const newPage = page;
-    const minusPage = newPage - 1 <= 0 ? 0 : newPage - 1;
-    scrollToIndex(minusPage);
-    setPage(minusPage);
+    const minus = newPage - 1 <= 0 ? 0 : newPage - 1;
+    scrollToIndex(minus);
+    setPage(minus);
   };
 
   return (

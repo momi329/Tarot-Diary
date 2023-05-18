@@ -1,17 +1,15 @@
-import { useCallback, useContext, useState } from "react";
+import { useCallback, useState } from "react";
 import { useParams } from "react-router-dom";
-import { AuthContext } from "../../../context/authContext";
 import firebase from "../../../utils/firebase";
 import { DiaryType } from "../../../utils/type";
 
 const useGetUserDiary = () => {
   const [diary, setDiary] = useState<DiaryType[] | null>(null);
-  const { user } = useContext(AuthContext);
   const { uid } = useParams();
   const getDiary = useCallback(async () => {
-    const diary = (await firebase.getOtherUserDiary(uid, user)) as DiaryType[];
-    diary
-      .sort(function (a, b) {
+    const userDiary = (await firebase.getOtherUserDiary(uid)) as DiaryType[];
+    userDiary
+      .sort((a, b) => {
         return a.time.seconds - b.time.seconds;
       })
       .reverse();

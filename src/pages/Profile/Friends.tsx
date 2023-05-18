@@ -1,10 +1,20 @@
+import { DocumentData } from "firebase/firestore";
 import React, { useEffect, useRef, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { CiSearch } from "react-icons/ci";
+import { useNavigate } from "react-router-dom";
 import UnderlineInput from "../../components/UnderlineInput";
 import firebase from "../../utils/firebase";
-import { DocumentData } from "firebase/firestore";
-function Friends({ openFriends, friends, setOpenFriends }) {
+type FriendsProps = {
+  openFriends: { followers: boolean; following: boolean };
+  friends: {
+    followers: { name: string; image: string; sign: string; uid: string }[];
+    following: { name: string; image: string; sign: string; uid: string }[];
+  };
+  setOpenFriends: React.Dispatch<
+    React.SetStateAction<{ followers: boolean; following: boolean }>
+  >;
+};
+function Friends({ openFriends, friends, setOpenFriends }: FriendsProps) {
   const [search, setSearch] = useState(false);
   const navigate = useNavigate();
   const [data, setData] = useState<DocumentData[]>();
