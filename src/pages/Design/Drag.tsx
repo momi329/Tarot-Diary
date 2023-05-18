@@ -1,22 +1,45 @@
-import { ChangeEvent, KeyboardEvent } from "react";
+import React, { ChangeEvent, KeyboardEvent } from "react";
 import { AiOutlineMinus } from "react-icons/ai";
 import { RxCross1 } from "react-icons/rx";
 import { VscAdd } from "react-icons/vsc";
 import lightCard from "../../images/card-light.png";
-import { SpreadItem } from "../../utils/type";
-function Drag({ dragInfo, shineArr, setDragInfo, onSave, setOnSave }) {
+import { DesignSpreadData, SpreadItem } from "../../utils/type";
+type DragProps = {
+  dragInfo: {
+    pastIndex: number;
+    target: number | SpreadItem;
+    shine: boolean[];
+  };
+  shineArr: () => boolean[];
+  setDragInfo: React.Dispatch<
+    React.SetStateAction<{
+      pastIndex: number;
+      target: number | SpreadItem;
+      shine: boolean[];
+    }>
+  >;
+  onSave: DesignSpreadData;
+  setOnSave: React.Dispatch<React.SetStateAction<DesignSpreadData>>;
+};
+function Drag({
+  dragInfo,
+  shineArr,
+  setDragInfo,
+  onSave,
+  setOnSave,
+}: DragProps) {
   const drop = (i: number) => {
     const newDragInfo = { ...dragInfo };
     const { pastIndex } = newDragInfo;
-    let newState = { ...onSave }.spread;
-    if (newState[i] !== 0) {
-      setOnSave({ ...onSave, spread: newState });
-    } else {
+    const newState = { ...onSave }.spread;
+    if (newState[i] === 0) {
       newState[pastIndex] = 0;
-      newState[i] = newDragInfo.target as SpreadItem;
+      newState[i] = newDragInfo.target;
       setOnSave({ ...onSave, spread: newState });
       newDragInfo.shine = shineArr();
       setDragInfo(newDragInfo);
+    } else {
+      setOnSave({ ...onSave, spread: newState });
     }
   };
   const handleChange = (
@@ -25,14 +48,13 @@ function Drag({ dragInfo, shineArr, setDragInfo, onSave, setOnSave }) {
     i: number
   ): void => {
     item.value = e.target.value;
-    let newState = { ...onSave }.spread;
+    const newState = { ...onSave }.spread;
     newState[i] = item;
     setOnSave({ ...onSave, spread: newState });
   };
   const handleKeyDown = (
     e: KeyboardEvent<HTMLTextAreaElement>,
-    item: SpreadItem,
-    i: number
+    item: SpreadItem
   ): void => {
     if (e.key === "Enter") {
       item.disabled = true;
@@ -45,10 +67,9 @@ function Drag({ dragInfo, shineArr, setDragInfo, onSave, setOnSave }) {
   };
   const deleteCard = (item: SpreadItem) => {
     const deletedCardIndex = onSave.spread.findIndex((i) => i === item);
-    let newState = { ...onSave }.spread;
-    newState[deletedCardIndex] = 0;
-    setOnSave({ ...onSave, spread: newState });
-    return;
+    const newDeletedState = { ...onSave }.spread;
+    newDeletedState[deletedCardIndex] = 0;
+    setOnSave({ ...onSave, spread: newDeletedState });
   };
   const editCard = (item: SpreadItem, i: number) =>
     setOnSave({
@@ -65,10 +86,9 @@ function Drag({ dragInfo, shineArr, setDragInfo, onSave, setOnSave }) {
     i: number
   ) => {
     item.order = Number(e.target.value);
-    let newState = { ...onSave }.spread;
-    newState[i] = item;
-    setOnSave({ ...onSave, spread: newState });
-    return;
+    const newChangedState = { ...onSave }.spread;
+    newChangedState[i] = item;
+    setOnSave({ ...onSave, spread: newChangedState });
   };
   return (
     <>
@@ -123,7 +143,7 @@ function Drag({ dragInfo, shineArr, setDragInfo, onSave, setOnSave }) {
                     }`}
                       disabled={item.disabled}
                       onChange={(e) => handleChange(e, item, i)}
-                      onKeyDown={(e) => handleKeyDown(e, item, i)}
+                      onKeyDown={(e) => handleKeyDown(e, item)}
                       value={item.value}
                       readOnly={item.disabled}
                     />
@@ -153,9 +173,11 @@ function Drag({ dragInfo, shineArr, setDragInfo, onSave, setOnSave }) {
                          pl-7 pr-6 pt-[5px] pb-[4px] rounded-sm bg-opacity-30 absolute font-NT text-base"
                     >
                       {onSave.spread
-                        .filter((item: number | SpreadItem) => item !== 0)
-                        .map((_, i: number) => (
-                          <option key={i + 1} value={i + 1}>
+                        .filter(
+                          (spreadItem: number | SpreadItem) => spreadItem !== 0
+                        )
+                        .map((_, spreadIndex: number) => (
+                          <option key={spreadIndex + 1} value={i + spreadIndex}>
                             {i + 1}
                           </option>
                         ))}

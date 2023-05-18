@@ -37,9 +37,9 @@ function Footer() {
          ${animated ? "opacity-0 animate-[slideUp_1s_forwards_400ms]" : ""}
          `}
         >
-          "For Those Who Feel Lost And <br></br>Uncertain, Tarot Cards Can Be a
-          <br></br>
-          Helpful Tool In Making Decisions."
+          &ldquo;For Those Who Feel Lost And <br></br>Uncertain, Tarot Cards Can
+          Be a<br></br>
+          Helpful Tool In Making Decisions.&ldquo;
         </p>
       </div>
     </div>

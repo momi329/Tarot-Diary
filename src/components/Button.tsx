@@ -1,12 +1,12 @@
 type ButtonType = {
   type: string;
   value: string;
-  action: () => void | {};
+  action: () => void | object;
   disabled?: boolean;
   url?: string;
 };
 
-function Button({ type, value, action, disabled, url }: ButtonType) {
+function Button({ type, value, action, disabled }: ButtonType) {
   let style =
     `${disabled ? `cursor-not-allowed` : `cursor-pointer`}` +
     " font-NT  text-center  tracking-wider capitalize hover:animate-pulse " +
@@ -18,15 +18,15 @@ function Button({ type, value, action, disabled, url }: ButtonType) {
     " text-gold border-gold shadowGold hover:bg-green  " +
     " hover:border-gold hover:text-gold hover:bg-opacity-50";
   if (type === "small") {
-    style += " w-[185px] h-[65px] text-xl " + pinkAndYellow;
+    style += ` w-[185px] h-[65px] text-xl ${pinkAndYellow}`;
   } else if (type === "big") {
-    style += " w-[100%] h-[78px] text-2xl leading-[23px]" + pinkAndYellow;
+    style += ` w-[100%] h-[78px] text-2xl leading-[23px]${pinkAndYellow}`;
   } else if (type === "tiny") {
-    style += " w-2/12 h-2/12 text-base text-xl " + pinkAndYellow;
+    style += ` w-2/12 h-2/12 text-base text-xl ${pinkAndYellow}`;
   } else if (type === "little") {
-    style += " w-[120px] h-[40px] text-xl " + pinkAndGreen;
+    style += ` w-[120px] h-[40px] text-xl ${pinkAndGreen}`;
   } else if (type === "littlePink") {
-    style += " w-[120px] h-[40px] text-xl " + pinkAndYellow;
+    style += ` w-[120px] h-[40px] text-xl ${pinkAndYellow}`;
   }
   return (
     <button

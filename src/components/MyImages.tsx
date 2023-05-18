@@ -1,25 +1,29 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { AiOutlinePlus } from "react-icons/ai";
 import { FiImage, FiSearch, FiX } from "react-icons/fi";
 import { createApi } from "unsplash-js";
+import { Random } from "unsplash-js/dist/methods/photos/types";
+import { DesignSpreadData } from "../utils/type";
 const Key = process.env.REACT_APP_UNSPLASH_API_KEY;
-
-function MyImages({ onSave, setOnSave }) {
-  const [photos, setPhotos] = useState();
-  const [isOpen, setIsOpen] = useState(false);
+type MyImagesProps = {
+  onSave: DesignSpreadData;
+  setOnSave: React.Dispatch<React.SetStateAction<DesignSpreadData>>;
+};
+function MyImages({ onSave, setOnSave }: MyImagesProps) {
+  const [photos, setPhotos] = useState<null | Random[] | Random>();
+  const [isOpen, setIsOpen] = useState<boolean>(false);
   const [input, setInput] = useState("");
   const fetchPhotos = async (search) => {
-    const unsplash = createApi({ accessKey: Key });
+    const unsplash = createApi({ accessKey: Key } as any);
     unsplash.photos
       .getRandom({
         count: 26,
-        page: 1,
         query: search,
         orientation: "portrait",
       })
       .then((result) => {
         if (result.errors) {
-          console.error("An error occurred:", result.errors);
+          window.alert(`An error occurred: ${result.errors}`);
         } else {
           const photo = result.response;
           setPhotos(photo);
@@ -31,7 +35,6 @@ function MyImages({ onSave, setOnSave }) {
   }, [isOpen]);
   const chooseImg = (img) => {
     setOnSave({ ...onSave, image: img });
-    return;
   };
   const searchImg = (e) => {
     if (e.key === "Enter") {
@@ -89,7 +92,7 @@ function MyImages({ onSave, setOnSave }) {
 
             <div className="h-[400px] flex flex-wrap justify-center gap-2  overflow-auto ">
               {photos &&
-                photos.map((photo) => (
+                (photos as Random[]).map((photo) => (
                   <>
                     <div
                       key={photo.id}

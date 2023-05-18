@@ -29,7 +29,7 @@ const AskAndNote = ({ divinedData, setDivinedData, type, dispatch }: any) => {
     )}，先幫我總結再請幫我依據牌意解釋`;
     const newMessage = [
       {
-        message: message,
+        message,
         direction: "outgoing",
         sentTime: new Date().toLocaleString(),
       },
@@ -37,25 +37,24 @@ const AskAndNote = ({ divinedData, setDivinedData, type, dispatch }: any) => {
     await processMessageToChatGPT(newMessage);
     setLoading(false);
   };
-  async function createDivinedData(data, userUID) {
+  async function createDivinedData(data) {
     const docId = await firebase.newDivinedData(data, userUID);
     if (docId) {
-      setDivinedData({ ...data, docId: docId });
-    } else {
+      setDivinedData({ ...data, docId });
     }
   }
   const handleSave = () => {
     const newData = { ...divinedData, time: Timestamp.fromDate(new Date()) };
-    createDivinedData(newData, userUID);
+    createDivinedData(newData);
     dispatch({ type: ActionEnum.Preview });
     setAskAI(false);
     navigate(`/profile/${userUID}`);
   };
   async function processMessageToChatGPT(newMessage: any[]) {
     try {
-      let apiMessages = newMessage.map((messageObject) => {
-        let role = "assistant";
-        return { role: role, content: messageObject.message };
+      const apiMessages = newMessage.map((messageObject) => {
+        const role = "assistant";
+        return { role, content: messageObject.message };
       });
       const apiRequestBody = {
         model: "gpt-3.5-turbo",
@@ -83,14 +82,13 @@ const AskAndNote = ({ divinedData, setDivinedData, type, dispatch }: any) => {
       const content = data.choices[0].message.content;
 
       setDivinedData({ ...divinedData, askGpt: content, content: "" });
-    } catch (error) {
-      console.error("Error fetching API:", error);
+    } catch (error: any) {
+      window.alert(error.code);
     }
   }
 
   const onEditorContentChanged = (content: EditorContentChanged) => {
     setDivinedData({ ...divinedData, content: content.markdown });
-    console.log("Editor content changed:", content.markdown);
   };
   return (
     <div className="flex flex-row ">

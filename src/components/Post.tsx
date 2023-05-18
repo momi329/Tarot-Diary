@@ -1,22 +1,27 @@
-import { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../context/authContext";
 import Moon from "../images/Moon";
 import Star from "../images/Star";
-import { SpreadPlace } from "../pages/Spread/SpreadPlace";
 import cards from "../tarotcard/tarot-images";
 import firebase from "../utils/firebase";
 import { formatTimestamp } from "../utils/function";
+import { DiaryType } from "../utils/type";
 import Editor from "./Editor/Editor";
 import Viewer from "./Editor/Viewer";
 const tarot = cards.cards;
-export function Post({ targetDiary, setTargetDiary, setDiaryData }) {
+type PostProps = {
+  targetDiary: DiaryType | null;
+  setTargetDiary: React.Dispatch<React.SetStateAction<DiaryType | null>>;
+  setDiaryData: React.Dispatch<React.SetStateAction<DiaryType[]>>;
+};
+export function Post({ targetDiary, setTargetDiary, setDiaryData }: PostProps) {
   const { userUID } = useContext(AuthContext);
   const [edit, setEdit] = useState(false);
-  const [newEdit, setNewEdit] = useState(targetDiary.content);
+  const [newEdit, setNewEdit] = useState(targetDiary?.content);
   useEffect(() => {
     async function getUserDiary() {
       const docSnap = await firebase.getUserDiary(userUID);
-      setDiaryData(docSnap);
+      setDiaryData(docSnap as DiaryType[]);
     }
     if (!edit) {
       getUserDiary();
@@ -24,10 +29,11 @@ export function Post({ targetDiary, setTargetDiary, setDiaryData }) {
   }, [edit]);
 
   const handleSave = async () => {
-    await firebase.updateDiary(userUID, targetDiary.docId, {
+    await firebase.updateDiary(userUID, targetDiary?.docId, {
       ...targetDiary,
       content: newEdit,
     });
+    if (!targetDiary) return;
     setTargetDiary({ ...targetDiary, content: newEdit });
     setEdit(false);
   };
@@ -72,35 +78,41 @@ export function Post({ targetDiary, setTargetDiary, setDiaryData }) {
               className="ml-4 mt-4 mb-4 font-notoSansJP font-normal
          text-xl text-yellow  tracking-widest"
             >
-              {targetDiary.question}
+              {targetDiary?.question}
             </h1>
             <p
               className="font-notoSansJP text-gray shadowGray self-center 
                   leading-normal tracking-wider  font-light "
             >
-              ・{formatTimestamp(targetDiary.time)}
+              ・{formatTimestamp(targetDiary?.time)}
             </p>
           </div>
           <div className="flex flex-row gap-3 justify-center p-2">
-            {targetDiary.spread.includes(0) ? (
-              <SpreadPlace type={targetDiary} tarot={tarot} size={"medium"} />
-            ) : (
-              targetDiary.spread.map((q, i) => (
-                <div
-                  className="w-[130px] text-yellow font-NT tracking-wider shadowYellow "
-                  key={i}
-                >
-                  <img
-                    src={tarot[q.card] && tarot[q.card].img}
-                    alt={tarot[q.card] && tarot[q.card].name}
-                  />
-                  <p className="mt-3">{tarot[q.card] && tarot[q.card].name}</p>
-                  <p className="text-sm font-notoSansJP font-light tracking-widest">
-                    {q.value}
-                  </p>
-                </div>
-              ))
-            )}
+            {targetDiary?.spread
+              .filter((value) => typeof value !== "number")
+              .map((q, i) => {
+                if (typeof q !== "number") {
+                  return (
+                    <div
+                      className="sm:scale-90 w-[130px] text-yellow font-NT tracking-wider shadowYellow"
+                      key={i}
+                    >
+                      <img
+                        src={(q.card && tarot[q.card].img) || ""}
+                        alt={(q.card && tarot[q.card].name) || ""}
+                        className={`opacity-70 z-0 ${
+                          q.reverse ? "rotate-180" : ""
+                        }`}
+                      />
+                      <p className="mt-3">{q.card && tarot[q.card].name}</p>
+                      <p className="text-sm font-notoSansJP font-light tracking-widest">
+                        {q.value}
+                      </p>
+                    </div>
+                  );
+                }
+                return <></>;
+              })}
           </div>
           <span className="flex flex-row justify-between mt-8 mb-9">
             <div className="flex flex-col w-[48%] items-center">

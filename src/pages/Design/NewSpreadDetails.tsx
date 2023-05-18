@@ -1,11 +1,15 @@
-import { ChangeEvent } from "react";
-function NewSpreadDetails({ setOnSave, onSave }) {
+import React, { ChangeEvent } from "react";
+import { DesignSpreadData } from "../../utils/type";
+type NewSpreadDetailsProps = {
+  onSave: DesignSpreadData;
+  setOnSave: React.Dispatch<React.SetStateAction<DesignSpreadData>>;
+};
+function NewSpreadDetails({ setOnSave, onSave }: NewSpreadDetailsProps) {
   const inputChange = (
     e: ChangeEvent<HTMLTextAreaElement> | ChangeEvent<HTMLInputElement>,
     name: string
   ) => {
     setOnSave((prev) => ({ ...prev, [name]: e.target.value }));
-    return;
   };
   return (
     <form className="flex flex-col gap-2 w-2/5 justify-between">

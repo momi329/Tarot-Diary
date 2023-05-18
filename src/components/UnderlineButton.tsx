@@ -4,7 +4,7 @@ type UnderlineButtonProps = {
   type: string;
   selected?: boolean;
   disabled?: boolean;
-  action: (() => {}) | (() => void);
+  action?: (() => object) | (() => void);
 };
 
 function UnderlineButton({
@@ -43,7 +43,7 @@ function UnderlineButton({
   return (
     <div
       className="flex flex-row gap-3 items-center relative group bg-none "
-      onClick={() => action()}
+      onClick={() => (action ? action() : null)}
     >
       <button
         disabled={disabled}

@@ -1,4 +1,4 @@
-import { useContext } from "react";
+import React, { useContext } from "react";
 import { Link } from "react-router-dom";
 import Alert from "../../components/Alert";
 import UnderlineButton from "../../components/UnderlineButton";
@@ -7,6 +7,26 @@ import Moon from "../../images/Moon";
 import firebase from "../../utils/firebase";
 import { formatTimestamp } from "../../utils/function";
 import type { DiaryType, FriendsPostsType } from "../../utils/type";
+type GalleryHeaderProps = {
+  item: DiaryType | FriendsPostsType;
+  index: number;
+  edit: boolean[] | null;
+  setEdit: React.Dispatch<React.SetStateAction<boolean[] | null>>;
+  post: DiaryType[] | FriendsPostsType[] | null;
+  setPost: React.Dispatch<
+    React.SetStateAction<DiaryType[] | FriendsPostsType[] | null>
+  >;
+  newEdit: {
+    secret: boolean;
+    content: string;
+  };
+  setNewEdit: React.Dispatch<
+    React.SetStateAction<{
+      secret: boolean;
+      content: string;
+    }>
+  >;
+};
 function GalleryHeader({
   item,
   index,
@@ -16,36 +36,37 @@ function GalleryHeader({
   setPost,
   newEdit,
   setNewEdit,
-}) {
+}: GalleryHeaderProps) {
   const { userUID, alert, setAlert } = useContext(AuthContext);
 
-  const deletePost = async (userUID: string, docId: string) => {
+  const deletePost = async (docId: string) => {
     await firebase.deleteDiary(userUID, docId);
     if (!post) return;
     const newData = [...post];
-    const deleteIndex = newData.findIndex((post) => post.docId === docId);
-    const target = newData.splice(deleteIndex, 1);
-    console.log("deleted", target);
+    const deleteIndex = newData.findIndex(
+      (deletedPost) => deletedPost.docId === docId
+    );
+    newData.splice(deleteIndex, 1);
     setPost(newData as DiaryType[] | FriendsPostsType[]);
     setAlert(false);
   };
 
-  const handleSave = async (index) => {
+  const handleSave = async (savedIndex) => {
     if (!post) return;
-    await firebase.updateDiary(userUID, post[index].docId, newEdit);
-    post[index].content = newEdit.content;
+    await firebase.updateDiary(userUID, post[savedIndex].docId, newEdit);
+    post[savedIndex].content = newEdit.content;
     if (!edit) return;
     const newData = [...edit];
-    newData[index] = false;
+    newData[savedIndex] = false;
     setEdit(newData);
   };
 
-  const handleEdit = (index, secret) => {
+  const handleEdit = (editIndex, secret) => {
     if (!edit) return;
     const newData = [...edit];
-    newData[index] = true;
+    newData[editIndex] = true;
     setEdit(newData);
-    setNewEdit({ ...newEdit, secret: secret });
+    setNewEdit({ ...newEdit, secret });
   };
 
   return (
@@ -106,7 +127,7 @@ function GalleryHeader({
                   value: "Confirm",
                   type: "littlePink",
                   action: () => {
-                    item.docId && deletePost(userUID, item.docId);
+                    item.docId && deletePost(item.docId);
                   },
                 },
               ]}

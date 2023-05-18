@@ -8,15 +8,15 @@ import { htmlToMarkdown, markdownToHtml } from "./Parser";
 
 Quill.register("modules/blotFormatter", BlotFormatter);
 Quill.register("modules/imageDrop", ImageDrop);
-export interface EditorContentChanged {
+export type EditorContentChanged = {
   html: string;
   markdown: string;
-}
+};
 
-export interface EditorProps {
+export type EditorProps = {
   value?: string;
   onChange?: (changes: EditorContentChanged) => void;
-}
+};
 
 const TOOLBAR_OPTIONS = [
   [{ header: [1, 2, 3, false] }],
@@ -42,7 +42,6 @@ export default function Editor(props: EditorProps) {
     <>
       <ReactQuill
         ref={reactQuillRef}
-        theme="snow"
         modules={{
           toolbar: {
             container: TOOLBAR_OPTIONS,
@@ -50,9 +49,6 @@ export default function Editor(props: EditorProps) {
           },
           blotFormatter: {},
           imageDrop: true,
-          "emoji-toolbar": true,
-          "emoji-textarea": false,
-          "emoji-shortname": true,
         }}
         value={value}
         onChange={onChange}

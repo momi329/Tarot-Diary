@@ -1,4 +1,5 @@
 import { Timestamp } from "firebase/firestore";
+/* eslint-disable */
 export type User = {
   name: string;
   image: string;

@@ -6,7 +6,6 @@ import { PageEnum } from "../../utils/type";
 import Member from "../Member";
 import { Buttons } from "./Buttons";
 import Gallery from "./Gallery";
-import MobileFooter from "./MoileFooter";
 import ProfileEdit from "./ProfileEdit";
 import ProfileHeader from "./ProfileHeader";
 import Toggle from "./Toggle";
@@ -105,7 +104,6 @@ function Profile(): JSX.Element {
           </div>
         )}
       </div>
-      <MobileFooter page={page} setPage={setPage} />
     </>
   );
 }

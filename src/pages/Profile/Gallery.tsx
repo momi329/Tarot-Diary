@@ -39,7 +39,7 @@ const Gallery = ({ data, page }: GalleryProps) => {
     if (!data) return;
     const newData = [...data];
     newData
-      .sort(function (a, b) {
+      .sort((a, b) => {
         return (a.time?.seconds || 0) - (b.time?.seconds || 0);
       })
       .reverse();
@@ -61,7 +61,7 @@ const Gallery = ({ data, page }: GalleryProps) => {
     setLoading(true);
     const newData = [...data];
     newData
-      .sort(function (a, b) {
+      .sort((a, b) => {
         return (a.time?.seconds || 0) - (b.time?.seconds || 0);
       })
       .reverse();
@@ -149,6 +149,7 @@ const Gallery = ({ data, page }: GalleryProps) => {
                             </div>
                           );
                         }
+                        return <></>;
                       })}
                   </div>
                 )}
@@ -187,7 +188,6 @@ const Gallery = ({ data, page }: GalleryProps) => {
                                 <span
                                   className="text-pink cursor-pointer relative group font-NT shadowPink tracking-widest"
                                   onClick={() => {
-                                    console.log(index, "here");
                                     seeMoreGPT(index);
                                   }}
                                 >
@@ -286,11 +286,12 @@ const Gallery = ({ data, page }: GalleryProps) => {
           </div>
         ))}
         <div className="w-full flex items-center justify-center mt-7 mb-10">
-          {loading ? (
+          {loading && (
             <div className="mx-auto">
               <Loading text={""} />
             </div>
-          ) : ifMore ? (
+          )}
+          {!loading && ifMore ? (
             <div className="w-[250px] mx-auto">
               <Button
                 type={"big"}

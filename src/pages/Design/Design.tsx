@@ -1,5 +1,5 @@
 import { Timestamp, doc, setDoc, updateDoc } from "firebase/firestore";
-import { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { v4 as uuidv4 } from "uuid";
 import Button from "../../components/Button";
@@ -46,14 +46,13 @@ function Design({ edit, setEdit, spreadData }: DesignProps) {
   });
 
   useEffect(() => {
-    const userUID = localStorage.getItem("userUID");
     if (edit && spreadData) {
       setOnSave(spreadData);
       return;
     }
     if (userUID) {
       const spreadId = uuidv4();
-      setOnSave({ ...onSave, userUID: userUID, spreadId: spreadId });
+      setOnSave({ ...onSave, userUID, spreadId });
     } else {
       navigate("/signin");
     }
@@ -63,15 +62,14 @@ function Design({ edit, setEdit, spreadData }: DesignProps) {
     const cards = onSave.spread.filter((curr) => curr !== 0).length;
     if (cards > 15) return;
     const zeroIndex = onSave.spread.findIndex((item) => item === 0);
-    let newState = { ...onSave }.spread;
-    newState[zeroIndex] = {
+    const newSpread = { ...onSave }.spread;
+    newSpread[zeroIndex] = {
       name: uuidv4(),
       value: "",
       disabled: true,
       order: cards + 1,
     };
-    setOnSave({ ...onSave, spread: newState });
-    return;
+    setOnSave({ ...onSave, spread: newSpread });
   };
 
   const saveIt = async () => {
@@ -93,7 +91,7 @@ function Design({ edit, setEdit, spreadData }: DesignProps) {
       if (onSave.userUID === "") {
         newData = {
           ...onSave,
-          userUID: userUID,
+          userUID,
           time: Timestamp.fromDate(new Date()),
         };
       }

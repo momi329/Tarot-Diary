@@ -31,7 +31,7 @@ root.render(
           <Route path="/ask" element={<AskGPT />} />
           <Route path="/meanings" element={<Meaning />} />
           <Route path="/divination" element={<Divination />} />
-          {/* <Route path='*' element={<Navigate to='/' replace />} /> */}
+          {/* <Route path="*" element={<Navigate to="/" replace />} /> */}
         </Route>
       </Routes>
     </BrowserRouter>

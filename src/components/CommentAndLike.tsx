@@ -1,4 +1,4 @@
-import { useContext } from "react";
+import React, { useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../context/authContext";
 import commentIt from "../images/comment.png";
@@ -6,9 +6,33 @@ import commenting from "../images/commenting.png";
 import like from "../images/heart.png";
 import fill from "../images/heartfill.png";
 import firebase from "../utils/firebase";
+import { DiaryType, FriendsPostsType } from "../utils/type";
 import Alert from "./Alert";
 import Button from "./Button";
-
+type CommentAndLikeProps = {
+  item: DiaryType | FriendsPostsType;
+  index: number;
+  commentChange: {
+    user: string;
+    userName: string;
+    userImg: string;
+    comment: string;
+  };
+  setCommentChange: React.Dispatch<
+    React.SetStateAction<{
+      user: string;
+      userName: string;
+      userImg: string;
+      comment: string;
+    }>
+  >;
+  openComment: number | null;
+  setOpenComment: React.Dispatch<React.SetStateAction<number | null>>;
+  post: DiaryType[] | FriendsPostsType[] | null;
+  setPost: React.Dispatch<
+    React.SetStateAction<DiaryType[] | FriendsPostsType[] | null>
+  >;
+};
 const CommentAndLike = ({
   item,
   index,
@@ -18,7 +42,7 @@ const CommentAndLike = ({
   setOpenComment,
   post,
   setPost,
-}) => {
+}: CommentAndLikeProps) => {
   const { user, userUID, alert, setAlert } = useContext(AuthContext);
   const navigate = useNavigate();
 
@@ -41,6 +65,7 @@ const CommentAndLike = ({
       comment: "",
     });
     setPost((prev) => {
+      if (!prev) return null;
       const updateData = [...prev];
       updateData[i] = newItem;
       return updateData;
@@ -59,10 +84,12 @@ const CommentAndLike = ({
       } else {
         newData.like = [user.userUID];
       }
-      await firebase.updateLike(newData);
-      const newPost = [...post];
-      newPost[likeIndex] = newData;
-      setPost(newPost);
+      if (post) {
+        await firebase.updateLike(newData);
+        const newPost = [...post];
+        newPost[likeIndex] = newData;
+        setPost(newPost);
+      }
     }
   };
   const deleteComment = async (deleted, deletedIndex) => {
@@ -70,6 +97,7 @@ const CommentAndLike = ({
     const newData = { ...deleted };
     newData.comment.splice(deletedIndex, 1);
     setPost((prev) => {
+      if (!prev) return null;
       const updateData = [...prev];
       updateData[index] = newData;
       return updateData;
@@ -104,7 +132,7 @@ const CommentAndLike = ({
             }}
           >
             <img
-              src={item.addComment ? commenting : commentIt}
+              src={openComment === index ? commenting : commentIt}
               alt="comment"
               className="w-[22px] h-[21px] pb-[2px]"
             />

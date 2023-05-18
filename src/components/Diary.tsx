@@ -1,67 +1,67 @@
-import { useState, useEffect, useContext } from "react";
-import { Link } from "react-router-dom";
-import { AuthContext } from "../context/authContext";
-import "../Calander.css";
-import cards from "../tarotcard/tarot-images";
 import { Timestamp } from "firebase/firestore";
+import React, { useContext, useEffect, useState } from "react";
+import "../Calander.css";
+import { AuthContext } from "../context/authContext";
 import firebase from "../utils/firebase";
+import { DiaryType } from "../utils/type";
 import { Post } from "./Post";
-interface Props {
+type Props = {
   selectedDate: Date;
   prevMonth: () => void;
   nextMonth: () => void;
   setSelectedDate: React.Dispatch<React.SetStateAction<Date>>;
-  diaryData: {}[] | Day[];
+  diaryData: object[] | Day[];
   isDiaryOpen: boolean;
   setIsDiaryOpen: React.Dispatch<React.SetStateAction<boolean>>;
-  setDayDiary: React.Dispatch<React.SetStateAction<Day | {}>>;
-  dayDairy: Day | {};
-  setTargetDiary?: any;
-}
-interface Day {
+  setDayDiary: React.Dispatch<React.SetStateAction<Day | object>>;
+  dayDairy: Day | object;
+  setTargetDiary?: React.Dispatch<React.SetStateAction<DiaryType | null>>;
+};
+type Day = {
   title: string;
   card: number;
   reverse: boolean;
   secret: boolean;
   time: Timestamp;
   content: string;
-}
+};
 
 function Diary() {
   const { userUID } = useContext(AuthContext);
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
-  const [diaryData, setDiaryData] = useState<{}[] | []>([]);
+  const [diaryData, setDiaryData] = useState<DiaryType[] | []>([]);
   const [isDiaryOpen, setIsDiaryOpen] = useState<boolean>(false);
   const [dayDairy, setDayDiary] = useState({});
-  const [targetDiary, setTargetDiary] = useState(null);
+  const [targetDiary, setTargetDiary] = useState<DiaryType | null>(null);
   const prevMonth = () => {
     setSelectedDate((prevDate) => {
-      const prevMonth = new Date(
+      const getPrevMonth = new Date(
         prevDate.getFullYear(),
         prevDate.getMonth() - 1,
         1
       );
-      return prevMonth;
+      return getPrevMonth;
     });
   };
   const nextMonth = () => {
     setSelectedDate((prevDate) => {
-      const nextMonth = new Date(
+      const getNextMonth = new Date(
         prevDate.getFullYear(),
         prevDate.getMonth() + 1,
         1
       );
-      return nextMonth;
+      return getNextMonth;
     });
   };
 
   useEffect(() => {
-    async function getUserDiary(userUID: string) {
+    console.log(targetDiary, "target");
+    async function getUserDiary() {
       const docSnap = await firebase.getUserDiary(userUID);
       setDiaryData(docSnap);
     }
-    getUserDiary(userUID);
-  }, []);
+    getUserDiary();
+  }, [targetDiary]);
 
   return (
     <div className="w-[100%] rounded-xl font-NT bg-opacity-60">
@@ -100,11 +100,7 @@ function Diary() {
   );
 }
 
-function CalendarHeader({
-  selectedDate,
-  prevMonth,
-  nextMonth,
-}: Props): JSX.Element {
+function CalendarHeader({ selectedDate, prevMonth, nextMonth }: Props) {
   const year = selectedDate.getFullYear();
   const monthNumber = selectedDate.getMonth() + 1;
   const monthNames = [
@@ -170,11 +166,9 @@ function CalendarDays({
   selectedDate,
   setSelectedDate,
   diaryData,
-  isDiaryOpen,
-  setIsDiaryOpen,
   setDayDiary,
   setTargetDiary,
-}: Props): JSX.Element {
+}: Props) {
   const startOfMonth = new Date(
     selectedDate.getFullYear(),
     selectedDate.getMonth(),
@@ -189,7 +183,7 @@ function CalendarDays({
   const startWeekday = startOfMonth.getDay();
   const daysInMonth = endOfMonth.getDate();
   const days: React.ReactNode[] = [];
-  const clickedDiary = (day: Day | {}, i) => {
+  const clickedDiary = (day: Day | object, i: number) => {
     if (day !== undefined) {
       setDayDiary(day);
       setTargetDiary && setTargetDiary(diaryData[i]);
@@ -230,7 +224,7 @@ function CalendarDays({
         >
           {i}
           <div className="flex flex-wrap gap-[2px] ml-2 flex-start">
-            {diaryData.map((day, i) => {
+            {diaryData.map((day, diaryIndex) => {
               const daySeconds = day.time.seconds;
               if (
                 targetSeconds <= daySeconds &&
@@ -238,7 +232,7 @@ function CalendarDays({
               ) {
                 return (
                   <button
-                    onClick={() => clickedDiary(day, i)}
+                    onClick={() => clickedDiary(day, diaryIndex)}
                     key={i}
                     title={day.question}
                     className="group w-4 h-4 p-[2px] rounded-full bg-pink 
