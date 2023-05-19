@@ -74,7 +74,7 @@ A personal website about tarot card within 5 weeks, with features of divination,
 ## 🔗 Links
 
 [![linkedin](https://img.shields.io/badge/linkedin-0A66C2?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/macymacy/)
-
+[![Gmail](https://img.shields.io/badge/Gmail-D14836?style=for-the-badge&logo=gmail&logoColor=white)](mailto:amekaka@gmail.com)
 ## TestAccount
 
 Account:TestAccount@gmail.com
