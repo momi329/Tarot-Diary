@@ -2,22 +2,22 @@
 
 A personal website about tarot card within 5 weeks, with features of divination, recording, and card spreads designing (牌陣設計).
 
-🔗Link｜https://tarot-diary.web.app/
-🎬Demo Video｜https://youtu.be/zbDKTk4x_E4
+🔗 Link｜https://tarot-diary.web.app/
+🎬 Demo Video｜https://youtu.be/zbDKTk4x_E4
 
 ## Features
 - Home page
-  -  Provided users with a better experience with rich CSS Animations and Transitions.
+  -  Provided users with a better experience with rich **CSS Animations** and **Transitions**.
 - Divination
-  - Created a carousel using React's useRef and Web API without relying on libraries.
-  - Integrated OpenAI API to interpret the divination results and connected the Unsplash API to allow users to customize the background of their card spreads by selecting themed backgrounds.
+  - Created a carousel using React's **useRef** and **Web API** without relying on libraries.
+  - Integrated **OpenAI API** to interpret the divination results and connected the **Unsplash API** to allow users to customize the background of their card spreads by selecting themed backgrounds.
 - Spread Design
-  -  Implemented Drag and Drop API, allowing users to customize their card spread.
+  -  Implemented **Drag and Drop API**, allowing users to customize their card spread.
 - Record
 - Social Media
-  - Implemented skeleton UI loading when fetching data.
-  - Created a calendar for users to view their divination records without libraries.
-  - Applied Firebase's onSnapshot for real-time data updates.
+  - Implemented **skeleton UI loading** when fetching data.
+  - Created a **calendar** for users to view their divination records without libraries.
+  - Applied Firebase's **onSnapshot** for real-time data updates.
 
 
 ## Tech
