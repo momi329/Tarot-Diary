@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../context/authContext";
 import commentIt from "../images/comment.png";
@@ -45,7 +45,7 @@ const CommentAndLike = ({
 }: CommentAndLikeProps) => {
   const { user, userUID, alert, setAlert } = useContext(AuthContext);
   const navigate = useNavigate();
-
+  const [deletedIndex, setDeletedIndex] = useState<null | number>(null);
   const handleCommentChange = (e) => {
     setCommentChange({
       ...commentChange,
@@ -95,16 +95,18 @@ const CommentAndLike = ({
       }
     }
   };
-  const deleteComment = async (deleted, deletedIndex) => {
-    await firebase.updateComment(item);
+  const deleteComment = async (deleted) => {
     const newData = { ...deleted };
     newData.comment.splice(deletedIndex, 1);
+
+    await firebase.updateComment(newData);
     setPost((prev) => {
       if (!prev) return null;
       const updateData = [...prev];
       updateData[index] = newData;
       return updateData;
     });
+    setDeletedIndex(null);
   };
   const commentStatusChange = async (changedIndex) => {
     openComment === changedIndex ? setOpenComment(null) : setOpenComment(index);
@@ -151,7 +153,7 @@ const CommentAndLike = ({
               <>
                 <div
                   className="flex flex-row items-center ml-2 my-3 text-sm"
-                  key={`${q + 1}`}
+                  key={comment.comment + comment.user}
                 >
                   <img
                     src={comment.userImg}
@@ -175,6 +177,7 @@ const CommentAndLike = ({
                     <>
                       <button
                         onClick={() => {
+                          setDeletedIndex(q);
                           setAlert(true);
                         }}
                         key={q}
@@ -195,7 +198,7 @@ const CommentAndLike = ({
                               value: "Confirm",
                               type: "littlePink",
                               action: () => {
-                                deleteComment(item, q);
+                                deleteComment(item);
                                 setTimeout(() => setAlert(false), 5000);
                               },
                             },
