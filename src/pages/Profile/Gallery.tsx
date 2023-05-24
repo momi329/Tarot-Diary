@@ -119,9 +119,7 @@ const Gallery = ({ data, page }: GalleryProps) => {
                 </h1>
 
                 {item.spread.includes(0) ? (
-                  <div className="tinyL:scale-90 tiny:hidden">
-                    <SpreadPlace type={item} tarot={tarot} size={"medium"} />
-                  </div>
+                  <SpreadPlace type={item} tarot={tarot} size={"medium"} />
                 ) : (
                   <div className="gap-2 flex-row flex   w-[100%] flex-wrap justify-center">
                     {item.spread
