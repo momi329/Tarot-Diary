@@ -47,7 +47,7 @@ function GalleryHeader({
       (deletedPost) => deletedPost.docId === docId
     );
     newData.splice(deleteIndex, 1);
-    setPost(newData as DiaryType[] | FriendsPostsType[]);
+    setTimeout(() => setPost(newData as DiaryType[] | FriendsPostsType[]), 800);
     setAlert(false);
   };
 

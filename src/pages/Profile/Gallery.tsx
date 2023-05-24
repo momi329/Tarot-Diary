@@ -82,7 +82,9 @@ const Gallery = ({ data, page }: GalleryProps) => {
   };
 
   if (!post) return <GallerySkeleton />;
-  if (post && userUID === uid && !data) return <GalleryNoDiary />;
+  if (post && userUID === uid && !data) {
+    return <GalleryNoDiary />;
+  }
   if (userUID !== uid && post.length === 0) {
     return (
       <p className="sm:text-4xl text-5xl text-yellow font-NT shadowYellow mt-2">
@@ -284,25 +286,28 @@ const Gallery = ({ data, page }: GalleryProps) => {
           </div>
         ))}
         <div className="w-full flex items-center justify-center mt-7 mb-10">
-          {loading && (
+          {loading ? (
             <div className="mx-auto">
               <Loading text={""} />
             </div>
-          )}
-          {!loading && ifMore ? (
-            <div className="w-[250px] mx-auto">
-              <Button
-                type={"big"}
-                value={"See More"}
-                action={() => {
-                  seeMore();
-                }}
-              />
-            </div>
           ) : (
-            <p className="text-xl text-pink font-NT shadowPink tracking-widest">
-              {"No More Diary :(("}
-            </p>
+            <>
+              {ifMore ? (
+                <div className="w-[250px] mx-auto">
+                  <Button
+                    type={"big"}
+                    value={"See More"}
+                    action={() => {
+                      seeMore();
+                    }}
+                  />
+                </div>
+              ) : (
+                <p className="text-xl text-pink font-NT shadowPink tracking-widest">
+                  {"No More Diary :(("}
+                </p>
+              )}
+            </>
           )}
         </div>
       </div>

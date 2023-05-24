@@ -41,7 +41,7 @@ export default function Circle({ scrollRef4, animated }: CircleProps) {
           PICK YOUR <br></br> DAILY <br></br> TAROT
         </p>
         <p
-          className={`sm:text-xl sm:mb-7 font-notoSansJP tracking-widest text-2xl text-pink z-[2] mb-24  ${
+          className={`sm:text-xl sm:mb-7 font-notoSansJP tracking-widest text-2xl text-pink z-[2]   ${
             animated[3] ? "opacity-0 animate-[slideUp_1s_forwards_1200ms]" : ""
           }`}
         >
