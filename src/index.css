@@ -2,7 +2,29 @@
 @tailwind components;
 @tailwind utilities;
 @import url("https://fonts.cdnfonts.com/css/sygma");
+h1 {
+  font-size: 32px;
+}
 
+h2 {
+  font-size: 28px;
+}
+
+h3 {
+  font-size: 24px;
+}
+
+h4 {
+  font-size: 20px;
+}
+
+h5 {
+  font-size: 16px;
+}
+
+h6 {
+  font-size: 14px;
+}
 @keyframes slide-in {
   0% {
     transform: translateX(-100%);

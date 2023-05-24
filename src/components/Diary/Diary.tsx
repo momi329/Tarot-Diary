@@ -41,7 +41,7 @@ function Diary() {
       setDiaryData(docSnap as DiaryType[]);
     }
     getUserDiary();
-  }, [targetDiary]);
+  }, []);
 
   return (
     <div className="w-[100%] rounded-xl font-NT bg-opacity-60">

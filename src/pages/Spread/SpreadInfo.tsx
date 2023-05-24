@@ -47,7 +47,7 @@ function SpreadInfo({ spreadData, type, setEdit, edit }: SpreadInfoProps) {
           />
         ) : (
           spreadData?.author && (
-            <div>
+            <div className="">
               <div>Author</div>
               <UnderlineButton
                 value={spreadData.author}

@@ -55,19 +55,22 @@ const CommentAndLike = ({
       userImg: user.image,
     });
   };
-  const commented = async (comments, i: number) => {
-    const newItem = { ...comments };
-    newItem.comment.push(commentChange);
-    await firebase.updateComment(newItem);
+  const commented = async (itemPost, i: number) => {
+    const newItemPost = { ...itemPost };
+    const newItem = newItemPost.comment || [];
+    newItem.push(commentChange);
+    newItemPost.comment = newItem;
+    await firebase.updateComment(newItemPost);
     setCommentChange({
       ...commentChange,
       user: userUID,
       comment: "",
     });
+
     setPost((prev) => {
       if (!prev) return null;
       const updateData = [...prev];
-      updateData[i] = newItem;
+      updateData[i] = newItemPost;
       return updateData;
     });
   };

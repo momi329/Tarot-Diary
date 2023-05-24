@@ -53,7 +53,7 @@ function CalendarDays({
     const isToday = date.toDateString() === new Date().toDateString();
     const isSelected = date.toDateString() === selectedDate.toDateString();
     const targetDate = new Date(date);
-    targetDate.setHours(0, 0, 0, 0); // 將時間設定為 0
+    targetDate.setHours(0, 0, 0, 0);
     const targetSeconds = Math.floor(targetDate.getTime() / 1000);
 
     const handleClick = () => {
@@ -79,7 +79,7 @@ function CalendarDays({
                 return (
                   <button
                     onClick={() => clickedDiary(day, diaryIndex)}
-                    key={i}
+                    key={diaryIndex}
                     title={day.question}
                     className="group w-4 h-4 p-[2px] rounded-full bg-pink 
                     bg-opacity-60 z-10 relative cursor-pointer"

@@ -16,7 +16,7 @@ export const SpreadPlace = ({ type, tarot, size }: SpreadPlaceProps) => {
   let widthAndHeight;
   if (size === "large") {
     widthAndHeight = {
-      a: " max-w-screen-md mb-12 p-[30px]",
+      a: " max-w-screen-md mb-12 p-[30px] min-h-[450px]",
       b: " w-[144px] h-[113px] cursor-default",
       c: " w-[138px] h-[220px] gap-2 ",
       scale: "",
@@ -24,10 +24,10 @@ export const SpreadPlace = ({ type, tarot, size }: SpreadPlaceProps) => {
   }
   if (size === "medium") {
     widthAndHeight = {
-      a: " w-[542px] mb-5 p-5 bg-black/40",
+      a: " w-[542px] h-[] mb-5 p-5 bg-black/40 py-4 min-h-[300px]",
       b: " w-[71px] h-[60px] ",
       c: " w-[70px] h-[120px] gap-2 ",
-      scale: " hover:transform  transition duration-300 hover:z-10 ",
+      scale: " hover:transform transition duration-300 hover:z-10 ",
     };
   }
   if (!type) return <></>;
@@ -36,7 +36,7 @@ export const SpreadPlace = ({ type, tarot, size }: SpreadPlaceProps) => {
       className={`flex flex-wrap justify-center  border border-yellow z-1 
   mx-auto  border-opacity-50  ${widthAndHeight.a} border-none  ${
         widthAndHeight.scale
-      } min-h-[450px] tiny:min-h-[250px] tinyL:min-h-[450px] ${
+      } tiny:min-h-[250px] tinyL:min-h-[450px] ${
         type?.userUID === "all" ? "pt-[60px]" : ""
       }`}
     >
@@ -50,10 +50,10 @@ export const SpreadPlace = ({ type, tarot, size }: SpreadPlaceProps) => {
               <div
                 className={` rounded-xl ${
                   widthAndHeight.c
-                } cursor-default relative box-border  hover:scale-110 hover:shadow-lg hover:shadow-green/60 hover:duration-200
-               flex items-center justify-center flex-col bg-slate-800 text-yellow z-0 over:z-10  bg-opacity-80
+                } cursor-default relative box-border   hover:shadow-lg hover:shadow-green/60 hover:duration-200
+               flex items-center justify-center flex-col bg-slate-800 text-yellow z-0 hover:z-10  bg-opacity-80
                ${widthAndHeight.scale}  ${
-                  type.userUID === "all" ? "scale-150" : ""
+                  type.userUID === "all" ? "scale-150" : "hover:scale-110"
                 }`}
               >
                 {(item as SpreadItem).card === undefined ? (
@@ -72,7 +72,7 @@ export const SpreadPlace = ({ type, tarot, size }: SpreadPlaceProps) => {
                     <img
                       src={lightCard}
                       alt={"lightCard"}
-                      className={`hover:scale-150 w-[100%] h-[100%] absolute z-0`}
+                      className={` w-[100%] h-[100%] absolute z-0`}
                     />
                   </>
                 ) : (
@@ -100,7 +100,7 @@ export const SpreadPlace = ({ type, tarot, size }: SpreadPlaceProps) => {
                    opacity-0 leading-tight p-2 ${
                      (item as SpreadItem).card === undefined
                        ? ""
-                       : "hover:opacity-100 duration-500 hover:scale-150"
+                       : "hover:opacity-100 duration-500 "
                    }`}
                   >
                     {(item as SpreadItem)?.card !== undefined &&
