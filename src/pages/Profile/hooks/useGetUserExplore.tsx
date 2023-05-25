@@ -1,4 +1,5 @@
 import {
+  DocumentData,
   collection,
   doc,
   getDoc,
@@ -27,7 +28,7 @@ function useGetUserExplore() {
       allPerson.map(async (person) => {
         const docRef = doc(db, "users", person);
         const getFollowingUser = await getDoc(docRef);
-        const followingUser: any = getFollowingUser.data();
+        const followingUser: DocumentData | undefined = getFollowingUser.data();
         const q = query(
           collection(db, "users", person, "diary"),
           where("secret", "==", false)
@@ -37,9 +38,9 @@ function useGetUserExplore() {
             if (change.type === "added") {
               const newDocData = {
                 ...change.doc.data(),
-                user: followingUser.userUID,
-                userImg: followingUser.image,
-                userName: followingUser.name,
+                user: followingUser?.userUID,
+                userImg: followingUser?.image,
+                userName: followingUser?.name,
               } as FriendsPostsType;
               setFriendsPosts((prev) =>
                 prev ? [...prev, newDocData] : [newDocData]
@@ -53,7 +54,7 @@ function useGetUserExplore() {
       allPerson.map(async (person) => {
         const docRef = doc(db, "users", person);
         const getFollowingUser = await getDoc(docRef);
-        const followingUser: any = getFollowingUser.data();
+        const followingUser: DocumentData | undefined = getFollowingUser.data();
         const q = query(
           collection(db, "spreads"),
           where("userUID", "==", person)
@@ -64,8 +65,8 @@ function useGetUserExplore() {
               const newDocData = {
                 ...change.doc.data(),
                 user: person,
-                userImg: followingUser.image,
-                userName: followingUser.name,
+                userImg: followingUser?.image,
+                userName: followingUser?.name,
               } as FriendsPostsType;
               setFriendsPosts((prev) => {
                 if (prev) {

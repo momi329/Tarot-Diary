@@ -1,6 +1,7 @@
+import React from "react";
 type UnderlineButtonProps = {
   value: string;
-  icon?: any;
+  icon?: React.ReactNode;
   type: string;
   selected?: boolean;
   disabled?: boolean;
