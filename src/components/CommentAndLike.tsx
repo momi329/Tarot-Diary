@@ -81,6 +81,11 @@ const CommentAndLike = ({
       const removeIndex = newData?.like.findIndex(remove);
       newData.like.splice(removeIndex);
       await firebase.updateLike(newData);
+      if (post) {
+        const newPost = [...post];
+        newPost[likeIndex] = newData;
+        setPost(newPost);
+      }
     } else {
       if (newData?.like) {
         newData.like = [...newData.like, user.userUID];
