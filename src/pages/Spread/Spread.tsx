@@ -13,8 +13,15 @@ function Spread() {
 
   const [type, dispatch] = useReducer(reducer, ActionEnum.Preview);
   const [edit, setEdit] = useState<boolean>(false);
-  const { spreadData, setSpreadData, divinedData, setDivinedData, getDesign } =
-    useGetDesign();
+  const {
+    spreadData,
+    setSpreadData,
+    divinedData,
+    setDivinedData,
+    getDesign,
+    pickCard,
+    setPickCard,
+  } = useGetDesign();
 
   useEffect(() => {
     const divine = localStorage.getItem("myResult");
@@ -30,7 +37,7 @@ function Spread() {
   }, [id, edit]);
 
   if (!spreadData) {
-    return <></>;
+    return null;
   }
   return (
     <>
@@ -52,7 +59,15 @@ function Spread() {
             setEdit={setEdit}
             edit={edit}
           />
-          <LowerArea type={type} dispatch={dispatch} data={divinedData} />
+          <LowerArea
+            type={type}
+            dispatch={dispatch}
+            spreadData={spreadData}
+            divinedData={divinedData}
+            setDivinedData={setDivinedData}
+            pickCard={pickCard}
+            setPickCard={setPickCard}
+          />
         </div>
       </div>
     </>

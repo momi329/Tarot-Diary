@@ -1,6 +1,6 @@
 import { ActionEnum, SpreadItem } from "../../utils/type";
 
-import { useContext, useEffect } from "react";
+import React, { useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import AskAndNote from "../../components/AskAndNote";
 import Button from "../../components/Button";
@@ -11,7 +11,6 @@ import { getRandomBool, getRandomCards } from "../../utils/function";
 import { DesignSpreadData } from "../../utils/type";
 import ChooseCard from "./ChooseCard";
 import { SpreadPlace } from "./SpreadPlace";
-import useGetDesign from "./hooks/useGetDesign";
 
 type DispatchAction = {
   type: ActionEnum;
@@ -20,23 +19,25 @@ type DispatchAction = {
 type LowerAreaProps = {
   type: ActionEnum;
   dispatch: (action: DispatchAction) => void;
-  data: DesignSpreadData;
+  spreadData: DesignSpreadData;
+  divinedData: DesignSpreadData;
+  setDivinedData: React.Dispatch<React.SetStateAction<DesignSpreadData>>;
+  pickCard: number[];
+  setPickCard: React.Dispatch<React.SetStateAction<number[]>>;
 };
 
-function LowerArea({ type, dispatch }: LowerAreaProps) {
+function LowerArea({
+  type,
+  dispatch,
+  spreadData,
+  divinedData,
+  setDivinedData,
+  pickCard,
+  setPickCard,
+}: LowerAreaProps) {
   const { isLogin } = useContext(AuthContext);
   const navigate = useNavigate();
-  const {
-    spreadData,
-    divinedData,
-    setDivinedData,
-    pickCard,
-    setPickCard,
-    getDesign,
-  } = useGetDesign();
-  useEffect(() => {
-    getDesign();
-  }, []);
+
   const handleClickDivine = async () => {
     if (!spreadData) return;
     const number: number = spreadData.spread.filter(

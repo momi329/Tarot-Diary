@@ -58,17 +58,17 @@ export default function Circle({ scrollRef4, animated }: CircleProps) {
               type={"big"}
               action={async () => {
                 if (isLogin) {
-                  const randomCard = await getRandomCards(1);
-                  const randomReverse = await getRandomBool(1);
+                  const randomCard = getRandomCards(1);
+                  const randomReverse = getRandomBool(1);
                   const divinedData = {
                     userUID: "all",
                     title: "每日占卜",
                     spread: [
                       {
-                        card: randomCard,
+                        card: randomCard[0],
                         disabled: true,
                         order: 1,
-                        reverse: randomReverse,
+                        reverse: randomReverse[0],
                       },
                     ],
                     description:
@@ -79,6 +79,7 @@ export default function Circle({ scrollRef4, animated }: CircleProps) {
                     image:
                       "https://images.unsplash.com/photo-1569879742961-60334a19ace5?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=Mnw0MzE2MDZ8MHwxfHJhbmRvbXx8fHx8fHx8fDE2ODI4Mjk1NDk&ixlib=rb-4.0.3&q=80&w=1080",
                   };
+
                   const data = JSON.stringify(divinedData);
                   localStorage.setItem("myResult", data);
                   navigate("/spread/common-1");
