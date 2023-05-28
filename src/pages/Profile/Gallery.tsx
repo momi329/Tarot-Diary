@@ -137,7 +137,7 @@ const Gallery = ({ data, page }: GalleryProps) => {
                                 src={(q.card && tarot[q.card].img) || ""}
                                 alt={(q.card && tarot[q.card].name) || ""}
                                 className={`opacity-70 z-0 ${
-                                  q.reverse ? "rotate-180" : ""
+                                  q.reverse ? "" : "rotate-180"
                                 }`}
                               />
                               <p className="mt-3">
