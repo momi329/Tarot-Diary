@@ -82,10 +82,10 @@ function CalendarDays({
                     key={diaryIndex}
                     title={day.question}
                     className="group w-4 h-4 p-[2px] rounded-full bg-pink 
-                    bg-opacity-60 z-10 relative cursor-pointer"
+                    bg-opacity-60  relative cursor-pointer"
                   >
                     <div
-                      className="group-hover:opacity-100 absolute text-sm top-4 left-4 p-2 text-start
+                      className="group-hover:opacity-100 group-hover:z-20 absolute text-sm top-4 left-4 p-2 text-start
                     opacity-0  min-w-[150px] min-h-[20px] text-yellow bg-pink/80  rounded-xl tracking-widest"
                     >
                       ・{day.question}
