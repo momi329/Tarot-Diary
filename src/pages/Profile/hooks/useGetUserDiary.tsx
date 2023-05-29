@@ -5,10 +5,11 @@ import { DiaryType } from "../../../utils/type";
 
 const useGetUserDiary = () => {
   const [diary, setDiary] = useState<DiaryType[] | null>(null);
+
   const { uid } = useParams();
   const getDiary = useCallback(async () => {
     if (!uid) return;
-    const userDiary = (await firebase.getOtherUserDiary(uid)) as DiaryType[];
+    const userDiary = (await firebase.getAllUserDiary(uid)) as DiaryType[];
     userDiary
       .sort((a, b) => {
         return a.time.seconds - b.time.seconds;
@@ -17,7 +18,11 @@ const useGetUserDiary = () => {
     setDiary(userDiary);
   }, [uid]);
 
-  return { diary, setDiary, getDiary };
+  return {
+    diary,
+    setDiary,
+    getDiary,
+  };
 };
 
 export default useGetUserDiary;

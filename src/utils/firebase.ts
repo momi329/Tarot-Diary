@@ -175,6 +175,26 @@ const firebase = {
     }
     return null;
   },
+  async getAllUserDiary(uid) {
+    const docRef = doc(db, "users", uid);
+    const data = await getDoc(docRef);
+    const diary: DocumentData[] = [];
+    if (data.exists()) {
+      const userData = data.data();
+      const diaryRef = collection(db, "users", uid, "diary");
+      const querySnapshot = await getDocs(diaryRef);
+      querySnapshot.forEach((diaryItem) => {
+        const otherUserData = diaryItem.data();
+        diary.push({
+          ...otherUserData,
+          user: uid,
+          userImg: userData.image,
+          userName: userData.name,
+        });
+      });
+    }
+    return diary;
+  },
   async getOtherUserDiary(uid) {
     const docRef = doc(db, "users", uid);
     const data = await getDoc(docRef);

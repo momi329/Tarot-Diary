@@ -55,6 +55,7 @@ function GalleryHeader({
     if (!post) return;
     await firebase.updateDiary(userUID, post[savedIndex].docId, newEdit);
     post[savedIndex].content = newEdit.content;
+    post[savedIndex].secret = newEdit.secret;
     if (!edit) return;
     const newData = [...edit];
     newData[savedIndex] = false;
@@ -144,7 +145,7 @@ function GalleryHeader({
                   secret: e.target.value === "true",
                 });
               }}
-              value={item.secret ? "true" : "false"}
+              value={newEdit.secret ? "true" : "false"}
             >
               <option value="false">Public</option>
               <option value="true">Private</option>

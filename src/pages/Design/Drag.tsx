@@ -177,8 +177,8 @@ function Drag({
                           (spreadItem: number | SpreadItem) => spreadItem !== 0
                         )
                         .map((_, spreadIndex: number) => (
-                          <option key={spreadIndex + 1} value={i + spreadIndex}>
-                            {i + 1}
+                          <option key={spreadIndex + 1} value={spreadIndex + 1}>
+                            {spreadIndex + 1}
                           </option>
                         ))}
                     </select>
