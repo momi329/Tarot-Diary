@@ -15,7 +15,11 @@ export default function Intro({
   animated,
 }: IntroProps) {
   return (
-    <div className=" w-screen  relative bg-clip-content  flex justify-center items-center">
+    <div
+      className={` 
+         min-h-[2400px] lg:min-h-[1800px] sm:min-h-[800px]
+       w-screen  relative bg-clip-content  flex justify-center items-center`}
+    >
       <div className="sm:mt-10 sm:w-[90%] tinyL:h-[600px] tiny:h-[600px] h-[2100px]  w-[70%] mt-36 ">
         <div ref={scrollRef1}>
           <div

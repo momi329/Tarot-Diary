@@ -8,7 +8,7 @@ const SelectCardHomePage = () => {
       setCardArr(new Array(5).fill(false));
     } else if (window.innerWidth < 1200) {
       setCardArr(new Array(6).fill(false));
-    } else if (window.innerWidth < 1920) {
+    } else if (window.innerWidth > 1200) {
       setCardArr(new Array(12).fill(false));
     }
   };
