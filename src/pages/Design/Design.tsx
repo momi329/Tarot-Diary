@@ -135,7 +135,7 @@ function Design({ edit, setEdit, spreadData }: DesignProps) {
       case !checkUniqueOrder(
         onSave.spread.filter((item) => typeof item !== "number") as SpreadItem[]
       ):
-        return "!抽排順序不能重複";
+        return "!抽牌順序不能重複";
       default:
         return "";
     }

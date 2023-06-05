@@ -24,22 +24,21 @@ export function CalendarHeader({
     "November",
     "December",
   ];
-  const monthName = monthNames[selectedDate.getMonth()];
-  const monthYear = `${year}.${monthNumber},${monthName}`;
+  const monthYear = `${year} . ${monthNumber}`;
   return (
     <div
       className="flex justify-between items-center 
     p-1 bg-black rounded-sm text-yellow pt-2 rounde-t-lg "
     >
       <button
-        className="cursor-pointer text-notoSansJP shadowYellow text-yellow p-2"
+        className="text-3xl cursor-pointer text-notoSansJP shadowYellow text-yellow p-2"
         onClick={prevMonth}
       >
         &lt;
       </button>
-      <div className="text-lg yellowShadow">{monthYear}</div>
+      <div className="text-2xl leading-9 yellowShadow">{monthYear}</div>
       <button
-        className="cursor-pointer text-notoSansJP shadowYellow text-yellow p-2"
+        className="text-3xl cursor-pointer text-notoSansJP shadowYellow text-yellow p-2"
         onClick={nextMonth}
       >
         &gt;

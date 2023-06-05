@@ -99,7 +99,7 @@ function Header() {
                 return (
                   <Link to={item.link} key={index}>
                     <div
-                      className="font-NT text-pink shadowBlack text-4xl"
+                      className="font-NT text-pink shadowBlack text-4xl cursor-pointer"
                       onClick={() => setOpenHamburger(false)}
                     >
                       {item.title}
@@ -109,14 +109,14 @@ function Header() {
               })}
               {isLogin ? (
                 <div
-                  className="font-NT text-pink shadowBlack text-4xl"
+                  className="font-NT text-pink shadowBlack text-4xl cursor-pointer"
                   onClick={() => signOut(auth)}
                 >
                   Log Out
                 </div>
               ) : (
                 <div
-                  className="font-NT text-pink shadowBlack text-4xl"
+                  className="font-NT text-pink shadowBlack text-4xl cursor-pointer"
                   onClick={() => {
                     navigate("/signin");
                   }}

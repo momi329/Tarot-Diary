@@ -16,7 +16,7 @@ export const SpreadPlace = ({ type, tarot, size }: SpreadPlaceProps) => {
   let widthAndHeight;
   if (size === "large") {
     widthAndHeight = {
-      a: " max-w-screen-md mb-12 p-[30px] min-h-[450px]",
+      a: " max-w-screen-md mb-12 p-[30px] min-h-[450px] pb-[133px] ",
       b: " w-[144px] h-[113px] cursor-default",
       c: " w-[138px] h-[220px] gap-2 ",
       scale: "",
@@ -24,13 +24,14 @@ export const SpreadPlace = ({ type, tarot, size }: SpreadPlaceProps) => {
   }
   if (size === "medium") {
     widthAndHeight = {
-      a: " w-[542px] h-[] mb-5 p-5 bg-black/40 py-4 min-h-[300px]",
+      a: " w-[542px] h-[] mb-5 p-5 bg-black/40 py-4 min-h-[300px] pb-[70px]",
       b: " w-[71px] h-[60px] ",
       c: " w-[70px] h-[120px] gap-2 ",
       scale: " hover:transform transition duration-300 hover:z-10 ",
     };
   }
   if (!type) return <></>;
+
   return (
     <div
       className={`flex flex-wrap justify-center  border border-yellow z-1 
@@ -81,12 +82,12 @@ export const SpreadPlace = ({ type, tarot, size }: SpreadPlaceProps) => {
                       src={
                         ((item as SpreadItem)?.card &&
                           tarot[(item as SpreadItem).card!].img) ||
-                        ""
+                        tarot[0].img
                       }
                       alt={
                         ((item as SpreadItem)?.card &&
                           tarot[(item as SpreadItem).card!].name) ||
-                        ""
+                        tarot[0].name
                       }
                       className={`${
                         (item as SpreadItem)?.reverse ? "" : "rotate-180"

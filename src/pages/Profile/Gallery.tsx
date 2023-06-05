@@ -6,7 +6,6 @@ import Editor from "../../components/Editor/Editor";
 import Viewer from "../../components/Editor/Viewer";
 import Loading from "../../components/Loading";
 import SpreadPreview from "../../components/SpreadPreview";
-import UnderlineButton from "../../components/UnderlineButton";
 import { AuthContext } from "../../context/authContext";
 import Star from "../../images/Star";
 import cards from "../../tarotcard/tarot-images";
@@ -134,14 +133,20 @@ const Gallery = ({ data, page }: GalleryProps) => {
                               key={i}
                             >
                               <img
-                                src={(q.card && tarot[q.card].img) || ""}
-                                alt={(q.card && tarot[q.card].name) || ""}
+                                src={
+                                  (q.card && tarot[q.card].img) || tarot[0].img
+                                }
+                                alt={
+                                  (q.card && tarot[q.card].name) ||
+                                  tarot[0].name
+                                }
                                 className={`opacity-70 z-0 ${
                                   q.reverse ? "" : "rotate-180"
                                 }`}
                               />
                               <p className="mt-3">
-                                {q.card && tarot[q.card].name}
+                                {(q.card && tarot[q.card].name) ||
+                                  tarot[0].name}
                               </p>
                               <p className="text-sm font-notoSansJP font-light tracking-widest">
                                 {q.value}
@@ -247,13 +252,6 @@ const Gallery = ({ data, page }: GalleryProps) => {
                           {" "}
                           {item.title}{" "}
                         </span>
-                        <UnderlineButton
-                          value={item.title}
-                          type={"profile"}
-                          action={() => {
-                            navigate(`/spread/${item.spreadId}`);
-                          }}
-                        />
                         牌陣<br></br>趕快來占卜喔！
                       </div>
                       <span className="text-gray text-sm mt-2">

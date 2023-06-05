@@ -3,19 +3,26 @@
 @tailwind utilities;
 @import url("https://fonts.cdnfonts.com/css/sygma");
 h1 {
+  padding: 10px 0px;
+  line-height: 130%;
   font-size: 32px;
 }
 
 h2 {
   font-size: 28px;
+  line-height: 120%;
+  padding: 8px 0px;
 }
 
 h3 {
   font-size: 24px;
+  line-height: 110%;
+  padding: 6px 0px;
 }
 
 h4 {
   font-size: 20px;
+  padding: 4px 0px;
 }
 
 h5 {

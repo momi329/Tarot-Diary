@@ -141,6 +141,7 @@ function Drag({
                     ${
                       item.disabled ? " text-green bg-opacity-40 bg-white " : ""
                     }`}
+                      maxLength={20}
                       disabled={item.disabled}
                       onChange={(e) => handleChange(e, item, i)}
                       onKeyDown={(e) => handleKeyDown(e, item)}
