@@ -1,6 +1,6 @@
 # Get Start with Tarot Diary🔮
 
-![React](https://img.shields.io/badge/react-%2320232a.svg?style=for-the-badge&logo=react&logoColor=%2361DAFB) ![TypeScript](https://img.shields.io/badge/typescript-%23007ACC.svg?style=for-the-badge&logo=typescript&logoColor=white) ![React Router](https://img.shields.io/badge/React_Router-CA4245?style=for-the-badge&logo=react-router&logoColor=white) ![TailwindCSS](https://img.shields.io/badge/tailwindcss-%2338B2AC.svg?style=for-the-badge&logo=tailwind-css&logoColor=white) ![Firebase](https://img.shields.io/badge/Firebase-039BE5?style=for-the-badge&logo=Firebase&logoColor=white) ![Git](https://img.shields.io/badge/git-%23F05033.svg?style=for-the-badge&logo=git&logoColor=white) ![NPM](https://img.shields.io/badge/NPM-%23CB3837.svg?style=for-the-badge&logo=npm&logoColor=white)
+A personal website about tarot card within 5 weeks, with features of divination, recording, and card spreads designing (牌陣設計).
 
 🔗 Link ｜https://tarot-diary.web.app/
 🎬 Demo Video ｜https://youtu.be/zbDKTk4x_E4
@@ -16,8 +16,11 @@
   - Implemented **Drag and Drop API**, allowing users to customize their card spread.
 - Record
 - Social Media
+  - Implemented **skeleton UI loading** when fetching data.
+  - Created a **calendar** for users to view their divination records without libraries.
+  - Applied Firebase's **onSnapshot** for real-time data updates.
 
-- Divine
+## Tech
 
 ![React](https://img.shields.io/badge/react-%2320232a.svg?style=for-the-badge&logo=react&logoColor=%2361DAFB) ![TypeScript](https://img.shields.io/badge/typescript-%23007ACC.svg?style=for-the-badge&logo=typescript&logoColor=white) ![React Router](https://img.shields.io/badge/React_Router-CA4245?style=for-the-badge&logo=react-router&logoColor=white) ![TailwindCSS](https://img.shields.io/badge/tailwindcss-%2338B2AC.svg?style=for-the-badge&logo=tailwind-css&logoColor=white) ![Firebase](https://img.shields.io/badge/Firebase-039BE5?style=for-the-badge&logo=Firebase&logoColor=white) ![Git](https://img.shields.io/badge/git-%23F05033.svg?style=for-the-badge&logo=git&logoColor=white) ![NPM](https://img.shields.io/badge/NPM-%23CB3837.svg?style=for-the-badge&logo=npm&logoColor=white)
 
@@ -71,32 +74,6 @@
 ## Flow chart
 
 ![App Screenshot](https://firebasestorage.googleapis.com/v0/b/tarot-diary.appspot.com/o/images%2F%E6%88%AA%E5%9C%96%202023-05-19%20%E4%B8%8A%E5%8D%885.46.27.png?alt=media&token=ea80faeb-b865-4fe6-99ec-4d8e661d8c8c)
-
-## Demo
-
-![App Screenshot](https://firebasestorage.googleapis.com/v0/b/tarot-diary.appspot.com/o/images%2F1.gif?alt=media&token=bcb7d4be-c621-4e1b-8245-451eefc378fa)
-
-- My Beautiful Home Page!
-
-![App Screenshot](https://firebasestorage.googleapis.com/v0/b/tarot-diary.appspot.com/o/images%2F2.gif?alt=media&token=a3b962f6-414b-48af-8198-974e63b94b40)
-
-- Daily Tarot(Home Page)
-
-![App Screenshot](https://firebasestorage.googleapis.com/v0/b/tarot-diary.appspot.com/o/images%2F3.gif?alt=media&token=98662d94-adb1-44f5-be3c-fa19988bad62)
-
-- Tarot Spread carousel/gallery
-
-![App Screenshot](https://firebasestorage.googleapis.com/v0/b/tarot-diary.appspot.com/o/images%2F4.gif?alt=media&token=4afdcd92-3832-41d3-812b-48cc242454ab)
-
-- Design your own Spread
-
-![App Screenshot](https://firebasestorage.googleapis.com/v0/b/tarot-diary.appspot.com/o/images%2F6.gif?alt=media&token=83dcebb3-4676-4e5c-8ba6-77d3b797f5f1)
-
-- Divine
-
-![App Screenshot](https://firebasestorage.googleapis.com/v0/b/tarot-diary.appspot.com/o/images%2F5.gif?alt=media&token=3d33d447-d59f-4bea-bc20-1ed56cb19099)
-
-- Social Media
 
 ## 🔗 Links
 
